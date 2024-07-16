@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/CGR/static/css/main.f2eb3309.css",
+    "main.js": "/CGR/static/js/main.e4c4cc31.js",
+    "static/js/453.18fc2995.chunk.js": "/CGR/static/js/453.18fc2995.chunk.js",
+    "index.html": "/CGR/index.html",
+    "main.f2eb3309.css.map": "/CGR/static/css/main.f2eb3309.css.map",
+    "main.e4c4cc31.js.map": "/CGR/static/js/main.e4c4cc31.js.map",
+    "453.18fc2995.chunk.js.map": "/CGR/static/js/453.18fc2995.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f2eb3309.css",
+    "static/js/main.e4c4cc31.js"
+  ]
+}
