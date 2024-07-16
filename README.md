@@ -1,46 +1,48 @@
-# Getting Started with Create React App
+# Chess Game Review App with React js and Tailwind CSS
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+System similar to Chess.com which gives review of each move.
 
-## Available Scripts
+Inspiration [chess.wintrcat.uk](https://chess.wintrcat.uk/)
 
-In the project directory, you can run:
+## 1. Packages plan to use:
 
-### `npm start`
+- [ ] [Tailwind CSS](https://tailwindcss.com/docs/guides/create-react-app)
+- [ ] [React Icons](https://react-icons.github.io/react-icons/)
+- [ ] [Github Pages](https://github.com/gitname/react-gh-pages)
+- [ ] [Chess.js](https://www.npmjs.com/package/chess.js?activeTab=readme)
+- [ ] [Chess Board](https://www.npmjs.com/package/cm-chessboard)
+- [ ] [Stockfish](https://www.npmjs.com/package/stockfish)
+- [ ] [NextUI](https://nextui.org/docs/guide/installation)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Basic working of website
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+User can enter chess.com username or game PGN to analyze with stockfish. Analysis system will be similar to chess.com in which user will get feedback from stockfish, each move will be laballed `blunder`, `great`, or something like that.
 
-### `npm test`
+This time I will use packages to display chess board and for logic which will make it easier for me. I am using Typescript this time for first time for strict typecheck. I will try to make good and reactive interface with NextUI.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Steps to Follow
 
-### `npm run build`
+### 1. Setup
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- [ ] Installing Packages
+- [ ] Creating Basic UI elements
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. API
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- [ ] Using Chess.com API to get user game
+- [ ] Lichess API for opening positions
 
-### `npm run eject`
+### 3. BOARD
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- [ ] Creating Board with Chess Board Package
+- [ ] Try different available pieces and choose good colors and themes
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 4. LOGIC
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- [ ] Reading PGN going forwad and backward through moves
+- [ ] Drawing Arrows
+- [ ] Getting moves and evaluation from stockfish
+- [ ] Dispalying Evaluation bar and top lines
+- [ ] Move review based on change on evaluation
+- [ ] Graph to show change in evaluation
+- [ ] Calculating Accuracy and Rating of user
