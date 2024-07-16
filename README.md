@@ -6,13 +6,13 @@ Inspiration [chess.wintrcat.uk](https://chess.wintrcat.uk/)
 
 ## 1. Packages plan to use:
 
-- [ ] [Tailwind CSS](https://tailwindcss.com/docs/guides/create-react-app)
-- [ ] [React Icons](https://react-icons.github.io/react-icons/)
-- [ ] [Github Pages](https://github.com/gitname/react-gh-pages)
-- [ ] [Chess.js](https://www.npmjs.com/package/chess.js?activeTab=readme)
-- [ ] [Chess Board](https://www.npmjs.com/package/cm-chessboard)
-- [ ] [Stockfish](https://www.npmjs.com/package/stockfish)
-- [ ] [NextUI](https://nextui.org/docs/guide/installation)
+[x] [Tailwind CSS](https://tailwindcss.com/docs/guides/create-react-app)
+[x] [React Icons](https://react-icons.github.io/react-icons/)
+[x] [Github Pages](https://github.com/gitname/react-gh-pages)
+[x] [Chess.js](https://www.npmjs.com/package/chess.js?activeTab=readme)
+[x] [Chess Board](https://www.npmjs.com/package/cm-chessboard)
+[x] [Stockfish](https://www.npmjs.com/package/stockfish)
+[x] [NextUI](https://nextui.org/docs/guide/installation)
 
 ## Basic working of website
 
@@ -24,25 +24,25 @@ This time I will use packages to display chess board and for logic which will ma
 
 ### 1. Setup
 
-- [ ] Installing Packages
-- [ ] Creating Basic UI elements
+[x] Installing Packages
+[ ] Creating Basic UI elements
 
 ### 2. API
 
-- [ ] Using Chess.com API to get user game
-- [ ] Lichess API for opening positions
+[ ] Using Chess.com API to get user game
+[ ] Lichess API for opening positions
 
 ### 3. BOARD
 
-- [ ] Creating Board with Chess Board Package
-- [ ] Try different available pieces and choose good colors and themes
+[ ] Creating Board with Chess Board Package
+[ ] Try different available pieces and choose good colors and themes
 
 ### 4. LOGIC
 
-- [ ] Reading PGN going forwad and backward through moves
-- [ ] Drawing Arrows
-- [ ] Getting moves and evaluation from stockfish
-- [ ] Dispalying Evaluation bar and top lines
-- [ ] Move review based on change on evaluation
-- [ ] Graph to show change in evaluation
-- [ ] Calculating Accuracy and Rating of user
+[ ] Reading PGN going forwad and backward through moves
+[ ] Drawing Arrows
+[ ] Getting moves and evaluation from stockfish
+[ ] Dispalying Evaluation bar and top lines
+[ ] Move review based on change on evaluation
+[ ] Graph to show change in evaluation
+[ ] Calculating Accuracy and Rating of user

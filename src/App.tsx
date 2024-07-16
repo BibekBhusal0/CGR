@@ -1,5 +1,11 @@
 function App() {
-  return <div className="App">'hello world'</div>;
+  return (
+    <div>
+      <h1 className=" text-center text-3xl p-4">
+        Just To Check if site is working or not
+      </h1>
+    </div>
+  );
 }
 
 export default App;
