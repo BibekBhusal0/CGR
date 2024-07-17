@@ -1,9 +1,13 @@
+import FullBoard from "./components/full_board";
+import LeftPanel from "./components/left_panel";
+import RightPanel from "./components/right_panel";
+
 function App() {
   return (
-    <div>
-      <h1 className=" text-center text-3xl p-4">
-        Just To Check if site is working or not
-      </h1>
+    <div className=" flex flex-row gap-2">
+      <LeftPanel />
+      <FullBoard />
+      <RightPanel />
     </div>
   );
 }
