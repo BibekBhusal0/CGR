@@ -25,7 +25,7 @@ This time I will use packages to display chess board and for logic which will ma
 ### 1. Setup
 
 - [x] Installing Packages
-- [ ] Creating Basic UI elements (Doing it right now)
+- [x] Creating Basic UI elements
 
 ### 2. API
 
@@ -67,9 +67,9 @@ This time I will use packages to display chess board and for logic which will ma
 - Shows graph which is summary of game as it shows back and forth evaluation of the position
 - Also gives analysis board in which we can make move and
 
-## Just completed making Design for this website, it is a bit copy of [chess.com](https://chess.com), [chess.wintrcat](https://chess.wintrcat.uk), and [my previous chess project](https://bibekbhusal0.github.io/chess).
+## Just completed making Design for this website, it is a bit copy of [chess.com](https://chess.com), [chess.wintrcat](https://chess.wintrcat.uk), and [my previous chess project](https://bibekbhusal0.github.io/Chess).
 
-![image](public/images/ui/main.png)
+![image](public/images/UI/Main.png)
 
 > The logo infront of Game Review is not Omlet in pan it is Search icon it is the emoji which I founded closest to magnifying glass.
 
