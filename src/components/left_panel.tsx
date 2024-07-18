@@ -12,9 +12,9 @@ import { FC, useContext } from "react";
 import { AppContext } from "../App";
 
 function LeftPanel() {
-  const heading_class = "text-2xl";
+  const heading_class = "text-2xl overflow-x-hidden";
   return (
-    <div className=" basis-3/12 pt-4">
+    <div className="basis-3/12 ">
       <Accordion
         aria-label="left"
         variant="splitted"
@@ -137,10 +137,10 @@ function StockfishSettings() {
       <Slider
         label={<h1 className="text-xl "> Depth </h1>}
         aria-label="depth"
-        className="pb-3"
+        className="pb-3 pr-3"
         minValue={10}
         value={depth}
-        onChange={(e) => dispatch({ type: "ChangeDepth", n: e })}
+        onChange={(e) => dispatch({ type: "ChangeDepth", depth: e })}
         maxValue={20}
       />
       {titles.map((title, index) => (

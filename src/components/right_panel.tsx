@@ -8,7 +8,7 @@ import {
   Textarea,
   Tooltip,
 } from "@nextui-org/react";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import { PiDeviceRotateBold } from "react-icons/pi";
 import {
@@ -19,10 +19,11 @@ import {
   FaPlay,
   FaStepBackward,
 } from "react-icons/fa";
+import { AppContext } from "../App";
 
 function RightPanel() {
   return (
-    <div className="basis-4/12 pt-4 px-2 relative">
+    <div className="basis-4/12 px-2 relative">
       <Card className=" p-3">
         <Chip size="lg" color="primary" className="px-8 py-8 mt-6 mb-12">
           <div className="flex gap-4 text-center text-3xl font-semibold">
@@ -39,6 +40,17 @@ function RightPanel() {
 function Input() {
   const [mode, setMode] = useState<string>("chess");
   const [val, setVal] = useState("");
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error();
+  }
+  const { dispatch } = context;
+  const handleClick = () => {
+    if (val.trim() !== "") {
+      const stage = mode === "chess" ? "second" : "third";
+      dispatch({ type: "ChangeState", stage, more: val });
+    }
+  };
   const pgnRef = useRef<any>(null);
   return (
     <>
@@ -55,6 +67,7 @@ function Input() {
         aria-label="type"
         className="basis-4/12 my-7"
         defaultSelectedKeys={[mode]}
+        isDisabled
         value={mode}
         onChange={(item) => {
           setMode(item.target.value);
@@ -67,6 +80,7 @@ function Input() {
       <Button
         className="font-semibold text-2xl py-8 group"
         color="primary"
+        onPress={handleClick}
         variant="ghost">
         <div className="flex gap-5 group-hover:scale-125 transition-size">
           <FaChessQueen className="text-3xl font-semibold transition-transform group-hover:rotate-6 group-hover:translate-x-2 group-hover:-translate-y-2" />
@@ -94,6 +108,7 @@ function Controls() {
     <FaArrowRight />,
     <FaForward />,
   ];
+  // const clickHandlers = []
 
   return (
     <Card className={`mx-auto absolute bottom-2 `}>

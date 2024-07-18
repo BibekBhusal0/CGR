@@ -29,18 +29,18 @@ This time I will use packages to display chess board and for logic which will ma
 
 ### 2. API
 
-- [ ] Using Chess.com API to get user game
+- [x] Using Chess.com API to get user game
 - [ ] Lichess API for opening positions
 
 ### 3. BOARD
 
-- [ ] Creating Board with Chess Board Package
-- [ ] Try different available pieces and choose good colors and themes
+- [x] Creating Board with Chess Board Package
+- [x] Try different available pieces and choose good colors and themes
 
 ### 4. LOGIC
 
 - [ ] Reading PGN going forwad and backward through moves
-- [ ] Drawing Arrows
+- [x] Drawing Arrows
 - [ ] Getting moves and evaluation from stockfish
 - [ ] Dispalying Evaluation bar and top lines
 - [ ] Move review based on change on evaluation

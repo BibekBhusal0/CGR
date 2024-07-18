@@ -17,7 +17,7 @@ function App() {
     initialState
   );
   return (
-    <div className=" flex flex-row gap-2">
+    <div className=" flex flex-row gap-3 pt-6">
       <AppContext.Provider value={{ state, dispatch }}>
         <LeftPanel />
         <FullBoard />
