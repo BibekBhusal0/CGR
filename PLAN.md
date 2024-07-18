@@ -60,7 +60,7 @@ This time I will use packages to display chess board and for logic which will ma
   7.  Inaccuracy (Or humans call it confusing move)
   8.  Miss (Couldn't find winning move)
   9.  Blunder (Loosing game or piece or advantate)
-  10. Foring Move (Only legal move)
+  10. Forcing Move (Only legal move)
 - Shows best move and Continuation
 - Key moves
 - Explains what each move does
