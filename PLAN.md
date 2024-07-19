@@ -35,12 +35,13 @@ This time I will use packages to display chess board and for logic which will ma
 ### 3. BOARD
 
 - [x] Creating Board with Chess Board Package
-- [x] Try different available pieces and choose good colors and themes
+- [x] Try different pieces
+- [ ] choose good colors and themes
 
 ### 4. LOGIC
 
-- [ ] Reading PGN going forwad and backward through moves
-- [x] Drawing Arrows
+- [x] Reading PGN
+- [x] Going forwad and backward through moves
 - [ ] Getting moves and evaluation from stockfish
 - [ ] Dispalying Evaluation bar and top lines
 - [ ] Move review based on change on evaluation

@@ -3,7 +3,6 @@ import { Card } from "@nextui-org/react";
 import { Chessboard } from "react-chessboard";
 import { FC, useContext } from "react";
 import { AppContext } from "../App";
-import GameSelect from "./game_select";
 
 function FullBoard() {
   const context = useContext(AppContext);
@@ -13,15 +12,7 @@ function FullBoard() {
     );
   }
   const {
-    state: {
-      btheme,
-      whitePlayer,
-      blackPlayer,
-      allowMoves,
-      currentfen,
-      bottom,
-      stage,
-    },
+    state: { btheme, whitePlayer, blackPlayer, allowMoves, fen, bottom },
   } = context;
 
   return (
@@ -30,7 +21,7 @@ function FullBoard() {
         <Player name={blackPlayer} />
 
         <Chessboard
-          position={currentfen}
+          position={fen}
           customPieces={customPieces(btheme)}
           arePiecesDraggable={allowMoves}
           boardOrientation={bottom}
@@ -38,7 +29,6 @@ function FullBoard() {
         />
         <Player name={whitePlayer} />
       </Card>
-      {stage === "second" && <GameSelect />}
     </>
   );
 }
