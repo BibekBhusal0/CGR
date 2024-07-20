@@ -1,9 +1,10 @@
-import { Button, Select, SelectItem, Textarea } from "@nextui-org/react";
+import { Button, Chip, Select, SelectItem, Textarea } from "@nextui-org/react";
 import { useContext, useRef, useState } from "react";
 import { FaChessQueen } from "react-icons/fa";
 import { AppContext } from "../App";
 import { SelectGame } from "./game_select";
 import { Chess } from "chess.js";
+import { IoSearch } from "react-icons/io5";
 
 export function Input() {
   const [mode, setMode] = useState<string>("chess");
@@ -31,7 +32,12 @@ export function Input() {
 
   const pgnRef = useRef<any>(null);
   return (
-    <div className=" flex flex-col gap-7">
+    <div className=" flex flex-col gap-7 px-3">
+      <Chip size="lg" color="primary" className="px-8 py-8 mt-6 mb-5">
+        <div className="flex gap-4 text-center text-3xl font-semibold">
+          <IoSearch /> Chess Game Review
+        </div>
+      </Chip>
       <Textarea
         aria-label="pgn"
         value={val}
@@ -43,7 +49,7 @@ export function Input() {
         }}
         ref={pgnRef}
         label={mode === "pgn" ? "Paste PGN" : "Chess.com Username"}
-        minRows={mode === "pgn" ? 4 : 1}
+        minRows={mode === "pgn" ? 8 : 1}
         maxRows={mode === "pgn" ? 10 : 1}></Textarea>
       <Select
         aria-label="type"

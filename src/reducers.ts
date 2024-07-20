@@ -56,7 +56,7 @@ const reset: resetTypes = {
   stage: "first",
   fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
   Game: undefined,
-  moveIndex: 0,
+  moveIndex: -1,
 };
 const iState: stateProps = {
   ...userControls,

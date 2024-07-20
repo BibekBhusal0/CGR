@@ -40,7 +40,6 @@ export async function gamesOnChessDotCom(
   const baseurl = "https://api.chess.com/pub/player/";
   const pad = month <= 8 ? "0" : "";
   const url = `${baseurl}${userName}/games/${year}/${pad}${month + 1}`;
-  console.log(url);
 
   const response = await fetch(url);
   const data = await response.json();

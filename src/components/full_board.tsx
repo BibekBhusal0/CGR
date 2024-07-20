@@ -18,7 +18,7 @@ function FullBoard() {
   return (
     <>
       <Card className="basis-5/12 px-5">
-        <Player name={blackPlayer} />
+        <Player name={bottom === "white" ? blackPlayer : whitePlayer} />
 
         <Chessboard
           position={fen}
@@ -27,7 +27,7 @@ function FullBoard() {
           boardOrientation={bottom}
           id="board"
         />
-        <Player name={whitePlayer} />
+        <Player name={bottom === "white" ? whitePlayer : blackPlayer} />
       </Card>
     </>
   );

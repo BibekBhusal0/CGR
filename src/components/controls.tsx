@@ -48,7 +48,7 @@ export function Controls() {
     {
       name: "Previous Move",
       clickHandler: () => dispatch({ type: "SetIndex", index: moveIndex - 1 }),
-      disabled: moveIndex === 0,
+      disabled: moveIndex === -1,
       icon: <FaArrowLeft />,
     },
     {

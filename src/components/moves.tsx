@@ -1,6 +1,11 @@
-import { FC, useContext } from "react";
+import { FC, useContext, useEffect, useRef } from "react";
 import { AppContext } from "../App";
-import { CardFooter } from "@nextui-org/react";
+import {
+  CardBody,
+  CardFooter,
+  CardHeader,
+  ScrollShadow,
+} from "@nextui-org/react";
 import { Controls } from "./controls";
 
 function Moves() {
@@ -9,7 +14,7 @@ function Moves() {
     throw new Error();
   }
   const {
-    state: { Game, moveIndex },
+    state: { Game },
   } = context;
   if (!Game) {
     throw new Error();
@@ -26,18 +31,26 @@ function Moves() {
 
   return (
     <>
-      <div>{moveIndex}</div>
-      <div className="bg-default text-default-900 h-80 rounded-md p-3 overflow-y-scroll ">
-        {Pears.map((p, rowIndex) => (
-          <div className="flex" key={rowIndex}>
-            <div className="text-lg basis-2/12 text-center">{rowIndex + 1}</div>
-            {p.map((move, colIndex) => {
-              const i = rowIndex * 2 + colIndex;
-              return <SingleMove key={colIndex} move={move} index={i} />;
-            })}
+      <CardHeader className="bg-default-100">
+        <MoveComment />
+      </CardHeader>
+      <CardBody>
+        <ScrollShadow hideScrollBar>
+          <div className="max-h-96 min-h-36 ">
+            {Pears.map((p, rowIndex) => (
+              <div className="flex" key={rowIndex}>
+                <div className="text-lg basis-2/12 text-center">
+                  {rowIndex + 1}.
+                </div>
+                {p.map((move, colIndex) => {
+                  const i = rowIndex * 2 + colIndex;
+                  return <SingleMove key={colIndex} move={move} index={i} />;
+                })}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </ScrollShadow>
+      </CardBody>
       <CardFooter>
         <Controls />
       </CardFooter>
@@ -54,21 +67,55 @@ const SingleMove: FC<{ move: string; index: number }> = ({ move, index }) => {
     state: { moveIndex },
     dispatch,
   } = context;
-
+  const elementRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (elementRef.current) {
+      if (moveIndex === index) {
+        elementRef.current.scrollIntoView();
+      } else if (moveIndex === -1 && index === 0) {
+        elementRef.current.scrollIntoView();
+      }
+    }
+  }, [moveIndex, index]);
   const ClickHandler = () => {
     dispatch({ type: "SetIndex", index: index });
   };
-  const cls =
-    moveIndex === index
-      ? "bg-default-200 text-default-900"
-      : "bg-default-100 text-default-800";
+  const cls = moveIndex === index ? "bg-default-300" : "bg-default-100 ";
 
   return (
     <div
-      className={`${cls} basis-5/12 text-xl p-1 cursor-pointer`}
+      ref={elementRef}
+      className={`${cls} basis-5/12 text-xl p-1 pl-4 cursor-pointer hover:bg-default-200`}
       onClick={ClickHandler}>
       {move}
     </div>
+  );
+};
+
+const MoveComment: FC = () => {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error();
+  }
+  const {
+    state: { Game, moveIndex },
+  } = context;
+  if (!Game) {
+    throw new Error();
+  }
+
+  const history = Game.history();
+  const comment =
+    moveIndex === -1
+      ? "Start Analyzing Game"
+      : `${history[moveIndex]} was definately one of the moves`;
+  return (
+    <>
+      <div className="text-xl ">
+        <div>{comment}</div>
+        <div>Move index is : {moveIndex}</div>
+      </div>
+    </>
   );
 };
 
