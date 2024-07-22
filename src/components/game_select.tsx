@@ -1,11 +1,13 @@
 import { FC, useContext, useMemo, useState } from "react";
 import {
   CDCresponse,
+  game,
   GameResponse,
   gamesOnChessDotCom,
   isGameResponse,
   player,
-} from "../api/user";
+} from "../api/CDC";
+// import { Skeleton } from "@nextui-org/skeleton";
 import { Pagination } from "@nextui-org/react";
 import {
   Table,
@@ -52,7 +54,7 @@ export const GameTable: FC<TableProps> = ({ tableData: { games } }) => {
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-    return games.slice(start, end);
+    return games.slice().reverse().slice(start, end);
   }, [games, page]);
   return (
     <Table
@@ -79,6 +81,7 @@ export const GameTable: FC<TableProps> = ({ tableData: { games } }) => {
       </TableHeader>
       <TableBody>
         {items.map((g, i) => (
+          // <Row i={i} game={g} />
           <TableRow key={i} onClick={() => handleClick(g.pgn)}>
             <TableCell className="text-lg">{g.time_control}</TableCell>
             <TableCell className="text-lg">
@@ -95,9 +98,37 @@ export const GameTable: FC<TableProps> = ({ tableData: { games } }) => {
   );
 };
 
+// const Row: FC<{ i: number; game?: game }> = ({ game }) => {
+//   const skeleton = !game;
+//   return (
+//     <TableRow>
+//       <TableCell className="text-lg">
+//         {skeleton ? <Skeleton className="w-full" /> : game.time_control}
+//       </TableCell>
+//       <TableCell className="text-lg">
+//         {skeleton ? (
+//           <Skeleton className="w-full" />
+//         ) : (
+//           <Player player_info={game.white} />
+//         )}
+//       </TableCell>
+//       <TableCell className="text-xl font-mono">
+//         {skeleton ? <Skeleton className="w-full" /> : "VS"}
+//       </TableCell>
+//       <TableCell className="text-lg">
+//         {skeleton ? (
+//           <Skeleton className="w-full" />
+//         ) : (
+//           <Player player_info={game.black} />
+//         )}
+//       </TableCell>
+//     </TableRow>
+//   );
+// };
+
 const Player: FC<PlayerProps> = ({ player_info: { username, rating } }) => {
   return (
-    <span className="px-3 ">
+    <span className="px-3">
       {username}({rating})
     </span>
   );
@@ -129,6 +160,12 @@ export const SelectGame: FC<SelectGameProps> = ({ input }) => {
 
   const fetchData = async () => {
     try {
+      // const res = await fetch("./src/api/sampel_data/CDC.json");
+      // const data = await res.json();
+      // if (!data) {
+      // } else {
+      //   setData(data);
+      // }
       const response = await gamesOnChessDotCom(
         input,
         date.getMonth(),

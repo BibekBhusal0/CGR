@@ -1,4 +1,3 @@
-import "cm-chessboard/assets/chessboard.css";
 import { Card } from "@nextui-org/react";
 import { Chessboard } from "react-chessboard";
 import { FC, useContext } from "react";

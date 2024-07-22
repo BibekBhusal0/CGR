@@ -3,6 +3,7 @@ import { Input } from "./input";
 import { useContext } from "react";
 import { AppContext } from "../App";
 import Moves from "./moves";
+import Summary from "./summary";
 
 function RightPanel() {
   const context = useContext(AppContext);
@@ -16,7 +17,8 @@ function RightPanel() {
     <div className="basis-4/12 px-2 relative">
       <Card className="h-full ">
         {stage === "first" && <Input />}
-        {stage === "second" && <Moves />}
+        {stage === "second" && <Summary />}
+        {stage === "third" && <Moves />}
       </Card>
     </div>
   );

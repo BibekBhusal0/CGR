@@ -1,6 +1,8 @@
 import { Chess } from "chess.js";
 import { Dispatch } from "react";
+import StockfishManager from "./stockfish";
 
+const stockfish = new StockfishManager();
 type stage = "first" | "second" | "third";
 export interface userControlTypes {
   depth: number;
@@ -40,12 +42,12 @@ export interface ContextProps {
 }
 
 const userControls: userControlTypes = {
-  depth: 12,
+  depth: 1,
   highlight: true,
   arrows: true,
   evalbar: true,
   lines: true,
-  btheme: "wood",
+  btheme: "default",
 };
 const reset: resetTypes = {
   bottom: "white",
@@ -63,7 +65,16 @@ const iState: stateProps = {
   ...reset,
 };
 export const initialState = { ...iState };
-export const themes = ["wood", "glass", "nature"];
+export const themes = [
+  "default",
+  "ocen",
+  "wood",
+  "geometric",
+  "cosmos",
+  "dash",
+  "glass",
+  "nature",
+];
 
 export function reducer(state: stateProps, action: Action): stateProps {
   switch (action.type) {
@@ -88,6 +99,7 @@ export function reducer(state: stateProps, action: Action): stateProps {
       if (action.stage === "first") {
         return { ...state, ...reset };
       } else if (action.stage === "second") {
+        stockfish.analyzePosition(action.game.fen(), state.depth);
         return { ...state, stage: action.stage, Game: action.game };
       }
       return { ...state, stage: action.stage };

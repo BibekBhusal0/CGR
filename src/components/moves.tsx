@@ -1,11 +1,6 @@
 import { FC, useContext, useEffect, useRef } from "react";
 import { AppContext } from "../App";
-import {
-  CardBody,
-  CardFooter,
-  CardHeader,
-  ScrollShadow,
-} from "@nextui-org/react";
+import { CardBody, CardFooter, CardHeader } from "@nextui-org/react";
 import { Controls } from "./controls";
 
 function Moves() {
@@ -35,21 +30,19 @@ function Moves() {
         <MoveComment />
       </CardHeader>
       <CardBody>
-        <ScrollShadow hideScrollBar>
-          <div className="max-h-96 min-h-36 ">
-            {Pears.map((p, rowIndex) => (
-              <div className="flex" key={rowIndex}>
-                <div className="text-lg basis-2/12 text-center">
-                  {rowIndex + 1}.
-                </div>
-                {p.map((move, colIndex) => {
-                  const i = rowIndex * 2 + colIndex;
-                  return <SingleMove key={colIndex} move={move} index={i} />;
-                })}
+        <div className="max-h-96 min-h-36 ">
+          {Pears.map((p, rowIndex) => (
+            <div className="flex" key={rowIndex}>
+              <div className="text-lg basis-2/12 text-center">
+                {rowIndex + 1}.
               </div>
-            ))}
-          </div>
-        </ScrollShadow>
+              {p.map((move, colIndex) => {
+                const i = rowIndex * 2 + colIndex;
+                return <SingleMove key={colIndex} move={move} index={i} />;
+              })}
+            </div>
+          ))}
+        </div>
       </CardBody>
       <CardFooter>
         <Controls />

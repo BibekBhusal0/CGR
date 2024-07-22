@@ -44,6 +44,7 @@ export async function gamesOnChessDotCom(
   const response = await fetch(url);
   const data = await response.json();
 
+  // console.log(data);
   return {
     data: data,
     status: response.status,

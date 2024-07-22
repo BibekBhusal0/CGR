@@ -7,7 +7,7 @@ import {
   reducer,
   stateProps,
   ContextProps,
-} from "./reducers";
+} from "./Logic/reducers";
 import { useReducer, createContext, Dispatch } from "react";
 
 export const AppContext = createContext<ContextProps | undefined>(undefined);

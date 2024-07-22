@@ -7,7 +7,7 @@ import {
   Switch,
 } from "@nextui-org/react";
 import { useTheme } from "next-themes";
-import { themes } from "../reducers";
+import { themes } from "../Logic/reducers";
 import { FC, useContext } from "react";
 import { AppContext } from "../App";
 
@@ -64,12 +64,11 @@ function GeneralSettings() {
   const BoardTheme: FC = () => (
     <Select
       selectedKeys={[btheme]}
-      className="capitalize"
       onChange={(e) => dispatch({ type: "SetTheme", theme: e.target.value })}
       aria-label="themes">
       {themes.map((theme) => (
-        <SelectItem aria-label={theme} key={theme} className="capitalize ">
-          {theme}
+        <SelectItem aria-label={theme} key={theme}>
+          {theme[0].toUpperCase() + theme.slice(1)}
         </SelectItem>
       ))}
     </Select>
@@ -138,10 +137,10 @@ function StockfishSettings() {
         label={<h1 className="text-xl "> Depth </h1>}
         aria-label="depth"
         className="pb-3 pr-3"
-        minValue={10}
+        minValue={1}
         value={depth}
         onChange={(e) => dispatch({ type: "ChangeDepth", depth: e })}
-        maxValue={20}
+        maxValue={30}
       />
       {titles.map((title, index) => (
         <TwoElement title={title} key={title} Component={elem[index]} />
