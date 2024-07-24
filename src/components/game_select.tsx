@@ -71,7 +71,7 @@ export const GameTable: FC<TableProps> = ({
       aria-label="Game of selected month"
       selectionMode="single"
       bottomContent={
-        <div className="flex f-full justify-center">
+        <div className="flex w-full justify-center">
           <Pagination
             isCompact
             showControls

@@ -33,7 +33,6 @@ class StockfishManager {
       const data = e.data;
       if (typeof data === "string") {
         if (data.includes("bestmove")) {
-          console.log(data);
           const bestMove = data.split(" ")[1];
           this.output.bestMove = bestMove;
           if (this.resolveCallback) {
@@ -41,7 +40,6 @@ class StockfishManager {
             this.resolveCallback = null;
           }
         } else if (data.includes("info depth")) {
-          console.log(data);
           const parts = data.split(" ");
           const evalIndex = parts.indexOf("score") + 2;
           const evalType = parts[evalIndex - 1];
@@ -76,8 +74,6 @@ class StockfishManager {
   }
 
   async analyzePosition(fen: string, depth: number): Promise<StockfishOutput> {
-    console.log("analyzing position");
-
     if (depth < 19) {
       try {
         const response = await postChessApi(fen);

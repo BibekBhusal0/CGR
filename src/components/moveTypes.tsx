@@ -49,23 +49,11 @@ export const MoveMaping: MoveMappingType = {
   excellent: { color: "#81B64C", item: <IoMdThumbsUp /> },
   good: {
     color: "#77915F",
-    item: (
-      <FaCheck
-        style={{
-          textShadow: "1px 1px 3px black",
-        }}
-      />
-    ),
+    item: <FaCheck />,
   },
   book: {
     color: "#D2C4B8",
-    item: (
-      <FaBookOpen
-        style={{
-          textShadow: "1px 1px 3px black",
-        }}
-      />
-    ),
+    item: <FaBookOpen className="text-sm scale-90" />,
   },
   inaccuracy: { color: "#F7C631", item: "?!" },
   mistake: { color: "#FFA459", item: "?" },
@@ -92,10 +80,12 @@ const MoveIcon: FC<{ type: AllIcons }> = ({ type }) => {
     <div
       style={{
         backgroundColor: color,
-        textShadow: "1px 1px 3px black",
       }}
-      className="rounded-full text-white font-bold size-7 flex items-center text-center justify-center">
-      {item}
+      className="rounded-full size-7 relative">
+      <div className="size-full bg-radial-gradient from-gray-600 to-80% z-0 opacity-80 absolute"></div>
+      <div className="size-full flex items-center text-center font-bold justify-center z-10 absolute">
+        {item}
+      </div>
     </div>
   );
 };

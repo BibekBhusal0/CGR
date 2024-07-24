@@ -52,7 +52,7 @@ export function Controls() {
       name: "Flip Board",
       clickHandler: () => dispatch({ type: "FlipBoard" }),
       disabled: false,
-      icon: <PiDeviceRotateBold className="rotate-90 text-3xl" />,
+      icon: <PiDeviceRotateBold className="rotate-90 text-2xl" />,
     },
     {
       name: "Starting Position",
@@ -95,15 +95,13 @@ export function Controls() {
   ];
 
   return (
-    <>
-      <div className="flex align-center center align-middle justify-center">
-        <ButtonGroup>
-          {controlButtons.map((BP) => (
-            <TTButton key={BP.name} {...BP} />
-          ))}
-        </ButtonGroup>
-      </div>
-    </>
+    <div className="flex align-center align-middle justify-center w-full">
+      <ButtonGroup>
+        {controlButtons.map((BP) => (
+          <TTButton key={BP.name} {...BP} />
+        ))}
+      </ButtonGroup>
+    </div>
   );
 }
 
@@ -118,9 +116,10 @@ const TTButton: FC<TTButtonProps> = ({
       <Button
         onClick={clickHandler}
         isDisabled={disabled}
+        style={{ minWidth: 12 }}
         color="primary"
         size="sm"
-        className="text-lg px-4 py-8"
+        className="text-xl"
         variant="light">
         {icon}
       </Button>

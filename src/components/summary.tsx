@@ -2,7 +2,6 @@ import { FC, useContext, useEffect, useState } from "react";
 import MoveIcon, { allTypesOfMove, MoveMaping, MT } from "./moveTypes";
 import { AppContext } from "../App";
 import { Button, Progress } from "@nextui-org/react";
-// import { analysisMoveType } from "../Logic/reducers";
 import StockfishManager from "../Logic/stockfish";
 
 function Summary() {
@@ -24,6 +23,7 @@ function Summary() {
     dispatch({ type: "ChangeState", stage: "third", analysis });
   };
   const history = Game.history({ verbose: true });
+  const gameOver = Game.isCheckmate() || Game.isStalemate();
   useEffect(() => {
     const stockfish = new StockfishManager();
     let completed = 0;
@@ -31,14 +31,14 @@ function Summary() {
     const analyze = async () => {
       const analysisResult = [];
       for (let i = 0; i < history.length; i++) {
-        if (!history[i].san.trim().endsWith("#")) {
+        if (!gameOver || !(i === history.length - 1)) {
           const result = await stockfish.analyzePosition(
             history[i].after,
             depth
           );
           analysisResult.push(result);
-          completed++;
         }
+        completed++;
         setProgress(completed / history.length);
       }
       setAnalysis(analysisResult);
