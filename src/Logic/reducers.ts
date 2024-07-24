@@ -1,37 +1,51 @@
 import { Chess } from "chess.js";
 import { Dispatch } from "react";
-import StockfishManager from "./stockfish";
+import { evaluationType } from "./stockfish";
 
-const stockfish = new StockfishManager();
 type stage = "first" | "second" | "third";
 export interface userControlTypes {
   depth: number;
   highlight: boolean;
-  arrows: boolean;
+  bestMove: boolean;
   evalbar: boolean;
-  lines: boolean;
+  animation: boolean;
   btheme: string;
 }
+
+interface StockfishOutput {
+  bestMove: string;
+  eval: evaluationType;
+  lines: string[];
+}
+
 export interface resetTypes {
   bottom: "white" | "black";
   allowMoves: boolean;
   whitePlayer: string;
   stage: stage;
   blackPlayer: string;
-  evaluation: number;
+  evaluation: evaluationType;
   fen: string;
   Game?: Chess;
+  analysis?: StockfishOutput[];
   moveIndex: number;
+}
+
+export interface analysisMoveType {
+  bestMove: string;
+  eval: { type: string; value: number };
+  lines: string[];
 }
 export type stateProps = userControlTypes & resetTypes;
 export type Action =
   | { type: "ChangeDepth"; depth: any }
   | { type: "ToggleHighlight" }
-  | { type: "ToggleArrows" }
+  | { type: "ToggleBestMove" }
   | { type: "ToggleEvalbar" }
-  | { type: "ToggleLines" }
+  | { type: "ToggleAnimation" }
   | { type: "SetTheme"; theme: string }
-  | { type: "ChangeState"; stage: "first" | "third" }
+  | { type: "ChangeState"; stage: "first" }
+  | { type: "ChangeState"; stage: "third"; analysis: analysisMoveType[] }
   | { type: "ChangeState"; stage: "second"; game: Chess }
   | { type: "SetIndex"; index: number }
   | { type: "FlipBoard" };
@@ -42,11 +56,11 @@ export interface ContextProps {
 }
 
 const userControls: userControlTypes = {
-  depth: 1,
+  depth: 10,
   highlight: true,
-  arrows: true,
+  bestMove: true,
   evalbar: true,
-  lines: true,
+  animation: true,
   btheme: "default",
 };
 const reset: resetTypes = {
@@ -54,10 +68,11 @@ const reset: resetTypes = {
   allowMoves: false,
   whitePlayer: "White Player",
   blackPlayer: "Black Player",
-  evaluation: 0,
+  evaluation: { type: "cp", value: 0 },
   stage: "first",
   fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
   Game: undefined,
+  analysis: undefined,
   moveIndex: -1,
 };
 const iState: stateProps = {
@@ -82,12 +97,12 @@ export function reducer(state: stateProps, action: Action): stateProps {
       return state;
     case "ToggleHighlight":
       return { ...state, highlight: !state.highlight };
-    case "ToggleArrows":
-      return { ...state, arrows: !state.arrows };
+    case "ToggleBestMove":
+      return { ...state, bestMove: !state.bestMove };
     case "ToggleEvalbar":
       return { ...state, evalbar: !state.evalbar };
-    case "ToggleLines":
-      return { ...state, lines: !state.lines };
+    case "ToggleAnimation":
+      return { ...state, animation: !state.animation };
     case "FlipBoard":
       return { ...state, bottom: state.bottom === "white" ? "black" : "white" };
     case "ChangeDepth":
@@ -99,23 +114,28 @@ export function reducer(state: stateProps, action: Action): stateProps {
       if (action.stage === "first") {
         return { ...state, ...reset };
       } else if (action.stage === "second") {
-        stockfish.analyzePosition(action.game.fen(), state.depth);
+        console.log(action.game.header());
         return { ...state, stage: action.stage, Game: action.game };
       }
-      return { ...state, stage: action.stage };
+      return { ...state, stage: action.stage, analysis: action.analysis };
 
     case "SetIndex":
       var moveIndex = action.index;
       var fen;
-      if (!state.Game) {
-        throw new Error();
+      var evaluation: evaluationType = { value: 0, type: "cp" };
+
+      if (!state.Game || !state.analysis) {
+        throw new Error("game not entered");
       }
       const full_history = state.Game.history({ verbose: true });
       if (moveIndex === -1) {
         fen = full_history[0].before;
       } else {
+        if (state.analysis[moveIndex].eval) {
+          evaluation = state.analysis[moveIndex].eval;
+        }
         fen = full_history[moveIndex].after;
       }
-      return { ...state, moveIndex, fen };
+      return { ...state, moveIndex, fen, evaluation };
   }
 }

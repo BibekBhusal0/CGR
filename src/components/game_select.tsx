@@ -34,17 +34,25 @@ interface PlayerProps {
 
 interface TableProps {
   tableData: GameResponse;
+  userName: string;
 }
-export const GameTable: FC<TableProps> = ({ tableData: { games } }) => {
+export const GameTable: FC<TableProps> = ({
+  tableData: { games },
+  userName,
+}) => {
   const context = useContext(AppContext);
   if (!context) {
     throw new Error();
   }
 
   const { dispatch } = context;
-  const handleClick = (pgn: string) => {
+  const handleClick = (game: game) => {
+    const { black, pgn } = game;
     const chess = new Chess();
     chess.loadPgn(pgn);
+    if (black.username === userName) {
+      dispatch({ type: "FlipBoard" });
+    }
     dispatch({ type: "ChangeState", stage: "second", game: chess });
   };
 
@@ -81,8 +89,7 @@ export const GameTable: FC<TableProps> = ({ tableData: { games } }) => {
       </TableHeader>
       <TableBody>
         {items.map((g, i) => (
-          // <Row i={i} game={g} />
-          <TableRow key={i} onClick={() => handleClick(g.pgn)}>
+          <TableRow key={i} onClick={() => handleClick(g)}>
             <TableCell className="text-lg">{g.time_control}</TableCell>
             <TableCell className="text-lg">
               <Player player_info={g.white} />
@@ -97,34 +104,6 @@ export const GameTable: FC<TableProps> = ({ tableData: { games } }) => {
     </Table>
   );
 };
-
-// const Row: FC<{ i: number; game?: game }> = ({ game }) => {
-//   const skeleton = !game;
-//   return (
-//     <TableRow>
-//       <TableCell className="text-lg">
-//         {skeleton ? <Skeleton className="w-full" /> : game.time_control}
-//       </TableCell>
-//       <TableCell className="text-lg">
-//         {skeleton ? (
-//           <Skeleton className="w-full" />
-//         ) : (
-//           <Player player_info={game.white} />
-//         )}
-//       </TableCell>
-//       <TableCell className="text-xl font-mono">
-//         {skeleton ? <Skeleton className="w-full" /> : "VS"}
-//       </TableCell>
-//       <TableCell className="text-lg">
-//         {skeleton ? (
-//           <Skeleton className="w-full" />
-//         ) : (
-//           <Player player_info={game.black} />
-//         )}
-//       </TableCell>
-//     </TableRow>
-//   );
-// };
 
 const Player: FC<PlayerProps> = ({ player_info: { username, rating } }) => {
   return (
@@ -160,12 +139,6 @@ export const SelectGame: FC<SelectGameProps> = ({ input }) => {
 
   const fetchData = async () => {
     try {
-      // const res = await fetch("./src/api/sampel_data/CDC.json");
-      // const data = await res.json();
-      // if (!data) {
-      // } else {
-      //   setData(data);
-      // }
       const response = await gamesOnChessDotCom(
         input,
         date.getMonth(),
@@ -201,7 +174,7 @@ export const SelectGame: FC<SelectGameProps> = ({ input }) => {
             {data === undefined ? (
               "Couldn't fetch Data"
             ) : isGameResponse(data) ? (
-              <GameTable tableData={data.data}></GameTable>
+              <GameTable tableData={data.data} userName={input}></GameTable>
             ) : (
               `error occored while fetching ${JSON.stringify(data.data)}`
             )}

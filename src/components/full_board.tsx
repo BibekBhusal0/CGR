@@ -2,6 +2,7 @@ import { Card } from "@nextui-org/react";
 import { Chessboard } from "react-chessboard";
 import { FC, useContext } from "react";
 import { AppContext } from "../App";
+import EvalBar from "./evalbar";
 
 function FullBoard() {
   const context = useContext(AppContext);
@@ -11,21 +12,32 @@ function FullBoard() {
     );
   }
   const {
-    state: { btheme, whitePlayer, blackPlayer, allowMoves, fen, bottom },
+    state: {
+      btheme,
+      whitePlayer,
+      blackPlayer,
+      allowMoves,
+      fen,
+      bottom,
+      animation,
+    },
   } = context;
 
   return (
     <>
       <Card className="basis-5/12 px-5">
         <Player name={bottom === "white" ? blackPlayer : whitePlayer} />
-
-        <Chessboard
-          position={fen}
-          customPieces={customPieces(btheme)}
-          arePiecesDraggable={allowMoves}
-          boardOrientation={bottom}
-          id="board"
-        />
+        <div className="flex">
+          <EvalBar></EvalBar>
+          <Chessboard
+            position={fen}
+            customPieces={customPieces(btheme)}
+            arePiecesDraggable={allowMoves}
+            boardOrientation={bottom}
+            animationDuration={animation ? 300 : 0}
+            id="board"
+          />
+        </div>
         <Player name={bottom === "white" ? whitePlayer : blackPlayer} />
       </Card>
     </>
@@ -48,7 +60,7 @@ const customPieces = (theme: string): { [key: string]: FC<PieceProps> } => {
   const pieces: { [key: string]: FC<PieceProps> } = {};
 
   const base_path =
-    "https://raw.githubusercontent.com/BibekBhusal0/Chess/main/public/Images/pieces/";
+    "https://raw.githubusercontent.com/BibekBhusal0/CGR/557306e3ad6b55c87def1d5ce01b4e6f2095542b/public/images/pieces/";
   ["w", "b"].forEach((color) => {
     pieceNames.forEach((piece) => {
       pieces[`${color}${piece}`] = ({
@@ -57,7 +69,7 @@ const customPieces = (theme: string): { [key: string]: FC<PieceProps> } => {
       }: PieceProps) => (
         <img
           className="aspect-square p-1"
-          src={`${base_path}/${theme.toLowerCase()}/${color}${piece}.png`}
+          src={`${base_path}/${theme.toLowerCase()}/${color}${piece}.svg`}
           alt={`${color === "w" ? "White" : "Black"} ${piece}`}
           style={{
             width: squareWidth,

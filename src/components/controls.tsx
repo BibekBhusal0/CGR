@@ -3,11 +3,13 @@ import { PiDeviceRotateBold } from "react-icons/pi";
 import {
   FaArrowLeft,
   FaArrowRight,
-  FaForward,
+  FaPause,
   FaPlay,
   FaStepBackward,
+  FaStepForward,
 } from "react-icons/fa";
-import { FC, useContext } from "react";
+import { FaArrowsRotate } from "react-icons/fa6";
+import { FC, useContext, useEffect, useState } from "react";
 import { AppContext } from "../App";
 
 interface TTButtonProps {
@@ -19,6 +21,7 @@ interface TTButtonProps {
 
 export function Controls() {
   const context = useContext(AppContext);
+  const [pause, setPause] = useState(false);
   if (!context) {
     throw new Error();
   }
@@ -32,6 +35,18 @@ export function Controls() {
   }
   const n_moves = Game.history().length;
 
+  useEffect(() => {
+    if (moveIndex === n_moves - 1) {
+      setPause(false);
+    }
+    if (pause && moveIndex < n_moves - 1) {
+      const crrMove = setInterval(() => {
+        dispatch({ type: "SetIndex", index: moveIndex + 1 });
+      }, 500);
+
+      return () => clearInterval(crrMove);
+    }
+  }, [pause, moveIndex, n_moves, dispatch]);
   const controlButtons: TTButtonProps[] = [
     {
       name: "Flip Board",
@@ -53,9 +68,11 @@ export function Controls() {
     },
     {
       name: "Play",
-      clickHandler: () => {},
-      disabled: true,
-      icon: <FaPlay />,
+      clickHandler: () => {
+        setPause((prevPause) => !prevPause);
+      },
+      disabled: moveIndex === n_moves - 1,
+      icon: pause ? <FaPause /> : <FaPlay />,
     },
     {
       name: "Next Move",
@@ -67,17 +84,25 @@ export function Controls() {
       name: "Last Move",
       clickHandler: () => dispatch({ type: "SetIndex", index: n_moves - 1 }),
       disabled: moveIndex === n_moves - 1,
-      icon: <FaForward />,
+      icon: <FaStepForward />,
+    },
+    {
+      name: "Reset",
+      clickHandler: () => dispatch({ type: "ChangeState", stage: "first" }),
+      disabled: false,
+      icon: <FaArrowsRotate />,
     },
   ];
 
   return (
     <>
-      <ButtonGroup>
-        {controlButtons.map((BP) => (
-          <TTButton key={BP.name} {...BP} />
-        ))}
-      </ButtonGroup>
+      <div className="flex align-center center align-middle justify-center">
+        <ButtonGroup>
+          {controlButtons.map((BP) => (
+            <TTButton key={BP.name} {...BP} />
+          ))}
+        </ButtonGroup>
+      </div>
     </>
   );
 }
@@ -95,7 +120,7 @@ const TTButton: FC<TTButtonProps> = ({
         isDisabled={disabled}
         color="primary"
         size="sm"
-        className="text-xl px-4 py-8"
+        className="text-lg px-4 py-8"
         variant="light">
         {icon}
       </Button>

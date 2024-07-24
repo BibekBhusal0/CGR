@@ -1,6 +1,12 @@
-interface StockfishOutput {
+import { getStockfishAPI, postChessApi } from "../api/stockfishAPI";
+
+export interface evaluationType {
+  type: string;
+  value: number;
+}
+export interface StockfishOutput {
   bestMove?: string;
-  eval?: string;
+  eval?: evaluationType;
   lines?: string[];
 }
 
@@ -10,7 +16,6 @@ class StockfishManager {
   private resolveCallback: ((output: StockfishOutput) => void) | null = null;
 
   constructor() {
-    console.log("stockfish");
     this.initializeStockfish();
   }
 
@@ -20,7 +25,6 @@ class StockfishManager {
       WebAssembly.validate(
         Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00)
       );
-
     const stockfishPath = wasmSupported ? "stockfish.wasm.js" : "stockfish.js";
 
     this.stockfish = new Worker(stockfishPath);
@@ -28,8 +32,8 @@ class StockfishManager {
     this.stockfish.addEventListener("message", (e) => {
       const data = e.data;
       if (typeof data === "string") {
-        console.log(data);
         if (data.includes("bestmove")) {
+          console.log(data);
           const bestMove = data.split(" ")[1];
           this.output.bestMove = bestMove;
           if (this.resolveCallback) {
@@ -37,18 +41,21 @@ class StockfishManager {
             this.resolveCallback = null;
           }
         } else if (data.includes("info depth")) {
+          console.log(data);
           const parts = data.split(" ");
           const evalIndex = parts.indexOf("score") + 2;
+          const evalType = parts[evalIndex - 1];
           const evalValue = parts[evalIndex];
           const pvIndex = parts.indexOf("pv") + 1;
           const lines = parts.slice(pvIndex);
-          this.output.eval = evalValue;
+          this.output.eval = { type: evalType, value: parseInt(evalValue) };
           this.output.lines = lines;
         }
       }
     });
 
     this.stockfish.postMessage("uci");
+    this.stockfish.postMessage("setoption name MultiPV value 2");
   }
 
   sendCommand(command: string) {
@@ -70,9 +77,27 @@ class StockfishManager {
 
   async analyzePosition(fen: string, depth: number): Promise<StockfishOutput> {
     console.log("analyzing position");
+
+    if (depth < 19) {
+      try {
+        const response = await postChessApi(fen);
+        return response;
+      } catch (error) {
+        console.log("postChessApi falied", error);
+      }
+    }
+    if (depth < 16) {
+      try {
+        const response = await getStockfishAPI(fen);
+        return response;
+      } catch (error) {
+        console.log("stockfishAPI failed", error);
+      }
+    }
+    console.log("Using Local Stockfishs");
     return new Promise((resolve) => {
       this.resolveCallback = resolve;
-      this.output = {}; // Reset output
+      this.output = {};
       this.sendCommand(`position fen ${fen}`);
       this.sendCommand(`go depth ${depth}`);
     });

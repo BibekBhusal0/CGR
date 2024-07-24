@@ -91,17 +91,23 @@ const MoveComment: FC = () => {
     throw new Error();
   }
   const {
-    state: { Game, moveIndex },
+    state: { Game, moveIndex, analysis },
   } = context;
-  if (!Game) {
-    throw new Error();
+  if (!Game || !analysis) {
+    throw new Error("game not available or analysis not available");
   }
 
+  const repot = !analysis[moveIndex]
+    ? ""
+    : `Best Move: ${analysis[moveIndex].bestMove}`;
   const history = Game.history();
   const comment =
     moveIndex === -1
       ? "Start Analyzing Game"
-      : `${history[moveIndex]} was definately one of the moves`;
+      : `${history[moveIndex]} was definately one of the moves \n
+      ${repot}
+      `;
+
   return (
     <>
       <div className="text-xl ">

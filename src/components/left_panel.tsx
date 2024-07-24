@@ -50,7 +50,7 @@ function GeneralSettings() {
   }
 
   const {
-    state: { highlight, arrows, btheme },
+    state: { highlight, animation, btheme },
     dispatch,
   } = context;
 
@@ -59,7 +59,7 @@ function GeneralSettings() {
     setTheme(not_theme);
   }
 
-  const titles = ["Board Theme", "Dark Mode", "Highlight Move", "Arrows"];
+  const titles = ["Board Theme", "Dark Mode", "Highlight Move", "Animation"];
 
   const BoardTheme: FC = () => (
     <Select
@@ -87,8 +87,8 @@ function GeneralSettings() {
       defaultSelected
     />,
     <Switch
-      isSelected={arrows}
-      onValueChange={() => dispatch({ type: "ToggleArrows" })}
+      isSelected={animation}
+      onValueChange={() => dispatch({ type: "ToggleAnimation" })}
       aria-label="a"
       defaultSelected
     />,
@@ -102,17 +102,15 @@ function GeneralSettings() {
   );
 }
 function StockfishSettings() {
-  const titles = ["Evaluation Bar", "Lines"];
+  const titles = ["Evaluation Bar", "Show Best Moves"];
   const context = useContext(AppContext);
 
   if (!context) {
-    throw new Error(
-      "GeneralSettings must be used within an AppContext.Provider"
-    );
+    throw new Error("SFSettings must be used within an AppContext.Provider");
   }
 
   const {
-    state: { depth, evalbar, lines },
+    state: { depth, evalbar, bestMove },
     dispatch,
   } = context;
 
@@ -124,9 +122,9 @@ function StockfishSettings() {
       defaultSelected
     />,
     <Switch
-      aria-label="lines"
-      isSelected={lines}
-      onValueChange={() => dispatch({ type: "ToggleLines" })}
+      aria-label="Best Moves"
+      isSelected={bestMove}
+      onValueChange={() => dispatch({ type: "ToggleBestMove" })}
       defaultSelected
     />,
   ];
@@ -137,7 +135,7 @@ function StockfishSettings() {
         label={<h1 className="text-xl "> Depth </h1>}
         aria-label="depth"
         className="pb-3 pr-3"
-        minValue={1}
+        minValue={10}
         value={depth}
         onChange={(e) => dispatch({ type: "ChangeDepth", depth: e })}
         maxValue={30}

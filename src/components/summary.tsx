@@ -1,50 +1,124 @@
-import { useContext } from "react";
-import MoveType, { allTypesOfMove, MoveMaping } from "./moveTypes";
+import { FC, useContext, useEffect, useState } from "react";
+import MoveIcon, { allTypesOfMove, MoveMaping, MT } from "./moveTypes";
 import { AppContext } from "../App";
-import { Button } from "@nextui-org/react";
+import { Button, Progress } from "@nextui-org/react";
+// import { analysisMoveType } from "../Logic/reducers";
+import StockfishManager from "../Logic/stockfish";
 
 function Summary() {
   const context = useContext(AppContext);
+  const [progress, setProgress] = useState(0);
+  const loading = !(progress === 1);
+  const [analysis, setAnalysis] = useState<any[]>([]);
   if (!context) {
     throw new Error();
   }
   const {
     dispatch,
-    state: { whitePlayer, blackPlayer },
+    state: { whitePlayer, blackPlayer, Game, depth },
   } = context;
+  if (!Game) {
+    throw new Error();
+  }
   const handleClick = () => {
-    dispatch({ type: "ChangeState", stage: "third" });
+    dispatch({ type: "ChangeState", stage: "third", analysis });
   };
+  const history = Game.history({ verbose: true });
+  useEffect(() => {
+    const stockfish = new StockfishManager();
+    let completed = 0;
+
+    const analyze = async () => {
+      const analysisResult = [];
+      for (let i = 0; i < history.length; i++) {
+        if (!history[i].san.trim().endsWith("#")) {
+          const result = await stockfish.analyzePosition(
+            history[i].after,
+            depth
+          );
+          analysisResult.push(result);
+          completed++;
+        }
+        setProgress(completed / history.length);
+      }
+      setAnalysis(analysisResult);
+    };
+
+    analyze();
+    return () => {
+      stockfish.terminate();
+    };
+  }, []);
+
   return (
-    <div className="flex flex-col gap-3 justify-center">
-      <div className="flex justify-between gap-3 text-xl">
-        {whitePlayer}
-        vs
-        {blackPlayer}
+    <div className="flex flex-col gap-3 text-lg items-center justify-center align-middle text-center p-3">
+      {loading && (
+        <Progress
+          label={`Analyzing Game`}
+          size="lg"
+          value={progress * 100}
+          color="primary"
+          showValueLabel></Progress>
+      )}
+      <div className="grid grid-cols-12 gap-3 ">
+        <div className="col-span-4">{whitePlayer}</div>
+        <div className="col-span-4 text-xl font-bold">VS</div>
+        <div className="col-span-4">{blackPlayer}</div>
+
+        {allTypesOfMove.slice(0, allTypesOfMove.length - 1).map((m) => (
+          <MoveClass
+            key={m}
+            type={m}
+            counts={loading ? { white: 0, balck: 0 } : undefined}></MoveClass>
+        ))}
       </div>
-      {allTypesOfMove.map((m) => (
-        <div key={m} className="flex capetalize text-xl justify-between px-4">
-          <div>0</div>
-          <div className="flex gap-3">
-            <div style={{ color: MoveMaping[m].color }} className=" capitalize">
-              {m}
-            </div>
-            <MoveType type={m} />
-          </div>
-          <div>0</div>
-        </div>
-      ))}
-      <div>
-        <Button
-          className=" text-xl"
-          onClick={handleClick}
-          variant="ghost"
-          color="primary">
-          Start analyzing
-        </Button>
-      </div>
+      <Button
+        className="text-xl"
+        onClick={handleClick}
+        variant="ghost"
+        isDisabled={loading}
+        color="primary">
+        Start analyzing
+      </Button>
     </div>
   );
 }
+
+const MoveClass: FC<{
+  type: MT;
+  counts?: { white: number; balck: number };
+}> = ({ type, counts }) => {
+  var balck, white;
+  if (!counts) {
+    balck = 0;
+    white = 0;
+  } else {
+    balck = counts.balck;
+    white = counts.white;
+  }
+  return (
+    <>
+      <div className="col-span-2">{white}</div>
+      <div className="col-span-8 flex gap-3 items-center justify-center align-middle text-center capitalize ">
+        {!counts ? (
+          <>
+            <div style={{ color: MoveMaping[type].color }}>{type}</div>
+            <MoveIcon type={type}></MoveIcon>
+          </>
+        ) : (
+          <div className="animate-pulse col-span-8 flex gap-3 ">
+            <div
+              style={{ backgroundColor: MoveMaping[type].color }}
+              className="w-20 my-1 rounded-md"></div>
+            <div
+              style={{ backgroundColor: MoveMaping[type].color }}
+              className="rounded-full size-7"></div>
+          </div>
+        )}
+      </div>
+      <div className="col-span-2">{balck}</div>
+    </>
+  );
+};
 
 export default Summary;
