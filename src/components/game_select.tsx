@@ -1,154 +1,41 @@
-import { FC, useContext, useMemo, useState } from "react";
-import {
-  CDCresponse,
-  game,
-  GameResponse,
-  gamesOnChessDotCom,
-  isGameResponse,
-  player,
-} from "../api/CDC";
-// import { Skeleton } from "@nextui-org/skeleton";
-import { Pagination } from "@nextui-org/react";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableColumn,
-  TableRow,
-  TableCell,
-} from "@nextui-org/table";
+import { FC, useState } from "react";
+import { CDCresponse, gamesOnChessDotCom, isGameResponse } from "../api/CDC";
 import {
   Button,
   Modal,
   ModalBody,
   ModalContent,
   ModalHeader,
+  CalendarDate,
   useDisclosure,
 } from "@nextui-org/react";
-import { AppContext } from "../App";
-import { Chess } from "chess.js";
+import { GameTable, LoadingTable } from "./game_table";
+import { today, getLocalTimeZone } from "@internationalized/date";
+import ChooseMonth from "./chooseMonth";
 
-interface PlayerProps {
-  player_info: player;
-}
-
-interface TableProps {
-  tableData: GameResponse;
-  userName: string;
-}
-export const GameTable: FC<TableProps> = ({
-  tableData: { games },
-  userName,
-}) => {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error();
-  }
-
-  const { dispatch } = context;
-  const handleClick = (game: game) => {
-    const { black, pgn } = game;
-    const chess = new Chess();
-    chess.loadPgn(pgn);
-    if (black.username === userName) {
-      dispatch({ type: "FlipBoard" });
-    }
-    dispatch({ type: "ChangeState", stage: "second", game: chess });
-  };
-
-  const rowsPerPage = 8;
-  const [page, setPage] = useState(1);
-  const pages = Math.ceil(games.length / rowsPerPage);
-  const items = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-    return games.slice().reverse().slice(start, end);
-  }, [games, page]);
-  return (
-    <Table
-      className="text-xl"
-      removeWrapper
-      aria-label="Game of selected month"
-      selectionMode="single"
-      bottomContent={
-        <div className="flex w-full justify-center">
-          <Pagination
-            isCompact
-            showControls
-            showShadow
-            page={page}
-            onChange={setPage}
-            total={pages}></Pagination>
-        </div>
-      }>
-      <TableHeader>
-        <TableColumn className="text-lg">Time Control</TableColumn>
-        <TableColumn className="text-lg">White Player</TableColumn>
-        <TableColumn className="text-lg"> </TableColumn>
-        <TableColumn className="text-lg">Black Player</TableColumn>
-      </TableHeader>
-      <TableBody>
-        {items.map((g, i) => (
-          <TableRow key={i} onClick={() => handleClick(g)}>
-            <TableCell className="text-lg">{g.time_control}</TableCell>
-            <TableCell className="text-lg">
-              <Player player_info={g.white} />
-            </TableCell>
-            <TableCell className="text-xl font-mono">VS</TableCell>
-            <TableCell className="text-lg">
-              <Player player_info={g.black} />
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
-};
-
-const Player: FC<PlayerProps> = ({ player_info: { username, rating } }) => {
-  return (
-    <span className="px-3">
-      {username}({rating})
-    </span>
-  );
-};
-
-interface SelectGameProps {
-  input: string;
-}
-export const SelectGame: FC<SelectGameProps> = ({ input }) => {
+export const SelectGame: FC<{ input: string }> = ({ input }) => {
   const [data, setData] = useState<CDCresponse>();
-  const [date, setDate] = useState(new Date());
-  // const [loaded, setLoaded] = useState(false);
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
+  const [date, setDate] = useState(today(getLocalTimeZone()));
+  const [loaded, setLoaded] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const month = new Date(date.year, date.month - 1).toLocaleString("default", {
+    month: "long",
+  });
 
   const fetchData = async () => {
+    setLoaded(false);
     try {
-      const response = await gamesOnChessDotCom(
-        input,
-        date.getMonth(),
-        date.getFullYear()
-      );
-
+      const response = await gamesOnChessDotCom(input, date.month, date.year);
       setData(response);
+      setLoaded(true);
     } catch (error) {
+      setLoaded(true);
       console.log(error);
     }
+  };
+  const resetDateAndFetch = (newDate: CalendarDate) => {
+    setDate(newDate);
+    fetchData();
   };
 
   return (
@@ -166,17 +53,30 @@ export const SelectGame: FC<SelectGameProps> = ({ input }) => {
       </Button>
       <Modal size="3xl" isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
-          <ModalHeader className="text-center flex justify-center gap-3">
-            Searched for game of {input} for {months[date.getMonth()]}{" "}
-            {date.getFullYear()} in Chess.com
+          <ModalHeader className="text-center flex justify-center gap-3 flex-col">
+            {loaded ? "Searched" : "Searching"} for game of {input} for {month}{" "}
+            {date.year} in Chess.com
+            <div className="flex gap-3 justify-center">
+              <ChooseMonth onClick={resetDateAndFetch} />
+            </div>
           </ModalHeader>
           <ModalBody>
-            {data === undefined ? (
-              "Couldn't fetch Data"
-            ) : isGameResponse(data) ? (
-              <GameTable tableData={data.data} userName={input}></GameTable>
+            {loaded ? (
+              data === undefined ? (
+                "Couldn't fetch Data"
+              ) : isGameResponse(data) ? (
+                <GameTable tableData={data.data} userName={input}></GameTable>
+              ) : (
+                <div className="text-center">
+                  error occored while fetching
+                  <br />
+                  {JSON.stringify(data.data)}
+                  <br />
+                  Try again
+                </div>
+              )
             ) : (
-              `error occored while fetching ${JSON.stringify(data.data)}`
+              <LoadingTable></LoadingTable>
             )}
           </ModalBody>
         </ModalContent>

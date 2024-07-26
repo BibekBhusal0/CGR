@@ -1,7 +1,8 @@
 import { FC, useContext, useEffect, useRef } from "react";
 import { AppContext } from "../App";
-import { CardBody, CardFooter, CardHeader } from "@nextui-org/react";
+import { Button, CardBody, CardFooter, CardHeader } from "@nextui-org/react";
 import { Controls } from "./controls";
+import EvalGraph from "../Logic/evalgraph";
 
 function Moves() {
   const context = useContext(AppContext);
@@ -10,6 +11,7 @@ function Moves() {
   }
   const {
     state: { Game },
+    dispatch,
   } = context;
   if (!Game) {
     throw new Error();
@@ -45,7 +47,16 @@ function Moves() {
         </div>
       </CardBody>
       <CardFooter>
-        <Controls />
+        <div className="flex flex-col gap-3 align-center align-middle justify-center w-full">
+          <EvalGraph />
+          <Controls />
+          <Button
+            onPress={() => dispatch({ type: "ChangeState", stage: "second" })}
+            variant="ghost"
+            size="lg">
+            <div className="text-xl">Back</div>
+          </Button>
+        </div>
       </CardFooter>
     </>
   );
@@ -91,22 +102,21 @@ const MoveComment: FC = () => {
     throw new Error();
   }
   const {
-    state: { Game, moveIndex, analysis },
+    state: { moveIndex, analysis },
   } = context;
-  if (!Game || !analysis) {
+  if (!analysis) {
     throw new Error("game not available or analysis not available");
   }
 
-  const repot = !analysis[moveIndex]
-    ? ""
-    : `Best Move: ${analysis[moveIndex].bestMove}`;
-  const history = Game.history();
-  const comment =
-    moveIndex === -1
-      ? "Start Analyzing Game"
-      : `${history[moveIndex]} was definately one of the moves \n
-      ${repot}
-      `;
+  var repot;
+  try {
+    repot = `Best Move: ${analysis[moveIndex].bestMove}`;
+  } catch {
+    repot = "";
+  }
+
+  // const history = Game.history();
+  const comment = moveIndex === -1 ? "Start Analyzing Game" : repot;
 
   return (
     <>

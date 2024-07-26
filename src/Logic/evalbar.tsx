@@ -15,13 +15,14 @@ function EvalBar() {
   var winChance = 50;
   const rot = bottom === "white" ? "" : "rotate-180";
   if (stage === "third" && moveIndex !== -1) {
+    console.log(evaluation);
     if (!Game) {
       throw new Error("Game not found");
     }
-    const turn = Game.history({ verbose: true })[moveIndex].color;
-    if (turn === "b") {
-      showVal *= -1;
-    }
+    // const turn = Game.history({ verbose: true })[moveIndex].color;
+    // if (turn === "b") {
+    //   showVal *= -1;
+    // }
     if (type === "mate") {
       showVal = `M-${Math.abs(showVal)}`;
       winChance = white_winning ? 100 : -100;
@@ -29,16 +30,17 @@ function EvalBar() {
       showVal /= 100;
       winChance =
         50 - 50 * (2 / (1 + Math.exp(-0.00368208 * showVal * 10)) - 1);
-      showVal = showVal.toFixed(2);
+      showVal = Math.abs(showVal).toFixed(2);
     }
   }
 
   return (
     <div
-      className={`h-full w-8 ${rot} border-red-600 drop-shadow-2xl my-5 relative bg-white`}>
+      style={{ backgroundColor: "#F1E4D2" }}
+      className={`h-5/6 my-auto w-7 ${rot} drop-shadow-2xl relative`}>
       <div
-        className="w-full bg-black absolute top-0 transition-height"
-        style={{ height: `${winChance}%` }}></div>
+        className="w-full absolute top-0 transition-height "
+        style={{ height: `${winChance}%`, backgroundColor: "#454545" }}></div>
       <div
         id="evalNum"
         className={`absolute w-full text-center font-bold text-xs ${

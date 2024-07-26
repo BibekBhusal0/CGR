@@ -95,13 +95,11 @@ export function Controls() {
   ];
 
   return (
-    <div className="flex align-center align-middle justify-center w-full">
-      <ButtonGroup>
-        {controlButtons.map((BP) => (
-          <TTButton key={BP.name} {...BP} />
-        ))}
-      </ButtonGroup>
-    </div>
+    <ButtonGroup>
+      {controlButtons.map((BP) => (
+        <TTButton key={BP.name} {...BP} />
+      ))}
+    </ButtonGroup>
   );
 }
 
@@ -119,7 +117,7 @@ const TTButton: FC<TTButtonProps> = ({
         style={{ minWidth: 12 }}
         color="primary"
         size="sm"
-        className="text-xl"
+        className="text-2xl"
         variant="light">
         {icon}
       </Button>

@@ -21,7 +21,8 @@ export function Input() {
       const chess = new Chess();
       try {
         chess.loadPgn(val);
-        dispatch({ type: "ChangeState", stage: "second", game: chess });
+        dispatch({ type: "SetGame", game: chess });
+        dispatch({ type: "ChangeState", stage: "second" });
       } catch (error) {
         setMassage("Please Enter Valid PGN");
       }
@@ -40,6 +41,7 @@ export function Input() {
       </Chip>
       <Textarea
         aria-label="pgn"
+        labelPlacement="outside"
         value={val}
         onValueChange={(e) => {
           setVal(e);
@@ -56,9 +58,11 @@ export function Input() {
         defaultSelectedKeys={[mode]}
         value={mode}
         onChange={(item) => {
-          setMode(item.target.value);
-          setVal("");
-          pgnRef.current.focus();
+          if (item.target.value.trim() !== "") {
+            setMode(item.target.value);
+            setVal("");
+            pgnRef.current.focus();
+          }
         }}>
         <SelectItem key="chess">Chess.com</SelectItem>
         <SelectItem key="pgn">PGN</SelectItem>

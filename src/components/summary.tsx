@@ -2,28 +2,30 @@ import { FC, useContext, useEffect, useState } from "react";
 import MoveIcon, { allTypesOfMove, MoveMaping, MT } from "./moveTypes";
 import { AppContext } from "../App";
 import { Button, Progress } from "@nextui-org/react";
-import StockfishManager from "../Logic/stockfish";
+import StockfishManager, { StockfishOutput } from "../Logic/stockfish";
+import EvalGraph from "../Logic/evalgraph";
 
 function Summary() {
   const context = useContext(AppContext);
   const [progress, setProgress] = useState(0);
   const loading = !(progress === 1);
-  const [analysis, setAnalysis] = useState<any[]>([]);
   if (!context) {
     throw new Error();
   }
   const {
     dispatch,
-    state: { whitePlayer, blackPlayer, Game, depth },
+    state: { whitePlayer, blackPlayer, Game, depth, analysis },
   } = context;
   if (!Game) {
     throw new Error();
   }
   const handleClick = () => {
-    dispatch({ type: "ChangeState", stage: "third", analysis });
+    dispatch({ type: "ChangeState", stage: "third" });
   };
   const history = Game.history({ verbose: true });
-  const gameOver = Game.isCheckmate() || Game.isStalemate();
+  const CM = Game.isCheckmate();
+  const SM = Game.isStalemate();
+  const gameOver = CM || SM;
   useEffect(() => {
     const stockfish = new StockfishManager();
     let completed = 0;
@@ -37,14 +39,29 @@ function Summary() {
             depth
           );
           analysisResult.push(result);
+        } else {
+          var repot: StockfishOutput = {
+            bestMove: "",
+            eval: { type: "cp", value: 0 },
+            lines: [],
+          };
+          if (CM) {
+            const turn = Game.turn();
+            repot["eval"] = { type: "mate", value: turn === "b" ? 1 : -1 };
+          }
+          analysisResult.push(repot);
         }
         completed++;
         setProgress(completed / history.length);
       }
-      setAnalysis(analysisResult);
+      dispatch({ type: "SetAnalysis", analysis: analysisResult });
     };
 
-    analyze();
+    if (!analysis) {
+      analyze();
+    } else {
+      setProgress(1);
+    }
     return () => {
       stockfish.terminate();
     };
@@ -60,6 +77,9 @@ function Summary() {
           color="primary"
           showValueLabel></Progress>
       )}
+      <div className="w-4/5 h-20 ">
+        <EvalGraph></EvalGraph>
+      </div>
       <div className="grid grid-cols-12 gap-3 ">
         <div className="col-span-4">{whitePlayer}</div>
         <div className="col-span-4 text-xl font-bold">VS</div>

@@ -8,7 +8,7 @@ import {
 } from "@nextui-org/react";
 import { useTheme } from "next-themes";
 import { themes } from "../Logic/reducers";
-import { FC, useContext } from "react";
+import { useContext } from "react";
 import { AppContext } from "../App";
 
 function LeftPanel() {
@@ -59,22 +59,8 @@ function GeneralSettings() {
     setTheme(not_theme);
   }
 
-  const titles = ["Board Theme", "Dark Mode", "Highlight Move", "Animation"];
-
-  const BoardTheme: FC = () => (
-    <Select
-      selectedKeys={[btheme]}
-      onChange={(e) => dispatch({ type: "SetTheme", theme: e.target.value })}
-      aria-label="themes">
-      {themes.map((theme) => (
-        <SelectItem aria-label={theme} key={theme}>
-          {theme[0].toUpperCase() + theme.slice(1)}
-        </SelectItem>
-      ))}
-    </Select>
-  );
+  const titles = ["Dark Mode", "Highlight Move", "Animation"];
   const elem = [
-    <BoardTheme />,
     <Switch
       aria-label="dark mode"
       isSelected={theme === "dark"}
@@ -95,6 +81,23 @@ function GeneralSettings() {
   ];
   return (
     <div>
+      <Select
+        selectedKeys={[btheme]}
+        size="lg"
+        className="mb-4 text-xl"
+        onChange={(e) => {
+          if (e.target.value.trim() !== "") {
+            dispatch({ type: "SetTheme", theme: e.target.value });
+          }
+        }}
+        labelPlacement="outside-left"
+        label="Board Theme">
+        {themes.map((theme) => (
+          <SelectItem aria-label={theme} key={theme}>
+            {theme[0].toUpperCase() + theme.slice(1)}
+          </SelectItem>
+        ))}
+      </Select>
       {titles.map((title, index) => (
         <TwoElement title={title} key={title} Component={elem[index]} />
       ))}
@@ -102,7 +105,7 @@ function GeneralSettings() {
   );
 }
 function StockfishSettings() {
-  const titles = ["Evaluation Bar", "Show Best Moves"];
+  const titles = ["Show Best Moves"];
   const context = useContext(AppContext);
 
   if (!context) {
@@ -110,17 +113,11 @@ function StockfishSettings() {
   }
 
   const {
-    state: { depth, evalbar, bestMove },
+    state: { depth, bestMove },
     dispatch,
   } = context;
 
   const elem = [
-    <Switch
-      aria-label="evalbar"
-      isSelected={evalbar}
-      onValueChange={() => dispatch({ type: "ToggleEvalbar" })}
-      defaultSelected
-    />,
     <Switch
       aria-label="Best Moves"
       isSelected={bestMove}

@@ -1,7 +1,7 @@
 import { Card } from "@nextui-org/react";
 import { FC, useContext } from "react";
 import { AppContext } from "../App";
-import EvalBar from "./evalbar";
+import EvalBar from "../Logic/evalbar";
 import JustBoard from "../customBoard";
 
 function FullBoard() {
@@ -10,13 +10,13 @@ function FullBoard() {
     throw new Error("can't get context");
   }
   const {
-    state: { whitePlayer, blackPlayer, bottom, evalbar },
+    state: { whitePlayer, blackPlayer, bottom },
   } = context;
 
   return (
     <Card className="basis-5/12 px-5">
-      <div className="flex w-full h-full gap-1">
-        {evalbar && <EvalBar></EvalBar>}
+      <div className="flex w-full h-full gap-1 justify-center align-middle">
+        <EvalBar></EvalBar>
         <div className="w-full h-full">
           <Player name={bottom === "white" ? blackPlayer : whitePlayer} />
           <JustBoard></JustBoard>

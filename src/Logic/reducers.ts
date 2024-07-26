@@ -1,21 +1,14 @@
 import { Chess } from "chess.js";
 import { Dispatch } from "react";
-import { evaluationType } from "./stockfish";
+import { evaluationType, StockfishOutput } from "./stockfish";
 
 type stage = "first" | "second" | "third";
 export interface userControlTypes {
   depth: number;
   highlight: boolean;
   bestMove: boolean;
-  evalbar: boolean;
   animation: boolean;
   btheme: string;
-}
-
-interface StockfishOutput {
-  bestMove: string;
-  eval: evaluationType;
-  lines: string[];
 }
 
 export interface resetTypes {
@@ -41,13 +34,12 @@ export type Action =
   | { type: "ChangeDepth"; depth: any }
   | { type: "ToggleHighlight" }
   | { type: "ToggleBestMove" }
-  | { type: "ToggleEvalbar" }
   | { type: "ToggleAnimation" }
   | { type: "SetTheme"; theme: string }
-  | { type: "ChangeState"; stage: "first" }
-  | { type: "ChangeState"; stage: "third"; analysis: analysisMoveType[] }
-  | { type: "ChangeState"; stage: "second"; game: Chess }
+  | { type: "ChangeState"; stage: "first" | "third" | "second" }
+  | { type: "SetGame"; game: Chess }
   | { type: "SetIndex"; index: number }
+  | { type: "SetAnalysis"; analysis: analysisMoveType[] }
   | { type: "FlipBoard" };
 
 export interface ContextProps {
@@ -59,7 +51,6 @@ const userControls: userControlTypes = {
   depth: 10,
   highlight: true,
   bestMove: true,
-  evalbar: true,
   animation: true,
   btheme: "default",
 };
@@ -99,8 +90,6 @@ export function reducer(state: stateProps, action: Action): stateProps {
       return { ...state, highlight: !state.highlight };
     case "ToggleBestMove":
       return { ...state, bestMove: !state.bestMove };
-    case "ToggleEvalbar":
-      return { ...state, evalbar: !state.evalbar };
     case "ToggleAnimation":
       return { ...state, animation: !state.animation };
     case "FlipBoard":
@@ -109,15 +98,47 @@ export function reducer(state: stateProps, action: Action): stateProps {
       return { ...state, depth: action.depth };
     case "SetTheme":
       return { ...state, btheme: action.theme };
+    case "SetAnalysis":
+      return { ...state, analysis: action.analysis };
 
     case "ChangeState":
       if (action.stage === "first") {
         return { ...state, ...reset };
-      } else if (action.stage === "second") {
-        console.log(action.game.header());
-        return { ...state, stage: action.stage, Game: action.game };
+      } else {
+        return { ...state, stage: action.stage };
       }
-      return { ...state, stage: action.stage, analysis: action.analysis };
+
+    case "SetGame":
+      const header = action.game.header();
+      let whitePlayer = header.White || state.whitePlayer;
+      let blackPlayer = header.Black || state.blackPlayer;
+      const whiteElo = header.WhiteElo || "";
+      const blackElo = header.BlackElo || "";
+
+      if (whitePlayer === "?" || whitePlayer === "??") {
+        whitePlayer = state.whitePlayer;
+      } else {
+        whitePlayer = whitePlayer.trim();
+        if (whiteElo) {
+          whitePlayer = `${whitePlayer} (${whiteElo})`;
+        }
+      }
+
+      if (blackPlayer === "?" || blackPlayer === "??") {
+        blackPlayer = state.blackPlayer;
+      } else {
+        blackPlayer = blackPlayer.trim();
+        if (blackElo) {
+          blackPlayer = `${blackPlayer} (${blackElo})`;
+        }
+      }
+
+      return {
+        ...state,
+        Game: action.game,
+        whitePlayer,
+        blackPlayer,
+      };
 
     case "SetIndex":
       var moveIndex = action.index;
@@ -131,9 +152,10 @@ export function reducer(state: stateProps, action: Action): stateProps {
       if (moveIndex === -1) {
         fen = full_history[0].before;
       } else {
-        if (state.analysis[moveIndex].eval) {
+        try {
           evaluation = state.analysis[moveIndex].eval;
-        }
+          console.log(evaluation);
+        } catch {}
         fen = full_history[moveIndex].after;
       }
       return { ...state, moveIndex, fen, evaluation };

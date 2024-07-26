@@ -5,14 +5,19 @@ export interface evaluationType {
   value: number;
 }
 export interface StockfishOutput {
-  bestMove?: string;
-  eval?: evaluationType;
-  lines?: string[];
+  bestMove: string;
+  eval: evaluationType;
+  lines: string[];
 }
+const EmptyValue: StockfishOutput = {
+  bestMove: "",
+  eval: { type: "cp", value: 0 },
+  lines: [],
+};
 
 class StockfishManager {
   private stockfish: Worker | null = null;
-  private output: StockfishOutput = {};
+  private output: StockfishOutput = { ...EmptyValue };
   private resolveCallback: ((output: StockfishOutput) => void) | null = null;
 
   constructor() {
@@ -93,7 +98,7 @@ class StockfishManager {
     console.log("Using Local Stockfishs");
     return new Promise((resolve) => {
       this.resolveCallback = resolve;
-      this.output = {};
+      this.output = { ...EmptyValue };
       this.sendCommand(`position fen ${fen}`);
       this.sendCommand(`go depth ${depth}`);
     });
