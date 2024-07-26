@@ -23,6 +23,7 @@ export default function ChooseMonth({
 }) {
   const currentDate = today(getLocalTimeZone());
   const [start, setStart] = useState(startOfMonth(currentDate));
+  const [open, setOpen] = useState(false);
   const monthName = new Date(start.year, start.month - 1).toLocaleString(
     "default",
     { month: "long" }
@@ -48,10 +49,14 @@ export default function ChooseMonth({
   const buttons = ["Previous", "Next"];
 
   return (
-    <Popover showArrow>
+    <Popover
+      showArrow
+      isOpen={open}
+      backdrop="blur"
+      onOpenChange={(open) => setOpen(open)}>
       <PopoverTrigger>
         <Button color="primary" className="text-lg px-10 py-5 ">
-          Choose Another Month
+          Select Another Month
         </Button>
       </PopoverTrigger>
       <PopoverContent>
@@ -81,8 +86,11 @@ export default function ChooseMonth({
             <Button
               color="primary"
               variant="shadow"
-              onPress={() => onClick(start)}>
-              Choose {start.year} {monthName}
+              onPress={() => {
+                onClick(start);
+                setOpen(false);
+              }}>
+              Select {start.year} {monthName}
             </Button>
           </div>
         />

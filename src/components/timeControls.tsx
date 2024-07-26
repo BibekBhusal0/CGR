@@ -11,9 +11,9 @@ export function getIcon(timeControl: timeControls) {
     case "rapid":
       return { icon: <LuTimer />, color: "#7EB144" };
     case "daily":
-      return { icon: <FaSun />, color: "#0e0d0c" };
+      return { icon: <FaSun />, color: "#F7A117" };
     case "blitz":
-      return { icon: <BsLightningFill />, color: "#948c6d" };
+      return { icon: <BsLightningFill />, color: "#FAD541" };
     case "classical":
       return { icon: <CgSandClock />, color: "#F7C631" };
     case "bullet":
@@ -26,9 +26,11 @@ export function getIcon(timeControl: timeControls) {
 const TimeControl: FC<{ control: timeControls }> = ({ control }) => {
   const { icon, color } = getIcon(control);
   return (
-    <div style={{ color: color }} className="gap-1 align-middle capitalize">
-      <div className="text-center w-full text-2xl justify-center"> {icon} </div>
-      <div className="">{control}</div>
+    <div
+      style={{ color: color }}
+      className="flex capitalize text-2xl justify-center gap-2">
+      <div> {icon} </div>
+      <div className="text-sm">{control}</div>
     </div>
   );
 };

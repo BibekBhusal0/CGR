@@ -51,11 +51,11 @@ export const GameTable: FC<TableProps> = ({
     const user = game.black.username === userName ? game.black : game.white;
     const { result } = user;
     if (drawResults.includes(result)) {
-      return "text-default bg-default-100 hover:bg-default-50";
+      return "text-warning";
     } else if (lostResults.includes(result)) {
-      return "text-danger bg-danger-100 hover:bg-danger-50";
+      return "text-danger";
     } else {
-      return "text-sucess bg-sucess-100 hover:bg-sucess-50";
+      return "text-success";
     }
   };
 
@@ -73,16 +73,20 @@ export const GameTable: FC<TableProps> = ({
   return (
     <Table
       className="text-xl"
-      removeWrapper
+      classNames={{
+        td: ["text-xl"],
+        th: ["text-lg"],
+      }}
       aria-label="Game of selected month"
       selectionMode="single"
       disabledKeys={disabledKeys}
       disabledBehavior="all"
+      bottomContentPlacement="outside"
       bottomContent={
-        <div className="flex w-full justify-center bg-danger">
+        <div className="flex w-full justify-center">
           <Pagination
             loop
-            isCompact
+            siblings={2}
             variant="bordered"
             showControls
             showShadow
@@ -92,10 +96,10 @@ export const GameTable: FC<TableProps> = ({
         </div>
       }>
       <TableHeader>
-        <TableColumn className="text-lg">Time Control</TableColumn>
-        <TableColumn className="text-lg">White Player</TableColumn>
-        <TableColumn className="text-lg"> </TableColumn>
-        <TableColumn className="text-lg">Black Player</TableColumn>
+        <TableColumn>Time Control</TableColumn>
+        <TableColumn>White Player</TableColumn>
+        <TableColumn> </TableColumn>
+        <TableColumn>Black Player</TableColumn>
       </TableHeader>
       <TableBody
         emptyContent={`${userName} has not palyed any games this month you can try diffent month`}>
@@ -107,11 +111,11 @@ export const GameTable: FC<TableProps> = ({
             <TableCell className="text-lg">
               <TimeControl control={g.time_class} />
             </TableCell>
-            <TableCell className="text-lg">
+            <TableCell>
               <Player player_info={g.white} />
             </TableCell>
-            <TableCell className="text-xl font-mono">VS</TableCell>
-            <TableCell className="text-lg">
+            <TableCell className="text-2xl font-mono">VS</TableCell>
+            <TableCell>
               <Player player_info={g.black} />
             </TableCell>
           </TableRow>
