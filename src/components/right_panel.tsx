@@ -14,8 +14,14 @@ function RightPanel() {
     state: { stage },
   } = context;
   return (
-    <div className="basis-4/12 px-2 relative">
-      <Card className="h-full ">
+    <div className="px-2 relative basis-3/12 lg:basis-4/12">
+      <Card
+        classNames={{
+          base: "max-h-[700px]",
+          footer: "overflow-visible",
+          body: "overflow-auto",
+          header: "overflow-visible",
+        }}>
         {stage === "first" && <Input />}
         {stage === "second" && <Summary />}
         {stage === "third" && <Moves />}

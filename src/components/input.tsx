@@ -41,7 +41,6 @@ export function Input() {
       </Chip>
       <Textarea
         aria-label="pgn"
-        labelPlacement="outside"
         value={val}
         onValueChange={(e) => {
           setVal(e);

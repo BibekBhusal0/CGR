@@ -1,6 +1,7 @@
 import { Chess } from "chess.js";
 import { Dispatch } from "react";
-import { evaluationType, StockfishOutput } from "./stockfish";
+import { evaluationType } from "./stockfish";
+import { analysisType } from "./analyze";
 
 type stage = "first" | "second" | "third";
 export interface userControlTypes {
@@ -20,15 +21,10 @@ export interface resetTypes {
   evaluation: evaluationType;
   fen: string;
   Game?: Chess;
-  analysis?: StockfishOutput[];
+  analysis?: analysisType[];
   moveIndex: number;
 }
 
-export interface analysisMoveType {
-  bestMove: string;
-  eval: { type: string; value: number };
-  lines: string[];
-}
 export type stateProps = userControlTypes & resetTypes;
 export type Action =
   | { type: "ChangeDepth"; depth: any }
@@ -39,7 +35,7 @@ export type Action =
   | { type: "ChangeState"; stage: "first" | "third" | "second" }
   | { type: "SetGame"; game: Chess }
   | { type: "SetIndex"; index: number }
-  | { type: "SetAnalysis"; analysis: analysisMoveType[] }
+  | { type: "SetAnalysis"; analysis: analysisType[] }
   | { type: "FlipBoard" };
 
 export interface ContextProps {
@@ -48,7 +44,7 @@ export interface ContextProps {
 }
 
 const userControls: userControlTypes = {
-  depth: 10,
+  depth: 12,
   highlight: true,
   bestMove: true,
   animation: true,
@@ -104,6 +100,8 @@ export function reducer(state: stateProps, action: Action): stateProps {
     case "ChangeState":
       if (action.stage === "first") {
         return { ...state, ...reset };
+      } else if (action.stage === "second") {
+        return { ...state, stage: action.stage, moveIndex: -1 };
       } else {
         return { ...state, stage: action.stage };
       }
@@ -154,8 +152,10 @@ export function reducer(state: stateProps, action: Action): stateProps {
       } else {
         try {
           evaluation = state.analysis[moveIndex].eval;
-          console.log(evaluation);
-        } catch {}
+          console.log(state.analysis[moveIndex]);
+        } catch (error) {
+          console.log(`can't get evaluation of position `);
+        }
         fen = full_history[moveIndex].after;
       }
       return { ...state, moveIndex, fen, evaluation };

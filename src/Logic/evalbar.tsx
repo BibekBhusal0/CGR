@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { AppContext } from "../App";
+import { evaluationType } from "./stockfish";
 
 function EvalBar() {
   const context = useContext(AppContext);
@@ -7,33 +8,28 @@ function EvalBar() {
     throw new Error("context not avalilable for eval bar");
   }
   const {
-    state: { evaluation, Game, moveIndex, bottom, stage },
+    state: { evaluation, moveIndex, bottom, stage },
   } = context;
   const { type, value } = evaluation;
   var showVal: number | string = value;
-  var white_winning = showVal <= 0;
+
+  if (typeof showVal === "string") {
+    showVal = parseInt(showVal);
+  }
+
+  var white_winning = showVal < 0;
   var winChance = 50;
   const rot = bottom === "white" ? "" : "rotate-180";
   if (stage === "third" && moveIndex !== -1) {
-    console.log(evaluation);
-    if (!Game) {
-      throw new Error("Game not found");
-    }
-    // const turn = Game.history({ verbose: true })[moveIndex].color;
-    // if (turn === "b") {
-    //   showVal *= -1;
-    // }
     if (type === "mate") {
-      showVal = `M-${Math.abs(showVal)}`;
+      showVal = `M${Math.abs(showVal)}`;
       winChance = white_winning ? 100 : -100;
     } else {
       showVal /= 100;
-      winChance =
-        50 - 50 * (2 / (1 + Math.exp(-0.00368208 * showVal * 10)) - 1);
+      winChance = 100 / (1 + Math.exp(-0.0368208 * showVal));
       showVal = Math.abs(showVal).toFixed(2);
     }
   }
-
   return (
     <div
       style={{ backgroundColor: "#F1E4D2" }}
@@ -53,3 +49,22 @@ function EvalBar() {
 }
 
 export default EvalBar;
+
+export function rephraseEvaluation(evaluation: evaluationType) {
+  const { type, value } = evaluation;
+  var out: number | string = value;
+
+  if (typeof out === "string") {
+    out = parseInt(out);
+  }
+
+  var white_winning = out > 0;
+  if (type === "mate") {
+    out = `M${Math.abs(out)}`;
+  } else {
+    out /= 100;
+    out = Math.abs(out).toFixed(2);
+  }
+  out = white_winning ? "+" + out : "-" + out;
+  return out;
+}

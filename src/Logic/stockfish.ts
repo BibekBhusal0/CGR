@@ -19,6 +19,7 @@ class StockfishManager {
   private stockfish: Worker | null = null;
   private output: StockfishOutput = { ...EmptyValue };
   private resolveCallback: ((output: StockfishOutput) => void) | null = null;
+  private blackToMove = false;
 
   constructor() {
     this.initializeStockfish();
@@ -48,17 +49,18 @@ class StockfishManager {
           const parts = data.split(" ");
           const evalIndex = parts.indexOf("score") + 2;
           const evalType = parts[evalIndex - 1];
-          const evalValue = parts[evalIndex];
+          var evalValue: any = parts[evalIndex];
           const pvIndex = parts.indexOf("pv") + 1;
           const lines = parts.slice(pvIndex);
-          this.output.eval = { type: evalType, value: parseInt(evalValue) };
+          evalValue = parseInt(evalValue);
+          evalValue = this.blackToMove ? evalValue * -1 : evalValue;
+          this.output.eval = { type: evalType, value: evalValue };
           this.output.lines = lines;
         }
       }
     });
 
     this.stockfish.postMessage("uci");
-    this.stockfish.postMessage("setoption name MultiPV value 2");
   }
 
   sendCommand(command: string) {
@@ -88,6 +90,7 @@ class StockfishManager {
       }
     }
     if (depth < 16) {
+      console.log("using stockfish API");
       try {
         const response = await getStockfishAPI(fen);
         return response;
@@ -95,7 +98,9 @@ class StockfishManager {
         console.log("stockfishAPI failed", error);
       }
     }
-    console.log("Using Local Stockfishs");
+
+    console.log("Using Local Stockfish");
+    this.blackToMove = fen.includes(" b ");
     return new Promise((resolve) => {
       this.resolveCallback = resolve;
       this.output = { ...EmptyValue };

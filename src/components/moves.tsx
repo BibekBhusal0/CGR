@@ -3,6 +3,7 @@ import { AppContext } from "../App";
 import { Button, CardBody, CardFooter, CardHeader } from "@nextui-org/react";
 import { Controls } from "./controls";
 import EvalGraph from "../Logic/evalgraph";
+import { MoveComment } from "./moveComment";
 
 function Moves() {
   const context = useContext(AppContext);
@@ -28,11 +29,11 @@ function Moves() {
 
   return (
     <>
-      <CardHeader className="bg-default-100">
-        <MoveComment />
+      <CardHeader className="bg-default-100 flex flex-col justify-center w-full px-3 h-20">
+        <EvalGraph />
       </CardHeader>
       <CardBody>
-        <div className="max-h-96 min-h-36 ">
+        <div className="max-h-96 min-h-20 overflow-auto">
           {Pears.map((p, rowIndex) => (
             <div className="flex" key={rowIndex}>
               <div className="text-lg basis-2/12 text-center">
@@ -48,7 +49,7 @@ function Moves() {
       </CardBody>
       <CardFooter>
         <div className="flex flex-col gap-3 align-center align-middle justify-center w-full">
-          <EvalGraph />
+          <MoveComment />
           <Controls />
           <Button
             onPress={() => dispatch({ type: "ChangeState", stage: "second" })}
@@ -93,38 +94,6 @@ const SingleMove: FC<{ move: string; index: number }> = ({ move, index }) => {
       onClick={ClickHandler}>
       {move}
     </div>
-  );
-};
-
-const MoveComment: FC = () => {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error();
-  }
-  const {
-    state: { moveIndex, analysis },
-  } = context;
-  if (!analysis) {
-    throw new Error("game not available or analysis not available");
-  }
-
-  var repot;
-  try {
-    repot = `Best Move: ${analysis[moveIndex].bestMove}`;
-  } catch {
-    repot = "";
-  }
-
-  // const history = Game.history();
-  const comment = moveIndex === -1 ? "Start Analyzing Game" : repot;
-
-  return (
-    <>
-      <div className="text-xl ">
-        <div>{comment}</div>
-        <div>Move index is : {moveIndex}</div>
-      </div>
-    </>
   );
 };
 

@@ -14,12 +14,12 @@ function FullBoard() {
   } = context;
 
   return (
-    <Card className="basis-5/12 px-5">
-      <div className="flex w-full h-full gap-1 justify-center align-middle">
-        <EvalBar></EvalBar>
-        <div className="w-full h-full">
+    <Card className="basis-6/12 lg:basis-5/12 px-5">
+      <div className="flex w-full h-full gap-1 justify-center align-middle items-center">
+        <EvalBar />
+        <div className="w-full h-full max-h-screen">
           <Player name={bottom === "white" ? blackPlayer : whitePlayer} />
-          <JustBoard></JustBoard>
+          <JustBoard />
           <Player name={bottom === "white" ? whitePlayer : blackPlayer} />
         </div>
       </div>

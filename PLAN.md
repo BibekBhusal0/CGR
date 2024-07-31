@@ -42,11 +42,15 @@ This time I will use packages to display chess board and for logic which will ma
 
 - [x] Reading PGN
 - [x] Going forwad and backward through moves
-- [ ] Getting moves and evaluation from stockfish
-- [ ] Dispalying Evaluation bar and top lines
-- [ ] Move review based on change on evaluation
-- [ ] Graph to show change in evaluation
-- [ ] Calculating Accuracy and Rating of user
+- [x] Getting moves and evaluation from stockfish
+- [x] Dispalying Evaluation bar and top lines
+- [x] Move review based on change on evaluation
+- [x] Graph to show change in evaluation
+- [x] Calculating Accuracy of user
+
+> All Planned stuff have been (Almost) completed now all it is left to do is to make it better calculating Accuracy and move Review have more room for improvement All types of moves are yet to Implement
+
+> All Libraries are not used as planned for Graph Material UI is used and Stockfish Api is not used, React-chessboard is used instead of chessboard
 
 ## [Chess.com](https://chess.com) Game analysis has following features I will try to implement them:
 

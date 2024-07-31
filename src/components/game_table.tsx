@@ -16,10 +16,11 @@ import {
   TableRow,
   TableCell,
 } from "@nextui-org/table";
-
 import { AppContext } from "../App";
 import { Chess } from "chess.js";
 import TimeControl from "./timeControls";
+
+const titles = ["Time Control", "White Player", "", "Balck Player"];
 
 interface TableProps {
   tableData: GameResponse;
@@ -72,7 +73,6 @@ export const GameTable: FC<TableProps> = ({
   const disabledKeys = notSupported.map(({ uuid }) => uuid);
   return (
     <Table
-      className="text-xl"
       classNames={{
         td: ["text-xl"],
         th: ["text-lg"],
@@ -96,10 +96,9 @@ export const GameTable: FC<TableProps> = ({
         </div>
       }>
       <TableHeader>
-        <TableColumn>Time Control</TableColumn>
-        <TableColumn>White Player</TableColumn>
-        <TableColumn> </TableColumn>
-        <TableColumn>Black Player</TableColumn>
+        {titles.map((t) => (
+          <TableColumn key={t}>{t}</TableColumn>
+        ))}
       </TableHeader>
       <TableBody
         emptyContent={`${userName} has not palyed any games this month you can try diffent month`}>
@@ -138,19 +137,24 @@ const Player: FC<PlayerProps> = ({ player_info: { username, rating } }) => {
 
 export const LoadingTable: FC = () => {
   return (
-    <Table removeWrapper aria-label="loaidng table" selectionMode="none">
+    <Table
+      aria-label="loaidng table"
+      selectionMode="none"
+      classNames={{
+        td: ["text-xl"],
+        th: ["text-lg"],
+      }}>
       <TableHeader>
-        <TableColumn className="text-lg">Time Control</TableColumn>
-        <TableColumn className="text-lg">White Player</TableColumn>
-        <TableColumn className="text-lg"> </TableColumn>
-        <TableColumn className="text-lg">Black Player</TableColumn>
+        {titles.map((t) => (
+          <TableColumn key={t}>{t}</TableColumn>
+        ))}
       </TableHeader>
       <TableBody>
         {[...Array(rowsPerPage)].map((_, i) => (
           <TableRow key={i}>
             {[...Array(4)].map((_, j) => (
               <TableCell key={`${i}_${j}`}>
-                <Skeleton className=" p-3 rounded-sm" />
+                <Skeleton className="p-3 rounded-sm" />
               </TableCell>
             ))}
           </TableRow>

@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.hide-axis .MuiChartsAxis-root {
+  display: none !important;
+}
+.hide-x-axis .MuiChartsAxis-directionX {
+  display: none !important;
+}
+.hide-y-axis .MuiChartsAxis-directionY {
+  display: none !important;
+}
+.hide-ticks .MuiChartsAxis-tickContainer {
+  display: none !important;
+}

@@ -14,7 +14,7 @@ import { AppContext } from "../App";
 function LeftPanel() {
   const heading_class = "text-2xl overflow-x-hidden";
   return (
-    <div className="basis-3/12 ">
+    <div className="basis-3/12">
       <Accordion
         aria-label="left"
         variant="splitted"
@@ -80,11 +80,23 @@ function GeneralSettings() {
     />,
   ];
   return (
-    <div>
+    <>
       <Select
         selectedKeys={[btheme]}
+        startContent={
+          <img
+            alt="select theme"
+            className="w-8 h-auto pb-1"
+            src={getImageSorce(theme, btheme)}
+          />
+        }
+        className="mb-4 "
         size="lg"
-        className="mb-4 text-xl"
+        classNames={{
+          label: "text-xl",
+          trigger: "capitalize",
+          listbox: "px-0",
+        }}
         onChange={(e) => {
           if (e.target.value.trim() !== "") {
             dispatch({ type: "SetTheme", theme: e.target.value });
@@ -92,16 +104,23 @@ function GeneralSettings() {
         }}
         labelPlacement="outside-left"
         label="Board Theme">
-        {themes.map((theme) => (
-          <SelectItem aria-label={theme} key={theme}>
-            {theme[0].toUpperCase() + theme.slice(1)}
+        {themes.map((board_theme) => (
+          <SelectItem aria-label={board_theme} key={board_theme}>
+            <div className="flex gap-2 capitalize flex-row realtive text-lg items-center">
+              <img
+                className="w-14 h-auto"
+                src={getImageSorce(theme, board_theme)}
+                alt={`${board_theme} board_theme Pawn`}
+              />
+              {board_theme}
+            </div>
           </SelectItem>
         ))}
       </Select>
       {titles.map((title, index) => (
         <TwoElement title={title} key={title} Component={elem[index]} />
       ))}
-    </div>
+    </>
   );
 }
 function StockfishSettings() {
@@ -129,8 +148,9 @@ function StockfishSettings() {
   return (
     <div>
       <Slider
-        label={<h1 className="text-xl "> Depth </h1>}
+        label={<h1 className="text-xl"> Depth </h1>}
         aria-label="depth"
+        showTooltip
         className="pb-3 pr-3"
         minValue={10}
         value={depth}
@@ -151,12 +171,17 @@ interface TwoElementProps {
 function TwoElement({ title, Component }: TwoElementProps) {
   const bt = typeof Component.type === "object" ? "border-t-1" : "";
   return (
-    <div
-      className={` grid pl-2 grid-cols-5 py-2 border-gray-600 border-dotted ${bt}`}>
-      <div className=" col-span-3 text-xl ">{title}</div>
-      <div className="col-span-2">{Component}</div>
+    <div className={`grid p-2 grid-cols-4 border-gray-600 border-dotted ${bt}`}>
+      <div className="col-span-3 text-xl ">{title}</div>
+      <div className="col-span-1">{Component}</div>
     </div>
   );
+}
+
+function getImageSorce(theme: any, board_theme: string) {
+  return `https://raw.githubusercontent.com/BibekBhusal0/CGR/557306e3ad6b55c87def1d5ce01b4e6f2095542b/public/images/pieces/${board_theme.toLowerCase()}/${
+    theme === "dark" ? "w" : "b"
+  }P.svg`;
 }
 
 export default LeftPanel;

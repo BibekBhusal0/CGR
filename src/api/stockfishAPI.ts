@@ -59,9 +59,6 @@ export async function postChessApi(fen: string): Promise<StockfishOutput> {
   }
   const mate = data.mate !== null;
   var e = mate ? data.mate : data.eval * 100;
-  if (fen.includes(" b ")) {
-    e *= 1;
-  }
 
   const out: StockfishOutput = {
     bestMove: data.san,
@@ -87,9 +84,9 @@ export async function getStockfishAPI(fen: string): Promise<StockfishOutput> {
   }
   const mate = data.mate !== null;
   var e = mate ? data.mate : data.evaluation * 100;
-  if (fen.includes(" b ")) {
-    e *= 1;
-  }
+  // if (fen.includes(" b ")) {
+  //   e *= 1;
+  // }
 
   const out: StockfishOutput = {
     bestMove: data.bestmove.split(" ")[1],

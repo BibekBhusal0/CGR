@@ -3,15 +3,20 @@ import { Chessboard } from "react-chessboard";
 import { AppContext } from "./App";
 import { Chess } from "chess.js";
 import { Square } from "react-chessboard/dist/chessboard/types";
+import MoveIcon, { AllIcons } from "./components/moveTypes";
 
 interface PieceProps {
   isDragging: boolean;
   squareWidth: number;
-  square: string;
+  square: Square;
 }
-const customPieces = (theme: string): { [key: string]: FC<PieceProps> } => {
-  const pieceNames = ["K", "Q", "R", "B", "N", "P"];
+type Review = { [key in Square]: AllIcons };
 
+const customPieces = (
+  theme: string,
+  reviews: Review[]
+): { [key: string]: FC<PieceProps> } => {
+  const pieceNames = ["K", "Q", "R", "B", "N", "P"];
   const pieces: { [key: string]: FC<PieceProps> } = {};
 
   const base_path =
@@ -21,18 +26,31 @@ const customPieces = (theme: string): { [key: string]: FC<PieceProps> } => {
       pieces[`${color}${piece}`] = ({
         isDragging,
         squareWidth,
-      }: PieceProps) => (
-        <img
-          className="aspect-square p-0.5 realtive"
-          src={`${base_path}/${theme.toLowerCase()}/${color}${piece}.svg`}
-          alt={`${color === "w" ? "White" : "Black"} ${piece}`}
-          style={{
-            width: squareWidth,
-            height: squareWidth,
-            opacity: isDragging ? 0.5 : 1,
-          }}
-        />
-      );
+        square,
+      }: PieceProps) => {
+        const index = reviews.findIndex((obj) => square in obj);
+        const review = index === -1 ? undefined : reviews[index][square];
+
+        return (
+          <div className="aspect-square size-full realtive overflow-visible">
+            <img
+              className="aspect-square p-0.5"
+              src={`${base_path}/${theme.toLowerCase()}/${color}${piece}.svg`}
+              alt={`${color === "w" ? "White" : "Black"} ${piece}`}
+              style={{
+                width: squareWidth,
+                height: squareWidth,
+                opacity: isDragging ? 0.5 : 1,
+              }}
+            />
+            {review && (
+              <div className="translate-x-[70%] translate-y-[-250%]">
+                <MoveIcon type={review} scale={1} />
+              </div>
+            )}
+          </div>
+        );
+      };
     });
   });
 
@@ -62,20 +80,28 @@ function JustBoard() {
 
   const arrow: [Square, Square, string?][] = [];
   const highlights: { [square: string]: React.CSSProperties } = {};
+  const reviews: Review[] = [];
 
   if (stage === "third" && moveIndex !== -1) {
-    if (Game !== undefined && highlight) {
-      const { from, to } = Game.history({ verbose: true })[moveIndex];
-      highlights[from] = { background: "rgba(255, 255, 0, 0.3)" };
-      highlights[to] = { background: "rgba(255, 255, 0, 0.3)" };
-    }
-    if (bestMove && analysis !== undefined) {
-      try {
-        const chess = new Chess(fen);
-        chess.move(analysis[moveIndex].bestMove);
-        const { from, to } = chess.history({ verbose: true })[0];
-        arrow.push([from, to, "green"]);
-      } catch {}
+    if (Game !== undefined && analysis !== undefined) {
+      const history = Game.history({ verbose: true });
+      const type = analysis[moveIndex].moveType;
+      const sq = history[moveIndex].to;
+      reviews.push({ [sq]: type } as Review);
+
+      if (highlight) {
+        const { from, to } = history[moveIndex];
+        highlights[from] = { background: "rgba(255, 255, 0, 0.3)" };
+        highlights[to] = { background: "rgba(255, 255, 0, 0.3)" };
+      }
+      if (bestMove) {
+        if (moveIndex !== 0) {
+          const chess = new Chess(history[moveIndex].before);
+          chess.move(analysis[moveIndex - 1].bestMove);
+          const { from, to } = chess.history({ verbose: true })[0];
+          arrow.push([from, to, "green"]);
+        }
+      }
     }
   }
 
@@ -84,7 +110,7 @@ function JustBoard() {
       id="board"
       position={fen}
       arePiecesDraggable={allowMoves}
-      customPieces={customPieces(btheme)}
+      customPieces={customPieces(btheme, reviews)}
       boardOrientation={bottom}
       animationDuration={animation ? 300 : 0}
       customArrows={arrow}

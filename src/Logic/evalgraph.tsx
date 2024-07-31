@@ -1,9 +1,9 @@
-import { FC, useContext } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../App";
 import { ScaleLinear } from "d3-scale";
 import { useYScale, useDrawingArea } from "@mui/x-charts/hooks";
 import { LineChart, areaElementClasses } from "@mui/x-charts/LineChart";
-import { StockfishOutput } from "./stockfish";
+import { rephraseEvaluation } from "./evalbar";
 
 const white = "#454545";
 const black = "#F1E4D2";
@@ -17,69 +17,105 @@ function EvalGraph() {
     state: { analysis },
   } = context;
   const showGraph = analysis !== undefined;
-  console.log(showGraph);
   return (
-    <div className="width-full h-28 bg-green-400">
+    <div>
       {showGraph ? (
-        <Graph data={analysis}></Graph>
+        <Graph />
       ) : (
-        <div className="flex-col" style={{ backgroundColor: white }}>
-          <div className="h-2/4" style={{ backgroundColor: black }}></div>
-        </div>
+        <div className=" size-full animate-pulse bg-default-300"></div>
       )}
     </div>
   );
 }
 
-const Graph: FC<{ data: StockfishOutput[] }> = ({ data }) => {
-  const maxCpValue = Math.max(
-    ...data.map((a) => (a.eval.type === "cp" ? a.eval.value : 0))
-  );
-  const maxCpThreshold = 20;
-  const calculateMateValue = (mateValue: number): number => {
-    if (maxCpValue < maxCpThreshold) {
-      const minMateValue = maxCpValue * 0.2;
-      return Math.max(minMateValue, mateValue);
-    } else {
-      return Math.min(mateValue, maxCpThreshold);
-    }
-  };
+const Graph = () => {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error("context not found");
+  }
 
-  const val: number[] = data.map((a) => {
+  const {
+    state: { moveIndex, analysis, stage },
+    dispatch,
+  } = context;
+  if (!analysis) {
+    throw new Error("analysis not found");
+  }
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current) {
+        setDimensions({
+          width: containerRef.current.offsetWidth,
+          height: containerRef.current.offsetHeight,
+        });
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  const maxEval = Math.max(
+    ...analysis.map((a) =>
+      a.eval.type === "cp" ? Math.abs(a.eval.value / 100) : 0
+    )
+  );
+  const threshold = Math.min(maxEval * 4, 25);
+
+  const val: number[] = analysis.map((a) => {
     if (a.eval.type === "cp") {
-      return Math.min(a.eval.value / 100, maxCpThreshold);
+      const scaledValue = a.eval.value / 100;
+      return Math.max(Math.min(scaledValue, threshold), -threshold);
     } else if (a.eval.type === "mate") {
-      return calculateMateValue(a.eval.value / 100);
+      return a.eval.value > 0 ? threshold : -threshold;
     }
     return 0;
   });
 
   return (
     <>
-      <LineChart
-        series={[{ data: val, showMark: false, area: true }]}
-        width={200}
-        height={100}
-        margin={{ top: 20, bottom: 30, left: 75 }}
-        sx={{
-          [`& .${areaElementClasses.root}`]: {
-            fill: "url(#swich-color-id-1)",
-          },
-        }}>
-        <ColorSwich
-          color1={black}
-          color2={white}
-          threshold={0}
-          id="swich-color-id-1"
-        />
-        <style>
-          {`
-      .MuiChartsAxis-root {
-        display: none !important;
-      }
-    `}
-        </style>
-      </LineChart>
+      <div
+        ref={containerRef}
+        className="size-full hide-aixs hide-x-axis hide-y-axis hide-ticks">
+        <LineChart
+          series={[
+            {
+              data: val,
+              showMark: ({ index }) => index === moveIndex,
+              valueFormatter: (v, { dataIndex }) =>
+                rephraseEvaluation(analysis[dataIndex].eval),
+              area: true,
+            },
+          ]}
+          //
+          width={dimensions.width}
+          height={dimensions.height}
+          margin={{ top: 2, bottom: 2, left: 0, right: 0 }}
+          yAxis={[{ min: -threshold, max: threshold }]}
+          //
+          onAxisClick={(event, d) => {
+            if (d?.dataIndex !== undefined && stage === "third") {
+              dispatch({ type: "SetIndex", index: d.dataIndex });
+            }
+          }}
+          axisHighlight={{ x: "line", y: "none" }}
+          sx={{
+            [`& .${areaElementClasses.root}`]: {
+              fill: "url(#swich-color-id-1)",
+            },
+          }}>
+          <ColorSwich
+            color1={black}
+            color2={white}
+            threshold={0}
+            id="swich-color-id-1"
+          />
+        </LineChart>
+      </div>
     </>
   );
 };
