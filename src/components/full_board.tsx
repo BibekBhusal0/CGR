@@ -15,9 +15,9 @@ function FullBoard() {
 
   return (
     <Card className="basis-6/12 lg:basis-5/12 px-5">
-      <div className="flex w-full h-full gap-1 justify-center align-middle items-center">
+      <div className="flex gap-1 relative h-full w-full">
         <EvalBar />
-        <div className="w-full h-full max-h-screen">
+        <div className=" h-full max-h-screen w-full">
           <Player name={bottom === "white" ? blackPlayer : whitePlayer} />
           <JustBoard />
           <Player name={bottom === "white" ? whitePlayer : blackPlayer} />

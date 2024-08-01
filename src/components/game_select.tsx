@@ -22,7 +22,7 @@ export const SelectGame: FC<{ input: string }> = ({ input }) => {
     month: "long",
   });
 
-  const fetchData = async () => {
+  const fetchData = async (date: CalendarDate) => {
     setLoaded(false);
     try {
       const response = await gamesOnChessDotCom(input, date.month, date.year);
@@ -35,7 +35,7 @@ export const SelectGame: FC<{ input: string }> = ({ input }) => {
   };
   const resetDateAndFetch = (newDate: CalendarDate) => {
     setDate(newDate);
-    fetchData();
+    fetchData(newDate);
   };
 
   return (
@@ -47,7 +47,7 @@ export const SelectGame: FC<{ input: string }> = ({ input }) => {
         isDisabled={input.trim() === ""}
         onPress={() => {
           onOpen();
-          fetchData();
+          fetchData(date);
         }}>
         Choose Games
       </Button>

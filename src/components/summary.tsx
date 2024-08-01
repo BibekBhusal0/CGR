@@ -94,7 +94,6 @@ function Summary() {
       }
       dispatch({ type: "SetAnalysis", analysis: analysisResult });
       setPlayerSummary(countTypes(analysisResult));
-      console.log(playerSummary);
     };
 
     if (!analysis) {
@@ -104,7 +103,6 @@ function Summary() {
         setProgress(1);
       }
       setPlayerSummary(countTypes(analysis));
-      console.log(playerSummary);
     }
     return () => {
       stockfish.terminate();
@@ -115,7 +113,7 @@ function Summary() {
     <>
       <CardBody>
         <div className="flex flex-col gap-3 text-lg items-center justify-center align-middle text-center p-3">
-          <div className="w-4/5 h-20 p-1 rounded-sm bg-red-300">
+          <div className="w-4/5 h-20 p-1 rounded-sm bg-red-400">
             <EvalGraph />
           </div>
           {loading && (
@@ -130,7 +128,7 @@ function Summary() {
             <div>{whitePlayer}</div>
             <div className="text-xl font-bold">VS</div>
             <div>{blackPlayer}</div>
-            <div className="text-left">
+            <div className="text-left px-4">
               {
                 <AnimatedCounter
                   to={playerSummary.white.accuracy}
@@ -139,7 +137,7 @@ function Summary() {
               }
             </div>
             <div>Accuracy</div>
-            <div className="text-right">
+            <div className="text-right px-4">
               {
                 <AnimatedCounter
                   to={playerSummary.black.accuracy}
@@ -155,11 +153,11 @@ function Summary() {
               type={m}
               counts={
                 loading
-                  ? {
+                  ? undefined
+                  : {
                       white: playerSummary.white.movesCount[m],
                       black: playerSummary.white.movesCount[m],
                     }
-                  : undefined
               }></MoveClass>
           ))}
         </div>
@@ -202,17 +200,17 @@ const MoveClass: FC<{
           <div className="flex gap-3 items-center justify-around align-middle text-left capitalize ">
             {!counts ? (
               <>
-                <MoveIcon type={type} scale={1} />
-                <div>{type}</div>
-              </>
-            ) : (
-              <>
                 <div
                   style={{ backgroundColor: MoveMaping[type].color }}
                   className="rounded-full size-7 animate-pulse"></div>
                 <div
                   style={{ backgroundColor: MoveMaping[type].color }}
                   className="w-20 h-5 my-1 rounded-md animate-pulse"></div>
+              </>
+            ) : (
+              <>
+                <MoveIcon type={type} scale={1} />
+                <div>{type}</div>
               </>
             )}
           </div>

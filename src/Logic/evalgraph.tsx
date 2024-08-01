@@ -18,11 +18,11 @@ function EvalGraph() {
   } = context;
   const showGraph = analysis !== undefined;
   return (
-    <div>
+    <div className="size-full">
       {showGraph ? (
         <Graph />
       ) : (
-        <div className=" size-full animate-pulse bg-default-300"></div>
+        <div className="size-full animate-pulse bg-default-300"></div>
       )}
     </div>
   );
@@ -78,9 +78,7 @@ const Graph = () => {
 
   return (
     <>
-      <div
-        ref={containerRef}
-        className="size-full hide-aixs hide-x-axis hide-y-axis hide-ticks">
+      <div ref={containerRef} className="size-full hide-axis">
         <LineChart
           series={[
             {

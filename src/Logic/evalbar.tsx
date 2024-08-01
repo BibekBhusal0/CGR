@@ -32,14 +32,18 @@ function EvalBar() {
   }
   return (
     <div
-      style={{ backgroundColor: "#F1E4D2" }}
-      className={`h-5/6 my-auto w-7 ${rot} drop-shadow-2xl relative`}>
+      style={{
+        backgroundColor: "#F1E4D2",
+      }}
+      id="eval-white"
+      className={`my-auto h-[450px] w-8 ${rot} drop-shadow-2xl`}>
       <div
+        id="eval-black"
         className="w-full absolute top-0 transition-height "
         style={{ height: `${winChance}%`, backgroundColor: "#454545" }}></div>
       <div
         id="evalNum"
-        className={`absolute w-full text-center font-bold text-xs ${
+        className={`absolute w-full text-center font-bold text-xs  ${
           white_winning ? "top-0 text-white" : "bottom-0 text-black"
         } ${rot}`}>
         {showVal}

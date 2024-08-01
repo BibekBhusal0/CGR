@@ -32,7 +32,7 @@ export const MoveComment: FC = () => {
         : crrAnalysis &&
           crrMove && (
             <>
-              <div className="flex gap-3 justify-between">
+              <div className="flex gap-3 justify-between items-start">
                 <div className="flex justify-start gap-2">
                   <MoveIcon type={crrAnalysis.moveType} scale={0.7} />
                   <div>
@@ -47,9 +47,9 @@ export const MoveComment: FC = () => {
                   Note: Buttons are not yet working
                 </div>
               </div>
-              {bestMove && prevAnalysis && (
+              {bestMove && prevAnalysis && crrAnalysis.moveType !== "best" && (
                 <>
-                  <div className="flex gap-3 justify-between mt-3">
+                  <div className="flex gap-3 justify-between items-start mt-3">
                     <div className="flex justify-start gap-2">
                       <MoveIcon type="best" scale={0.7} />
                       <div>{prevAnalysis.bestMove} is the best move</div>
