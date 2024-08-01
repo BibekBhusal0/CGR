@@ -20,10 +20,8 @@ export const MoveComment: FC = () => {
 
   if (moveIndex !== -1) {
     crrMove = Game.history({ verbose: true })[moveIndex].san;
-    crrAnalysis = analysis[moveIndex];
-    if (moveIndex !== 0) {
-      prevAnalysis = analysis[moveIndex - 1];
-    }
+    crrAnalysis = analysis[moveIndex + 1];
+    prevAnalysis = analysis[moveIndex];
   }
   return (
     <div className="bg-success-50 px-8 py-3 rounded-md">
@@ -47,7 +45,7 @@ export const MoveComment: FC = () => {
                   Note: Buttons are not yet working
                 </div>
               </div>
-              {bestMove && prevAnalysis && crrAnalysis.moveType !== "best" && (
+              {bestMove && prevAnalysis && crrAnalysis.bestMove !== crrMove && (
                 <>
                   <div className="flex gap-3 justify-between items-start mt-3">
                     <div className="flex justify-start gap-2">
@@ -64,7 +62,7 @@ export const MoveComment: FC = () => {
                   <div className="text-default-600">
                     Opening data yet to reformat
                   </div>
-                  JSON.stringify(analysis[moveIndex].opening)
+                  {JSON.stringify(analysis[moveIndex].opening)}
                 </div>
               ) : (
                 ""

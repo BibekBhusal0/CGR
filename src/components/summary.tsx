@@ -61,6 +61,7 @@ function Summary() {
         positionDetails: history[0],
         moveIndex: -1,
       });
+      analysisResult.push(analyzedMove);
       prevEval = analyzedMove.eval;
       for (let i = 0; i < history.length; i++) {
         const fen = history[i].after;

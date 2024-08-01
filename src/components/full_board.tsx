@@ -2,7 +2,7 @@ import { Card } from "@nextui-org/react";
 import { FC, useContext } from "react";
 import { AppContext } from "../App";
 import EvalBar from "../Logic/evalbar";
-import JustBoard from "../customBoard";
+import JustBoard from "./customBoard";
 
 function FullBoard() {
   const context = useContext(AppContext);
