@@ -6,6 +6,7 @@ import { IoClose } from "react-icons/io5";
 import { ImArrowRight } from "react-icons/im";
 import { TbClockX } from "react-icons/tb";
 import { GiPointySword } from "react-icons/gi";
+import AnimatedCounter from "./AnimatedCounter";
 
 export interface MoveProperty {
   color: string;
@@ -108,6 +109,53 @@ const MoveIcon: FC<{ type: AllIcons; scale: number }> = ({
         <div className="size-full flex items-center text-center font-bold justify-center z-10 absolute text-white">
           {item}
         </div>
+      </div>
+    </div>
+  );
+};
+
+export const MoveClass: FC<{
+  type: MT;
+  counts?: { white: number; black: number };
+}> = ({ type, counts }) => {
+  var black, white;
+  if (!counts) {
+    black = 0;
+    white = 0;
+  } else {
+    black = counts.black;
+    white = counts.white;
+  }
+  return (
+    <div
+      style={{ color: MoveMaping[type].color }}
+      className="grid grid-cols-8 text-center text-lg w-full">
+      <div className=" col-span-2">
+        <AnimatedCounter to={white} round_off />
+      </div>
+      <div className="col-span-4">
+        <div className="w-full">
+          <div className="flex gap-3 items-center justify-around align-middle text-left capitalize ">
+            {!counts ? (
+              <>
+                <div
+                  style={{ backgroundColor: MoveMaping[type].color }}
+                  className="rounded-full size-7 animate-pulse "></div>
+                <div
+                  style={{ backgroundColor: MoveMaping[type].color }}
+                  className="h-5 my-1 rounded-md animate-pulse"></div>
+              </>
+            ) : (
+              <>
+                <MoveIcon type={type} scale={1} />
+                <div>{type}</div>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className=" col-span-2">
+        <AnimatedCounter to={black} round_off />
       </div>
     </div>
   );

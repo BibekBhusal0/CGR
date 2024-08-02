@@ -17,7 +17,7 @@ function EvalBar() {
     showVal = parseInt(showVal);
   }
 
-  var white_winning = showVal > 0;
+  var white_winning = showVal < 0;
   var winChance = 50;
   const rot = bottom === "white" ? "" : "rotate-180";
   if (stage === "third" && moveIndex !== -1) {
@@ -25,7 +25,6 @@ function EvalBar() {
       showVal = `M${Math.abs(showVal)}`;
       winChance = white_winning ? 100 : 0;
     } else {
-      // winChance = 100 / (1 + Math.exp(-0.0368208 * showVal));
       winChance = 50 + 50 * (2 / (1 + Math.exp(-0.00368208 * showVal)) - 1);
       showVal /= 100;
       showVal = Math.abs(showVal).toFixed(2);

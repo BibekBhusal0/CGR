@@ -17,7 +17,7 @@ function RightPanel() {
     <div className="px-2 relative basis-3/12 lg:basis-4/12">
       <Card
         classNames={{
-          base: "max-h-[700px]",
+          base: "max-h-[650px]",
           footer: "overflow-visible",
           body: "overflow-auto",
           header: "overflow-visible",

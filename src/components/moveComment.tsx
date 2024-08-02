@@ -4,6 +4,7 @@ import { FC, useContext } from "react";
 import { AppContext } from "../App";
 import { evaluationType } from "../Logic/stockfish";
 import { Button } from "@nextui-org/react";
+import OpeningCard from "./opening";
 
 export const MoveComment: FC = () => {
   const context = useContext(AppContext);
@@ -16,28 +17,29 @@ export const MoveComment: FC = () => {
   if (!analysis || !Game) {
     throw new Error("game not available or analysis not available");
   }
-  var crrMove, crrAnalysis, prevAnalysis;
+  var crrMove, crrPositionAnalysis, prevPositionAnalysis, crrMoveType;
 
   if (moveIndex !== -1) {
     crrMove = Game.history({ verbose: true })[moveIndex].san;
-    crrAnalysis = analysis[moveIndex + 1];
-    prevAnalysis = analysis[moveIndex];
+    crrPositionAnalysis = analysis[moveIndex + 1];
+    prevPositionAnalysis = analysis[moveIndex];
   }
   return (
     <div className="bg-success-50 px-8 py-3 rounded-md">
       {moveIndex === -1
         ? "Start Analyzing Game"
-        : crrAnalysis &&
-          crrMove && (
+        : crrPositionAnalysis &&
+          crrMove &&
+          prevPositionAnalysis && (
             <>
               <div className="flex gap-3 justify-between items-start">
                 <div className="flex justify-start gap-2">
-                  <MoveIcon type={crrAnalysis.moveType} scale={0.7} />
+                  <MoveIcon type={prevPositionAnalysis.moveType} scale={0.7} />
                   <div>
-                    {crrMove} is {MoveExplained[crrAnalysis.moveType]}.
+                    {crrMove} is {MoveExplained[prevPositionAnalysis.moveType]}.
                   </div>
                 </div>
-                <EvalBox evaluation={analysis[moveIndex].eval} />
+                <EvalBox evaluation={crrPositionAnalysis.eval} />
               </div>
               <div>
                 <ShowMoves onClick={() => console.log()} />
@@ -45,25 +47,22 @@ export const MoveComment: FC = () => {
                   Note: Buttons are not yet working
                 </div>
               </div>
-              {bestMove && prevAnalysis && crrAnalysis.bestMove !== crrMove && (
+              {bestMove && prevPositionAnalysis.bestMove !== crrMove && (
                 <>
                   <div className="flex gap-3 justify-between items-start mt-3">
                     <div className="flex justify-start gap-2">
                       <MoveIcon type="best" scale={0.7} />
-                      <div>{prevAnalysis.bestMove} is the best move</div>
+                      <div>
+                        {prevPositionAnalysis.bestMove} is the best move
+                      </div>
                     </div>
-                    <EvalBox evaluation={prevAnalysis.eval} />
+                    <EvalBox evaluation={prevPositionAnalysis.eval} />
                   </div>
                   <ShowMoves onClick={() => console.log()} />
                 </>
               )}
-              {analysis[moveIndex].opening ? (
-                <div className="text-sm">
-                  <div className="text-default-600">
-                    Opening data yet to reformat
-                  </div>
-                  {JSON.stringify(analysis[moveIndex].opening)}
-                </div>
+              {crrPositionAnalysis.opening ? (
+                <OpeningCard opening={crrPositionAnalysis.opening} />
               ) : (
                 ""
               )}

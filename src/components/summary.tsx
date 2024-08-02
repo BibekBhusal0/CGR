@@ -1,5 +1,5 @@
 import { FC, useContext, useEffect, useState } from "react";
-import MoveIcon, { allTypesOfMove, MoveMaping, MT } from "./moveTypes";
+import MoveIcon, { allTypesOfMove, MoveClass, MT } from "./moveTypes";
 import { AppContext } from "../App";
 import { Button, CardBody, CardFooter, Progress } from "@nextui-org/react";
 import StockfishManager, { StockfishOutput } from "../Logic/stockfish";
@@ -114,7 +114,7 @@ function Summary() {
     <>
       <CardBody>
         <div className="flex flex-col gap-3 text-lg items-center justify-center align-middle text-center p-3">
-          <div className="w-4/5 h-20 p-1 rounded-sm bg-red-400">
+          <div className="w-4/5 h-20 p-1 rounded-sm bg-red-300">
             <EvalGraph />
           </div>
           {loading && (
@@ -125,11 +125,11 @@ function Summary() {
               color="primary"
               showValueLabel></Progress>
           )}
-          <div className="grid grid-cols-3 gap-3 ">
-            <div>{whitePlayer}</div>
-            <div className="text-xl font-bold">VS</div>
-            <div>{blackPlayer}</div>
-            <div className="text-left px-4">
+          <div className="grid grid-cols-8 gap-3 ">
+            <div className="col-span-3">{whitePlayer}</div>
+            <div className="text-xl font-bold col-span-2">VS</div>
+            <div className="col-span-3">{blackPlayer}</div>
+            <div className="text-center col-span-2">
               {
                 <AnimatedCounter
                   to={playerSummary.white.accuracy}
@@ -137,8 +137,8 @@ function Summary() {
                 />
               }
             </div>
-            <div>Accuracy</div>
-            <div className="text-right px-4">
+            <div className="col-span-4">Accuracy</div>
+            <div className="text-center col-span-2">
               {
                 <AnimatedCounter
                   to={playerSummary.black.accuracy}
@@ -147,7 +147,6 @@ function Summary() {
               }
             </div>
           </div>
-
           {allTypesOfMove.slice(0, allTypesOfMove.length - 1).map((m) => (
             <MoveClass
               key={m}
@@ -157,7 +156,7 @@ function Summary() {
                   ? undefined
                   : {
                       white: playerSummary.white.movesCount[m],
-                      black: playerSummary.white.movesCount[m],
+                      black: playerSummary.black.movesCount[m],
                     }
               }></MoveClass>
           ))}
@@ -176,53 +175,6 @@ function Summary() {
     </>
   );
 }
-
-const MoveClass: FC<{
-  type: MT;
-  counts?: { white: number; black: number };
-}> = ({ type, counts }) => {
-  var black, white;
-  if (!counts) {
-    black = 0;
-    white = 0;
-  } else {
-    black = counts.black;
-    white = counts.white;
-  }
-  return (
-    <div
-      style={{ color: MoveMaping[type].color }}
-      className="grid grid-cols-8 text-center text-lg w-full">
-      <div className=" col-span-2">
-        <AnimatedCounter to={white} round_off />
-      </div>
-      <div className="col-span-4">
-        <div className="w-full">
-          <div className="flex gap-3 items-center justify-around align-middle text-left capitalize ">
-            {!counts ? (
-              <>
-                <div
-                  style={{ backgroundColor: MoveMaping[type].color }}
-                  className="rounded-full size-7 animate-pulse"></div>
-                <div
-                  style={{ backgroundColor: MoveMaping[type].color }}
-                  className="w-20 h-5 my-1 rounded-md animate-pulse"></div>
-              </>
-            ) : (
-              <>
-                <MoveIcon type={type} scale={1} />
-                <div>{type}</div>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className=" col-span-2">
-        <AnimatedCounter to={black} round_off />
-      </div>
-    </div>
-  );
-};
 
 function countTypes(analysis: analysisType[]): {
   white: playerStats;

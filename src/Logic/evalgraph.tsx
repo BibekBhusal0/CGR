@@ -77,44 +77,44 @@ const Graph = () => {
   });
 
   return (
-    <>
-      <div ref={containerRef} className="size-full hide-axis">
-        <LineChart
-          series={[
-            {
-              data: val,
-              showMark: ({ index }) => index === moveIndex,
-              valueFormatter: (v, { dataIndex }) =>
-                rephraseEvaluation(analysis[dataIndex].eval),
-              area: true,
-            },
-          ]}
-          //
-          width={dimensions.width}
-          height={dimensions.height}
-          margin={{ top: 2, bottom: 2, left: 0, right: 0 }}
-          yAxis={[{ min: -threshold, max: threshold }]}
-          //
-          onAxisClick={(event, d) => {
-            if (d?.dataIndex !== undefined && stage === "third") {
+    <div ref={containerRef} className="size-full hide-axis">
+      <LineChart
+        series={[
+          {
+            data: val,
+            showMark: ({ index }) => index === moveIndex,
+            valueFormatter: (v, { dataIndex }) =>
+              rephraseEvaluation(analysis[dataIndex].eval),
+            area: true,
+          },
+        ]}
+        //
+        width={dimensions.width}
+        height={dimensions.height}
+        margin={{ top: 2, bottom: 2, left: 0, right: 0 }}
+        yAxis={[{ min: -threshold, max: threshold }]}
+        //
+        onAxisClick={(event, d) => {
+          if (d?.dataIndex !== undefined && stage === "third") {
+            if (d.dataIndex !== analysis.length - 1) {
               dispatch({ type: "SetIndex", index: d.dataIndex });
             }
-          }}
-          axisHighlight={{ x: "line", y: "none" }}
-          sx={{
-            [`& .${areaElementClasses.root}`]: {
-              fill: "url(#swich-color-id-1)",
-            },
-          }}>
-          <ColorSwich
-            color1={black}
-            color2={white}
-            threshold={0}
-            id="swich-color-id-1"
-          />
-        </LineChart>
-      </div>
-    </>
+          }
+        }}
+        axisHighlight={{ x: "line", y: "none" }}
+        sx={{
+          [`& .${areaElementClasses.root}`]: {
+            fill: "url(#swich-color-id-1)",
+          },
+        }}>
+        <ColorSwich
+          color1={black}
+          color2={white}
+          threshold={0}
+          id="swich-color-id-1"
+        />
+      </LineChart>
+    </div>
   );
 };
 export default EvalGraph;

@@ -152,7 +152,6 @@ export function reducer(state: stateProps, action: Action): stateProps {
       } else {
         try {
           evaluation = state.analysis[moveIndex].eval;
-          console.log(state.analysis[moveIndex]);
         } catch (error) {
           console.log(`can't get evaluation of position `);
         }
