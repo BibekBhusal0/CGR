@@ -2,8 +2,14 @@ import { Chess } from "chess.js";
 import { Dispatch } from "react";
 import { evaluationType } from "./stockfish";
 import { analysisType } from "./analyze";
+import { GOT } from "../components/moveTypes";
 
 type stage = "first" | "second" | "third";
+type Boardstage = "normal" | "bestMove" | "interact" | "practice";
+export interface terminationType {
+  winner: "b" | "w" | undefined;
+  overBy: GOT;
+}
 export interface userControlTypes {
   depth: number;
   highlight: boolean;
@@ -17,26 +23,33 @@ export interface resetTypes {
   allowMoves: boolean;
   whitePlayer: string;
   stage: stage;
+  boardStage: Boardstage;
   blackPlayer: string;
-  evaluation: evaluationType;
   fen: string;
+  moveIndex: number;
+  index2: number;
+  evaluation: evaluationType;
   Game?: Chess;
   analysis?: analysisType[];
-  moveIndex: number;
+  termination?: terminationType;
 }
 
 export type stateProps = userControlTypes & resetTypes;
 export type Action =
-  | { type: "ChangeDepth"; depth: any }
   | { type: "ToggleHighlight" }
   | { type: "ToggleBestMove" }
   | { type: "ToggleAnimation" }
+  | { type: "FlipBoard" }
   | { type: "SetTheme"; theme: string }
-  | { type: "ChangeState"; stage: "first" | "third" | "second" }
-  | { type: "SetGame"; game: Chess }
+  | { type: "SetFen"; fen: string }
   | { type: "SetIndex"; index: number }
-  | { type: "SetAnalysis"; analysis: analysisType[] }
-  | { type: "FlipBoard" };
+  | { type: "SetIndex2"; index: number }
+  | { type: "SetBoardStage"; stage: Boardstage }
+  | { type: "ChangeState"; stage: stage }
+  | { type: "ChangeDepth"; depth: any }
+  | { type: "SetTermination"; termination?: terminationType }
+  | { type: "SetGame"; game: Chess }
+  | { type: "SetAnalysis"; analysis: analysisType[] };
 
 export interface ContextProps {
   state: stateProps;
@@ -57,10 +70,13 @@ const reset: resetTypes = {
   blackPlayer: "Black Player",
   evaluation: { type: "cp", value: 0 },
   stage: "first",
+  boardStage: "normal",
+  index2: 0,
+  moveIndex: -1,
   fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  termination: undefined,
   Game: undefined,
   analysis: undefined,
-  moveIndex: -1,
 };
 const iState: stateProps = {
   ...userControls,
@@ -96,6 +112,26 @@ export function reducer(state: stateProps, action: Action): stateProps {
       return { ...state, btheme: action.theme };
     case "SetAnalysis":
       return { ...state, analysis: action.analysis };
+    case "SetTermination":
+      return { ...state, termination: action.termination };
+    case "SetFen":
+      console.log(`setting fen to ${action.fen}`);
+      return { ...state, fen: action.fen };
+    case "SetIndex2":
+      console.log(`in move ${action.index}`);
+      return { ...state, index2: action.index };
+    case "SetBoardStage":
+      console.log(`changing state to ${action.stage}`);
+      if (action.stage === "normal") {
+        if (!state.Game) {
+          throw new Error("game not found");
+        }
+
+        const fen = state.Game.history({ verbose: true })[state.moveIndex]
+          .after;
+        return { ...state, boardStage: action.stage, fen };
+      }
+      return { ...state, boardStage: action.stage };
 
     case "ChangeState":
       if (action.stage === "first") {
@@ -157,6 +193,13 @@ export function reducer(state: stateProps, action: Action): stateProps {
         }
         fen = full_history[moveIndex].after;
       }
-      return { ...state, moveIndex, fen, evaluation };
+      return {
+        ...state,
+        moveIndex,
+        fen,
+        evaluation,
+        index2: 0,
+        boardStage: "normal",
+      };
   }
 }

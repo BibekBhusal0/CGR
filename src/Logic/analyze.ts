@@ -27,28 +27,46 @@ export interface analysisType extends StockfishOutput {
   accuracy: number;
   opening?: openingType;
   fenLines: string[];
+  bestMoveComment?: string;
+  moveComment?: string;
 }
 
 export function convertToSAN(SF: StockfishOutput, fen: string) {
   var { bestMove, lines } = SF;
   const chess = new Chess(fen);
   const fenLines: string[] = [];
+
   try {
-    chess.move(SF.bestMove);
-    bestMove = chess.history()[0];
+    const moveOutput = chess.move(reformatMove(SF.bestMove));
+    bestMove = moveOutput.san;
+
     lines = [];
+    lines.push(bestMove);
+    fenLines.push(moveOutput.after);
 
     SF.lines.forEach((move) => {
-      chess.move(move);
-      fenLines.push(chess.fen());
-      const history = chess.history();
-      lines.push(history[history.length - 1]);
+      const moveOutput = chess.move(reformatMove(move));
+      fenLines.push(moveOutput.after);
+      lines.push(moveOutput.san);
     });
   } catch (error) {
     console.log(`Couldn't phrase moves ${error}`);
   }
 
   return { ...SF, fenLines, lines, bestMove };
+}
+
+function reformatMove(move: string) {
+  const uciRegex = /^[a-h][1-8][a-h][1-8](?:[qrbn])?$/i;
+
+  if (uciRegex.test(move)) {
+    const from = move.slice(0, 2);
+    const to = move.slice(2, 4);
+    const promotion = move.length > 4 ? move[4] : undefined;
+
+    return { from, to, promotion };
+  }
+  return move;
 }
 
 export interface analyzePropsType {
@@ -68,7 +86,7 @@ export async function analyze({
   var lichessResponse: openingType | undefined;
   const fen = positionDetails[moveIndex === -1 ? "before" : "after"];
   var inBook = false;
-  var opName;
+  var opName, moveComment, bestMoveComment;
 
   const SFanalysis = convertToSAN(stockfishAnalysis, fen);
   if (moveIndex) {
@@ -175,9 +193,7 @@ export async function analyze({
     } else {
       moveType = "blunder";
     }
-  } else {
-    moveType = "great";
-  }
+  } else moveType = "great";
 
   if (accuracy === 100) {
     accuracy = moveAcc[moveType];
@@ -188,5 +204,7 @@ export async function analyze({
     accuracy,
     moveType,
     opening: lichessResponse,
+    moveComment,
+    bestMoveComment,
   };
 }

@@ -10,29 +10,33 @@ import { useTheme } from "next-themes";
 import { themes } from "../Logic/reducers";
 import { useContext } from "react";
 import { AppContext } from "../App";
+import { ColorPicker } from "./colors";
 
 function LeftPanel() {
-  const heading_class = "text-2xl overflow-x-hidden";
   return (
     <div className="basis-3/12">
       <Accordion
+        itemClasses={{ title: "text-2xl overflow-x-hidden", content: "mb-2" }}
         aria-label="left"
         variant="splitted"
         defaultExpandedKeys={["1", "2"]}
         selectionMode="multiple">
-        <AccordionItem
-          className="mb-2"
-          aria-label="Settings"
-          title={<h1 className={heading_class}> General Settings </h1>}
-          key="1">
+        <AccordionItem aria-label="Settings" title="General Settings " key="1">
           <GeneralSettings />
         </AccordionItem>
 
         <AccordionItem
           aria-label="stockfish"
-          title={<h1 className={heading_class}> Stockfish Settings</h1>}
+          title="Stockfish Settings"
           key="2">
           <StockfishSettings />
+        </AccordionItem>
+        <AccordionItem
+          aria-label="chooseColors"
+          subtitle="Choose Board Colors"
+          title="Colors"
+          key="3">
+          <ColorPicker />
         </AccordionItem>
       </Accordion>
     </div>

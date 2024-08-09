@@ -1,5 +1,6 @@
 import { FC, useContext, useMemo, useState } from "react";
 import {
+  chessResults,
   drawResults,
   game,
   GameResponse,
@@ -19,8 +20,24 @@ import {
 import { AppContext } from "../App";
 import { Chess } from "chess.js";
 import TimeControl from "./timeControls";
+import { terminationType } from "../Logic/reducers";
+import { GOT } from "./moveTypes";
 
 const titles = ["Time Control", "White Player", "", "Balck Player"];
+
+function reformatLostResult(result: chessResults): GOT {
+  if (
+    result === "checkmated" ||
+    result === "timeout" ||
+    result === "resigned"
+  ) {
+    return result;
+  }
+  if (result === "abandoned") {
+    return "resigned";
+  }
+  return "checkmated";
+}
 
 interface TableProps {
   tableData: GameResponse;
@@ -38,12 +55,22 @@ export const GameTable: FC<TableProps> = ({
 
   const { dispatch } = context;
   const handleClick = (game: game) => {
-    const { black, pgn, initial_setup } = game;
+    const { black, pgn, initial_setup, white } = game;
     const chess = new Chess(initial_setup);
     chess.loadPgn(pgn);
     if (black.username === userName) {
       dispatch({ type: "FlipBoard" });
     }
+    var termination: terminationType | undefined;
+    if (drawResults.includes(black.result)) {
+      termination = { overBy: "draw", winner: undefined };
+    } else if (black.result === "win") {
+      termination = { winner: "b", overBy: reformatLostResult(white.result) };
+    } else if (white.result === "win") {
+      termination = { winner: "w", overBy: reformatLostResult(black.result) };
+    }
+
+    dispatch({ type: "SetTermination", termination });
     dispatch({ type: "SetGame", game: chess });
     dispatch({ type: "ChangeState", stage: "second" });
   };

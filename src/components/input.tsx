@@ -35,8 +35,9 @@ export function Input() {
   return (
     <div className=" flex flex-col gap-7 px-3">
       <Chip size="lg" color="primary" className="px-8 py-8 mt-6 mb-5">
-        <div className="flex gap-4 text-center text-3xl font-semibold">
-          <IoSearch /> Chess Game Review
+        <div className="flex gap-4 text-center text-3xl font-semibold items-center">
+          <IoSearch />
+          <div>Chess Game Review</div>
         </div>
       </Chip>
       <Textarea

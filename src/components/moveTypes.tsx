@@ -1,12 +1,12 @@
 import { FC } from "react";
 import { BsFillStarFill } from "react-icons/bs";
 import { FaBookOpen, FaCheck, FaFlag, FaTrophy } from "react-icons/fa";
-import { IoMdThumbsUp } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { ImArrowRight } from "react-icons/im";
 import { TbClockX } from "react-icons/tb";
 import { GiPointySword } from "react-icons/gi";
 import AnimatedCounter from "./AnimatedCounter";
+import { FaThumbsUp } from "react-icons/fa6";
 
 export interface MoveProperty {
   color: string;
@@ -28,11 +28,11 @@ export const allTypesOfMove = [
 ] as const;
 
 export const GameOverTypes = [
-  "timeout",
-  "draw",
-  "resign",
   "win",
-  "checkmate",
+  "draw",
+  "checkmated",
+  "resigned",
+  "timeout",
 ] as const;
 
 export type GOT = (typeof GameOverTypes)[number];
@@ -62,7 +62,7 @@ export const MoveMaping: MoveMappingType = {
   brilliant: { color: "#26C2A3", item: "!!" },
   great: { color: "#749BBF", item: "!" },
   best: { color: "#81B64C", item: <BsFillStarFill /> },
-  excellent: { color: "#81B64C", item: <IoMdThumbsUp /> },
+  excellent: { color: "#81B64C", item: <FaThumbsUp /> },
   good: {
     color: "#77915F",
     item: <FaCheck />,
@@ -81,34 +81,26 @@ export const MoveMaping: MoveMappingType = {
   forcing: { color: "#96AF8B", item: <ImArrowRight /> },
 };
 export const GameOverMapping: GameOverMappingType = {
-  resign: { color: "#312E2B", item: <FaFlag /> },
+  resigned: { color: "#312E2B", item: <FaFlag /> },
   draw: { color: "#DBAC16", item: "½" },
   timeout: { color: "#312E2B", item: <TbClockX /> },
   win: { color: "#DBAC16", item: <FaTrophy /> },
-  checkmate: { color: "#312E2B", item: <GiPointySword /> },
+  checkmated: { color: "#312E2B", item: <GiPointySword /> },
 };
 
 export const mapping = { ...MoveMaping, ...GameOverMapping };
 
-const MoveIcon: FC<{ type: AllIcons; scale: number }> = ({
-  type,
-  scale = 1,
-}) => {
+const MoveIcon: FC<{ type: AllIcons }> = ({ type }) => {
   const { color, item } = mapping[type];
   return (
     <div
       style={{
-        scale: scale,
-      }}>
-      <div
-        style={{
-          backgroundColor: color,
-        }}
-        className="rounded-full size-7 relative">
-        <div className="size-full bg-radial-gradient from-gray-600 to-80% z-0 opacity-40 absolute"></div>
-        <div className="size-full flex items-center text-center font-bold justify-center z-10 absolute text-white">
-          {item}
-        </div>
+        backgroundColor: color,
+      }}
+      className="rounded-full size-7 relative">
+      <div className="size-full bg-radial-gradient from-gray-600 to-80% z-0 opacity-40 absolute"></div>
+      <div className="size-full flex items-center text-center font-bold justify-center z-10 absolute text-white">
+        {item}
       </div>
     </div>
   );
@@ -143,11 +135,11 @@ export const MoveClass: FC<{
                   className="rounded-full size-7 animate-pulse "></div>
                 <div
                   style={{ backgroundColor: MoveMaping[type].color }}
-                  className="h-5 my-1 rounded-md animate-pulse"></div>
+                  className="h-5 w-20 my-1 rounded-md animate-pulse "></div>
               </>
             ) : (
               <>
-                <MoveIcon type={type} scale={1} />
+                <MoveIcon type={type} />
                 <div>{type}</div>
               </>
             )}

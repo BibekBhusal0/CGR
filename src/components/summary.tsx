@@ -1,5 +1,5 @@
-import { FC, useContext, useEffect, useState } from "react";
-import MoveIcon, { allTypesOfMove, MoveClass, MT } from "./moveTypes";
+import { useContext, useEffect, useState } from "react";
+import { allTypesOfMove, MoveClass, MT } from "./moveTypes";
 import { AppContext } from "../App";
 import { Button, CardBody, CardFooter, Progress } from "@nextui-org/react";
 import StockfishManager, { StockfishOutput } from "../Logic/stockfish";
@@ -164,7 +164,7 @@ function Summary() {
       </CardBody>
       <CardFooter className="flex justify-center">
         <Button
-          className="text-xl"
+          className="text-2xl px-6 py-4"
           onClick={handleClick}
           variant="ghost"
           isDisabled={loading}

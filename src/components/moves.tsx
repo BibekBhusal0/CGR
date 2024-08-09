@@ -4,6 +4,7 @@ import { Button, CardBody, CardFooter, CardHeader } from "@nextui-org/react";
 import { Controls } from "./controls";
 import EvalGraph from "../Logic/evalgraph";
 import { MoveComment } from "./moveComment";
+import MoveIcon from "./moveTypes";
 
 function Moves() {
   const context = useContext(AppContext);
@@ -55,7 +56,7 @@ function Moves() {
             onPress={() => dispatch({ type: "ChangeState", stage: "second" })}
             variant="ghost"
             size="lg">
-            <div className="text-xl">Back</div>
+            <div className="text-2xl">Back</div>
           </Button>
         </div>
       </CardFooter>
@@ -69,9 +70,14 @@ const SingleMove: FC<{ move: string; index: number }> = ({ move, index }) => {
     throw new Error();
   }
   const {
-    state: { moveIndex },
+    state: { moveIndex, analysis },
     dispatch,
   } = context;
+  var moveType;
+  if (index !== -1 && analysis !== undefined) {
+    moveType = analysis[index].moveType;
+  }
+
   const elementRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (elementRef.current) {
@@ -90,9 +96,10 @@ const SingleMove: FC<{ move: string; index: number }> = ({ move, index }) => {
   return (
     <div
       ref={elementRef}
-      className={`${cls} basis-5/12 text-xl p-1 pl-4 cursor-pointer hover:bg-default-200`}
+      className={`${cls} basis-5/12 text-xl p-1 pl-4 cursor-pointer hover:bg-default-200 flex gap-1 items-center`}
       onClick={ClickHandler}>
-      {move}
+      {moveType && <MoveIcon type={moveType} />}
+      <div>{move}</div>
     </div>
   );
 };

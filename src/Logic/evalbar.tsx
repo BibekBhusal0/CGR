@@ -17,7 +17,7 @@ function EvalBar() {
     showVal = parseInt(showVal);
   }
 
-  var white_winning = showVal < 0;
+  var white_winning = showVal! < 0;
   var winChance = 50;
   const rot = bottom === "white" ? "" : "rotate-180";
   if (stage === "third" && moveIndex !== -1) {

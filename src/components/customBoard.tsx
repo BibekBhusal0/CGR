@@ -1,9 +1,10 @@
 import { FC, useContext } from "react";
 import { Chessboard } from "react-chessboard";
-import { AppContext } from "../App";
+import { AppContext, ColorContext } from "../App";
 import { Chess } from "chess.js";
 import { Square } from "react-chessboard/dist/chessboard/types";
 import MoveIcon, { AllIcons } from "../components/moveTypes";
+import { getPieces } from "../Logic/pieces";
 
 interface PieceProps {
   isDragging: boolean;
@@ -45,7 +46,7 @@ const customPieces = (
             />
             {review && (
               <div className="translate-x-[70%] translate-y-[-250%]">
-                <MoveIcon type={review} scale={1} />
+                <MoveIcon type={review} />
               </div>
             )}
           </div>
@@ -59,7 +60,8 @@ const customPieces = (
 
 function JustBoard() {
   const context = useContext(AppContext);
-  if (!context) {
+  const colorContext = useContext(ColorContext);
+  if (!context || !colorContext) {
     throw new Error("can't get context");
   }
   const {
@@ -72,22 +74,49 @@ function JustBoard() {
       bestMove,
       Game,
       moveIndex,
+      termination,
       analysis,
       highlight,
       stage,
+      boardStage,
     },
   } = context;
+  const {
+    state: { colors },
+  } = colorContext;
+  const { light, dark } = colors[btheme];
 
   const arrow: [Square, Square, string?][] = [];
   const highlights: { [square: string]: React.CSSProperties } = {};
   const reviews: Review[] = [];
 
-  if (stage === "third" && moveIndex !== -1) {
+  if (stage === "third" && moveIndex !== -1 && boardStage === "normal") {
     if (Game !== undefined && analysis !== undefined) {
       const history = Game.history({ verbose: true });
       const type = analysis[moveIndex].moveType;
       const sq = history[moveIndex].to;
       reviews.push({ [sq]: type } as Review);
+
+      if (moveIndex === history.length - 1 && termination !== undefined) {
+        const whiteKing = getPieces(Game, "w", "k");
+        const blackKing = getPieces(Game, "b", "k");
+        const whiteKingSq = whiteKing[0].square;
+        const blackKingSq = blackKing[0].square;
+
+        if (!termination.winner) {
+          reviews.push({ [whiteKingSq]: "draw" } as Review);
+          reviews.push({ [blackKingSq]: "draw" } as Review);
+        } else {
+          reviews.push({
+            [blackKingSq]:
+              termination.winner === "b" ? "win" : termination.overBy,
+          } as Review);
+          reviews.push({
+            [whiteKingSq]:
+              termination.winner === "w" ? "win" : termination.overBy,
+          } as Review);
+        }
+      }
 
       if (highlight) {
         const { from, to } = history[moveIndex];
@@ -96,8 +125,8 @@ function JustBoard() {
       }
       if (bestMove) {
         const chess = new Chess(history[moveIndex].before);
-        chess.move(analysis[moveIndex].bestMove);
-        const { from, to } = chess.history({ verbose: true })[0];
+        const moveOuptut = chess.move(analysis[moveIndex].bestMove);
+        const { from, to } = moveOuptut;
         arrow.push([from, to, "green"]);
       }
     }
@@ -107,12 +136,17 @@ function JustBoard() {
     <Chessboard
       id="board"
       position={fen}
-      arePiecesDraggable={allowMoves}
-      customPieces={customPieces(btheme, reviews)}
-      boardOrientation={bottom}
+      //
       animationDuration={animation ? 300 : 0}
+      arePiecesDraggable={allowMoves}
+      boardOrientation={bottom}
+      //
+      customPieces={customPieces(btheme, reviews)}
       customArrows={arrow}
       customSquareStyles={highlights}
+      //
+      customLightSquareStyle={{ backgroundColor: light }}
+      customDarkSquareStyle={{ backgroundColor: dark }}
     />
   );
 }

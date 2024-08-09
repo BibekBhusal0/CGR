@@ -1,8 +1,6 @@
 import { motion } from "framer-motion";
 import { openingType } from "../Logic/analyze";
 import { FC, useEffect, useState } from "react";
-import { Tooltip } from "@nextui-org/react";
-import { LuInfo } from "react-icons/lu";
 
 const OpeningCard: FC<{ opening?: openingType }> = ({ opening }) => {
   const [name, setName] = useState("");
@@ -56,43 +54,25 @@ const WinRateGraph: FC<{
   ];
 
   return (
-    <div className="flex gap-2 pb-5">
-      <div className="relative w-full h-4">
-        {entries.map(({ label, value, color, offset, z, pValue }) => (
-          <>
-            <motion.div
-              style={{ zIndex: z }}
-              className={`${color} h-full rounded-full top-0 absolute`}
-              initial={{ width: 0 }}
-              animate={{
-                width: `${(value / total) * 100}%`,
-              }}></motion.div>
-            <motion.div
-              style={{ left: `${(offset * 100) / total}%` }}
-              initial={{ y: 0 }}
-              animate={{ y: `15px` }}
-              className="absolute z-[19] text-xs">
-              {label}: {((pValue / total) * 100).toFixed(1)} %
-            </motion.div>
-          </>
-        ))}
-      </div>
-
-      <Tooltip
-        className="cursor-pointer"
-        placement="top-end"
-        content={
-          <div className="flex-col gap-1">
-            <div className="text-sm capitalize">Opening Data From Lichess</div>
-            {Object.entries(data).map(([key, value]) => (
-              <div key={key} className="text-sm">
-                {key} : {value}
-              </div>
-            ))}
-          </div>
-        }>
-        <LuInfo className="text-xl" />
-      </Tooltip>
+    <div className="relative w-full h-4 mb-5">
+      {entries.map(({ label, value, color, offset, z, pValue }) => (
+        <>
+          <motion.div
+            style={{ zIndex: z }}
+            className={`${color} h-full rounded-full top-0 absolute`}
+            initial={{ width: 0 }}
+            animate={{
+              width: `${(value / total) * 100}%`,
+            }}></motion.div>
+          <motion.div
+            style={{ left: `${(offset * 100) / total}%` }}
+            initial={{ y: 0 }}
+            animate={{ y: `18px` }}
+            className="absolute z-[19] text-xs">
+            {label}: {((pValue / total) * 100).toFixed(1)} %
+          </motion.div>
+        </>
+      ))}
     </div>
   );
 };
