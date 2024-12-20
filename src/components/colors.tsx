@@ -151,39 +151,14 @@ export interface ColorContextProps {
 
 export const ColorState: ColorStateType = {
   colors: {
-    default: {
-      light: "#dbbc95",
-      dark: "#7f623b",
-    },
-    ocen: {
-      light: "#D5E0E6",
-      dark: "#7FA0B5",
-    },
-    wood: {
-      light: "#BEA481",
-      dark: "#73533A",
-    },
-    geometric: {
-      light: "#C7C3AB",
-      dark: "#77534c",
-    },
-    cosmos: {
-      light: "#78818A",
-      dark: "#565E68",
-    },
-    dash: {
-      light: "#EDF3F4",
-      dark: "#7e8a99",
-    },
-    glass: {
-      light: "#DCDCDC",
-      dark: "#6e7c7f",
-    },
-
-    nature: {
-      light: "#d3e5a5",
-      dark: "#74997b",
-    },
+    default: { light: "#f0d2ad", dark: "#654e2f" },
+    ocen: { light: "#D5E0E6", dark: "#6aa4c8" },
+    wood: { light: "#c8ac89", dark: "#6e543f" },
+    geometric: { light: "#C7C3AB", dark: "#77534c" },
+    cosmos: { light: "#94a1ad", dark: "#464c53" },
+    dash: { light: "#EDF3F4", dark: "#7e8a99" },
+    glass: { light: "#dbdbdb", dark: "#687578" },
+    nature: { light: "#c4d49b", dark: "#68926f" },
   },
 };
 

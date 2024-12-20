@@ -1,7 +1,7 @@
 {
   "name": "cgr",
   "version": "0.1.0",
-  "homepage": "https://github.com/BibekBhusal0/CGR/",
+  "homepage": "https://bibekbhusal0.github.io/CGR/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.0",
