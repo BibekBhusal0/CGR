@@ -1,7 +1,7 @@
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
 import { Select, SelectItem } from "@nextui-org/select";
 import { Slider } from "@nextui-org/slider";
-import { Switch } from "@nextui-org/switch";
+import { Switch, SwitchProps } from "@nextui-org/switch";
 import { useTheme } from "next-themes";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
@@ -13,6 +13,10 @@ import {
   changeDepth,
 } from "@/Logic/reducers/settings";
 
+const switchClassNames = {
+  base: "flex-row-reverse justify-between w-full max-w-full border-default-400 border-dotted border-t-2 pt-3 mt-3",
+  label: "text-xl",
+};
 function LeftPanel() {
   return (
     <div className="basis-3/12">
@@ -22,7 +26,7 @@ function LeftPanel() {
         variant="splitted"
         defaultExpandedKeys={["1", "2"]}
         selectionMode="multiple">
-        <AccordionItem aria-label="Settings" title="General Settings " key="1">
+        <AccordionItem aria-label="Settings" title="General Settings" key="1">
           <GeneralSettings />
         </AccordionItem>
 
@@ -49,25 +53,24 @@ function GeneralSettings() {
     setTheme(not_theme);
   }
 
-  const titles = ["Dark Mode", "Highlight Move", "Animation"];
-  const elem = [
-    <Switch
-      aria-label="dark mode"
-      isSelected={theme === "dark"}
-      onValueChange={changeTheme}
-    />,
-    <Switch
-      isSelected={highlight}
-      onValueChange={() => dispatch(toggleValues("highlight"))}
-      aria-label="highlight move"
-      defaultSelected
-    />,
-    <Switch
-      isSelected={animation}
-      onValueChange={() => dispatch(toggleValues("animation"))}
-      aria-label="a"
-      defaultSelected
-    />,
+  const switches: SwitchProps[] = [
+    {
+      isSelected: theme === "dark",
+      onValueChange: changeTheme,
+      children: "Dark Mode",
+    },
+    {
+      isSelected: highlight,
+      onValueChange: () => dispatch(toggleValues("highlight")),
+      defaultSelected: true,
+      children: "Highlight Move",
+    },
+    {
+      isSelected: animation,
+      onValueChange: () => dispatch(toggleValues("animation")),
+      defaultSelected: true,
+      children: "Animation",
+    },
   ];
   return (
     <>
@@ -80,7 +83,6 @@ function GeneralSettings() {
             src={getImageSource(theme, btheme)}
           />
         }
-        className="mb-4"
         size="lg"
         classNames={{
           label: "text-xl",
@@ -96,45 +98,38 @@ function GeneralSettings() {
         labelPlacement="outside-left"
         label="Board Theme">
         {allBoardThemes.map((board_theme) => (
-          <SelectItem aria-label={board_theme} key={board_theme}>
-            <div className="flex gap-2 capitalize flex-row realtive text-lg items-center">
+          <SelectItem
+            startContent={
               <img
-                className="w-14 h-auto"
+                className="w-10 h-auto"
                 src={getImageSource(theme, board_theme)}
                 alt={`${board_theme} board_theme Pawn`}
               />
-              {board_theme}
-            </div>
+            }
+            className="capitalize"
+            classNames={{ base: "items-center", title: "text-xl" }}
+            aria-label={board_theme}
+            key={board_theme}>
+            {board_theme}
           </SelectItem>
         ))}
       </Select>
-      {titles.map((title, index) => (
-        <TwoElement title={title} key={title} Component={elem[index]} />
+      {switches.map((props, i) => (
+        <Switch key={i} classNames={switchClassNames} {...props} />
       ))}
     </>
   );
 }
 function StockfishSettings() {
-  const titles = ["Show Best Moves"];
   const { depth, bestMove } = useSelector((state: StateType) => state.settings);
   const dispatch = useDispatch();
 
-  const elem = [
-    <Switch
-      aria-label="Best Moves"
-      isSelected={bestMove}
-      onValueChange={() => dispatch(toggleValues("bestMove"))}
-      defaultSelected
-    />,
-  ];
-
   return (
-    <div>
+    <>
       <Slider
         label={<h1 className="text-xl"> Depth </h1>}
         aria-label="depth"
         showTooltip
-        className="pb-3 pr-3"
         minValue={10}
         value={depth}
         onChange={(e) => {
@@ -142,24 +137,15 @@ function StockfishSettings() {
         }}
         maxValue={30}
       />
-      {titles.map((title, index) => (
-        <TwoElement title={title} key={title} Component={elem[index]} />
-      ))}
-    </div>
-  );
-}
-
-interface TwoElementProps {
-  title: string;
-  Component: any;
-}
-function TwoElement({ title, Component }: TwoElementProps) {
-  const bt = typeof Component.type === "object" ? "border-t-1" : "";
-  return (
-    <div className={`grid p-2 grid-cols-4 border-gray-600 border-dotted ${bt}`}>
-      <div className="col-span-3 text-xl ">{title}</div>
-      <div className="col-span-1">{Component}</div>
-    </div>
+      <Switch
+        classNames={switchClassNames}
+        aria-label="Best Moves"
+        isSelected={bestMove}
+        onValueChange={() => dispatch(toggleValues("bestMove"))}
+        defaultSelected
+        children="Best Move"
+      />
+    </>
   );
 }
 

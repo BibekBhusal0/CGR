@@ -27,10 +27,10 @@ export const SelectGame: FC<{ input: string }> = ({ input }) => {
     try {
       const response = await gamesOnChessDotCom(input, date.month, date.year);
       setData(response);
-      setLoaded(true);
     } catch (error) {
-      setLoaded(true);
       console.log(error);
+    } finally {
+      setLoaded(true);
     }
   };
   const resetDateAndFetch = (newDate: CalendarDate) => {
@@ -67,8 +67,8 @@ export const SelectGame: FC<{ input: string }> = ({ input }) => {
               ) : isGameResponse(data) ? (
                 <GameTable tableData={data.data} userName={input}></GameTable>
               ) : (
-                <div className="text-center">
-                  error occored while fetching
+                <div className="text-center p-4">
+                  error occurred while fetching
                   <br />
                   {JSON.stringify(data.data)}
                   <br />
@@ -76,7 +76,7 @@ export const SelectGame: FC<{ input: string }> = ({ input }) => {
                 </div>
               )
             ) : (
-              <LoadingTable></LoadingTable>
+              <LoadingTable />
             )}
           </ModalBody>
         </ModalContent>

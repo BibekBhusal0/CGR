@@ -3,10 +3,9 @@ import { allTypesOfMove, MoveClass, MT } from "./moveTypes";
 import { CardBody, CardFooter } from "@nextui-org/card";
 import { Button } from "@nextui-org/button";
 import { Progress } from "@nextui-org/progress";
-import StockfishManager, { StockfishOutput } from "../Logic/stockfish";
+import StockfishManager, { evaluationType } from "../Logic/stockfish";
 import EvalGraph from "../Logic/evalgraph";
-import { analysisType, analyze, analyzePropsType } from "../Logic/analyze";
-import AnimatedCounter from "./AnimatedCounter";
+import { analysisType, analyze } from "../Logic/analyze";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
 
@@ -36,79 +35,77 @@ function Summary() {
   } = useSelector((state: StateType) => state);
   const dispatch = useDispatch();
 
-  if (!Game) {
-    throw new Error();
-  }
+  if (!Game) throw new Error();
   const handleClick = () => {
     dispatch({ type: "ChangeState", stage: "third" });
   };
+
   useEffect(() => {
     const stockfish = new StockfishManager();
+
+    const analyzePosition = async (
+      fen: string,
+      prevEval: evaluationType,
+      moveIndex: number
+    ) => {
+      const move = Game.history({ verbose: true })[moveIndex];
+      console.log(move);
+      const SFresult = await stockfish.analyzePosition(fen, depth);
+      console.log(SFresult);
+      return await analyze({
+        stockfishAnalysis: SFresult,
+        prevEval,
+        positionDetails: move,
+        moveIndex,
+      });
+    };
+
     const analysisLoop = async () => {
       const history = Game.history({ verbose: true });
+      console.log(history);
       const CM = Game.isCheckmate();
       const SM = Game.isStalemate();
       const gameOver = CM || SM;
       let completed = 0;
-      const analysisResult: analysisType[] = [];
-      var prevEval = { type: "cp", value: 0 };
-      var SFresult: StockfishOutput = await stockfish.analyzePosition(
+      const analysisResult = [];
+      let prevEval = { type: "cp", value: 0 };
+
+      const initialMove = await analyzePosition(
         history[0].before,
-        depth
-      );
-      var analyzedMove = await analyze({
-        stockfishAnalysis: SFresult,
         prevEval,
-        positionDetails: history[0],
-        moveIndex: -1,
-      });
-      analysisResult.push(analyzedMove);
-      prevEval = analyzedMove.eval;
+        -1
+      );
+      analysisResult.push(initialMove);
+      prevEval = initialMove.eval;
+
       for (let i = 0; i < history.length; i++) {
         const fen = history[i].after;
-        if (!gameOver || !(i === history.length - 1)) {
-          SFresult = await stockfish.analyzePosition(fen, depth);
+
+        if (gameOver && i === history.length - 1) {
+          const turn = Game.turn();
+          if (SM) prevEval = { type: "cp", value: 0 };
+          else prevEval = { type: "mate", value: turn === "w" ? -1 : 1 };
         } else {
-          SFresult = {
-            bestMove: "",
-            eval: { type: "cp", value: 0 },
-            lines: [],
-          };
-          if (CM) {
-            const turn = Game.turn();
-            SFresult["eval"] = { type: "mate", value: turn === "w" ? -1 : 1 };
-          }
+          const analyzedMove = await analyzePosition(fen, prevEval, i);
+          analysisResult.push(analyzedMove);
+          prevEval = analyzedMove.eval;
         }
-
-        const analyzeProps: analyzePropsType = {
-          stockfishAnalysis: SFresult,
-          prevEval,
-          positionDetails: history[i],
-          moveIndex: i,
-        };
-
-        analyzedMove = await analyze(analyzeProps);
-        analysisResult.push(analyzedMove);
-        prevEval = analyzedMove.eval;
 
         completed++;
         setProgress(completed / history.length);
       }
+
       dispatch({ type: "SetAnalysis", analysis: analysisResult });
       setPlayerSummary(countTypes(analysisResult));
     };
 
-    if (!analysis) {
-      analysisLoop();
-    } else {
-      if (progress !== 1) {
-        setProgress(1);
-      }
+    if (!analysis) analysisLoop();
+    else {
+      if (progress !== 1) setProgress(1);
       setPlayerSummary(countTypes(analysis));
     }
-    return () => {
-      stockfish.terminate();
-    };
+
+    return () => stockfish.terminate();
   }, []);
 
   return (
@@ -131,21 +128,11 @@ function Summary() {
             <div className="text-xl font-bold col-span-2">VS</div>
             <div className="col-span-3">{blackPlayer}</div>
             <div className="text-center col-span-2">
-              {
-                <AnimatedCounter
-                  to={playerSummary.white.accuracy}
-                  round_off={false}
-                />
-              }
+              {playerSummary.white.accuracy.toFixed(2)} %
             </div>
             <div className="col-span-4">Accuracy</div>
             <div className="text-center col-span-2">
-              {
-                <AnimatedCounter
-                  to={playerSummary.black.accuracy}
-                  round_off={false}
-                />
-              }
+              {playerSummary.black.accuracy.toFixed(2)} %
             </div>
           </div>
           {allTypesOfMove.slice(0, allTypesOfMove.length - 1).map((m) => (

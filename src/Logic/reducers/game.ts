@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Chess } from "chess.js";
+import { Chess, DEFAULT_POSITION } from "chess.js";
 import { evaluationType } from "@/Logic/stockfish";
 import { analysisType } from "@/Logic/analyze";
 import { GOT } from "@/components/moveTypes";
@@ -38,7 +38,7 @@ const initialState: GameType = {
   boardStage: "normal",
   index2: 0,
   moveIndex: -1,
-  fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  fen: DEFAULT_POSITION,
   termination: undefined,
   Game: undefined,
   analysis: undefined,
@@ -100,47 +100,43 @@ const gameSlice = createSlice({
     },
     changeState(state, action: PayloadAction<stage>) {
       if (action.payload === "first") {
-        return { ...initialState };
+        state = { ...initialState };
       } else if (action.payload === "second") {
         state.stage = action.payload;
         state.moveIndex = -1;
-      } else {
-        state.stage = action.payload;
       }
+      state.stage = action.payload;
     },
     setGame(state, action: PayloadAction<Chess>) {
       const header = action.payload.header();
-      let whitePlayer = header.White || state.whitePlayer;
-      let blackPlayer = header.Black || state.blackPlayer;
-      const whiteElo = header.WhiteElo || "";
-      const blackElo = header.BlackElo || "";
+      const formatPlayer = (
+        player: string,
+        elo: string,
+        defaultName: string
+      ): string => {
+        if (player === "?" || player === "??") return defaultName;
+        player = player.trim();
+        return elo ? `${player} (${elo})` : player;
+      };
 
-      if (whitePlayer === "?" || whitePlayer === "??") {
-        whitePlayer = state.whitePlayer;
-      } else {
-        whitePlayer = whitePlayer.trim();
-        if (whiteElo) {
-          whitePlayer = `${whitePlayer} (${whiteElo})`;
-        }
-      }
-
-      if (blackPlayer === "?" || blackPlayer === "??") {
-        blackPlayer = state.blackPlayer;
-      } else {
-        blackPlayer = blackPlayer.trim();
-        if (blackElo) {
-          blackPlayer = `${blackPlayer} (${blackElo})`;
-        }
-      }
-
+      state.whitePlayer = formatPlayer(
+        header.White || state.whitePlayer,
+        header.WhiteElo || "",
+        state.whitePlayer
+      );
+      state.blackPlayer = formatPlayer(
+        header.Black || state.blackPlayer,
+        header.BlackElo || "",
+        state.blackPlayer
+      );
       state.Game = action.payload;
-      state.whitePlayer = whitePlayer;
-      state.blackPlayer = blackPlayer;
     },
     setAnalysis(state, action: PayloadAction<analysisType[]>) {
+      console.log("setting analysis");
       state.analysis = action.payload;
     },
     setTermination(state, action: PayloadAction<terminationType | undefined>) {
+      console.log("setting termination");
       state.termination = action.payload;
     },
   },

@@ -9,6 +9,7 @@ import { Chess } from "chess.js";
 import { IoSearch } from "react-icons/io5";
 import { useDispatch } from "react-redux";
 import { changeState, setGame } from "@/Logic/reducers/game";
+import { CardBody } from "@nextui-org/card";
 
 export function Input() {
   const [mode, setMode] = useState<string>("chess");
@@ -33,26 +34,26 @@ export function Input() {
 
   const pgnRef = useRef<any>(null);
   return (
-    <div className=" flex flex-col gap-7 px-3">
-      <Chip size="lg" color="primary" className="px-8 py-8 mt-6 mb-5">
-        <div className="flex gap-4 text-center text-3xl font-semibold items-center">
-          <IoSearch />
-          <div>Chess Game Review</div>
-        </div>
+    <CardBody className="flex-center flex-col gap-7 px-3 py-5">
+      <Chip
+        size="lg"
+        startContent={<IoSearch className="text-4xl" />}
+        color="primary"
+        className="text-2xl p-8 gap-3">
+        <div>Chess Game Review</div>
       </Chip>
       <Textarea
         aria-label="pgn"
         value={val}
         onValueChange={(e) => {
           setVal(e);
-          if (val.trim() !== "") {
-            setMassage("");
-          }
+          if (val.trim() !== "") setMassage("");
         }}
         ref={pgnRef}
         label={mode === "pgn" ? "Paste PGN" : "Chess.com Username"}
         minRows={mode === "pgn" ? 8 : 1}
-        maxRows={mode === "pgn" ? 10 : 1}></Textarea>
+        maxRows={mode === "pgn" ? 10 : 1}
+      />
       <Select
         aria-label="type"
         defaultSelectedKeys={[mode]}
@@ -69,19 +70,17 @@ export function Input() {
       </Select>
       {mode === "pgn" ? (
         <Button
-          className="text-2xl py-8 font-semibold group "
+          className="text-2xl font-semibold w-full py-8"
           variant="shadow"
           color="primary"
+          startContent={<FaChessQueen className="text-3xl" />}
           onPress={handleClick}>
-          <div className="flex gap-5 transition-size">
-            <FaChessQueen className="text-3xl transition-transform group-hover:rotate-6 group-hover:translate-x-2 group-hover:-translate-y-2" />
-            Analize
-          </div>
+          Analyze
         </Button>
       ) : (
         <SelectGame input={val} />
       )}
-      <div className="text-xl">{massage}</div>
-    </div>
+      {massage && <div className="text-xl py-2 text-danger">{massage}</div>}
+    </CardBody>
   );
 }

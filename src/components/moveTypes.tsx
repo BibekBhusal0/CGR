@@ -5,7 +5,6 @@ import { IoClose } from "react-icons/io5";
 import { ImArrowRight } from "react-icons/im";
 import { TbClockX } from "react-icons/tb";
 import { GiPointySword } from "react-icons/gi";
-import AnimatedCounter from "./AnimatedCounter";
 import { FaThumbsUp } from "react-icons/fa6";
 
 export interface MoveProperty {
@@ -122,9 +121,7 @@ export const MoveClass: FC<{
     <div
       style={{ color: MoveMaping[type].color }}
       className="grid grid-cols-8 text-center text-lg w-full">
-      <div className=" col-span-2">
-        <AnimatedCounter to={white} round_off />
-      </div>
+      <div className=" col-span-2">{white}</div>
       <div className="col-span-4">
         <div className="w-full">
           <div className="flex gap-3 items-center justify-around align-middle text-left capitalize ">
@@ -146,9 +143,7 @@ export const MoveClass: FC<{
           </div>
         </div>
       </div>
-      <div className=" col-span-2">
-        <AnimatedCounter to={black} round_off />
-      </div>
+      <div className=" col-span-2">{black}</div>
     </div>
   );
 };

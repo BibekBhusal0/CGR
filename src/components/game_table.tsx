@@ -17,7 +17,7 @@ import {
   TableRow,
   TableCell,
 } from "@nextui-org/table";
-import { Chess } from "chess.js";
+import { Chess, DEFAULT_POSITION } from "chess.js";
 import TimeControl from "./timeControls";
 import {
   changeState,
@@ -55,7 +55,7 @@ export const GameTable: FC<TableProps> = ({
   const dispatch = useDispatch();
   const handleClick = (game: game) => {
     const { black, pgn, initial_setup, white } = game;
-    const chess = new Chess(initial_setup);
+    const chess = new Chess(initial_setup || DEFAULT_POSITION);
     chess.loadPgn(pgn);
     if (black.username === userName) {
       dispatch(flipBoard());
@@ -68,7 +68,6 @@ export const GameTable: FC<TableProps> = ({
     } else if (white.result === "win") {
       termination = { winner: "w", overBy: reformatLostResult(black.result) };
     }
-
     dispatch(setTermination(termination));
     dispatch(setGame(chess));
     dispatch(changeState("second"));
@@ -127,7 +126,7 @@ export const GameTable: FC<TableProps> = ({
         ))}
       </TableHeader>
       <TableBody
-        emptyContent={`${userName} has not palyed any games this month you can try diffent month`}>
+        emptyContent={`${userName} has not played any games this month you can try different month`}>
         {items.map((g) => (
           <TableRow
             key={g.uuid}
@@ -164,7 +163,7 @@ const Player: FC<PlayerProps> = ({ player_info: { username, rating } }) => {
 export const LoadingTable: FC = () => {
   return (
     <Table
-      aria-label="loaidng table"
+      aria-label="loading table"
       selectionMode="none"
       classNames={{
         td: ["text-xl"],
