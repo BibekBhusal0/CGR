@@ -1,5 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { AppContext } from "../App";
+import { useEffect, useRef, useState } from "react";
 import {
   LineChart,
   Line,
@@ -11,19 +10,14 @@ import {
   ReferenceLine,
 } from "recharts";
 import { rephraseEvaluation } from "./evalbar";
+import { useSelector } from "react-redux";
+import { StateType } from "./reducers/store";
 
 const white = "#454545";
 const black = "#F1E4D2";
 
 function EvalGraph() {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error("context not found");
-  }
-
-  const {
-    state: { analysis },
-  } = context;
+  const { analysis } = useSelector((state: StateType) => state.game);
   const showGraph = analysis !== undefined;
   return (
     <div className="size-full">
@@ -37,15 +31,8 @@ function EvalGraph() {
 }
 
 const Graph = () => {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error("context not found");
-  }
+  const { analysis } = useSelector((state: StateType) => state.game);
 
-  const {
-    state: { moveIndex, analysis, stage },
-    dispatch,
-  } = context;
   if (!analysis) {
     throw new Error("analysis not found");
   }

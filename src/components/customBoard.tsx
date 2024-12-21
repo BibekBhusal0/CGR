@@ -1,10 +1,12 @@
-import { FC, useContext } from "react";
 import { Chessboard } from "react-chessboard";
-import { AppContext } from "../App";
+import { FC } from "react";
 import { Chess } from "chess.js";
 import { Square } from "react-chessboard/dist/chessboard/types";
 import MoveIcon, { AllIcons } from "../components/moveTypes";
 import { getPieces } from "../Logic/pieces";
+import { boardThemes } from "@/Logic/reducers/settings";
+import { useSelector } from "react-redux";
+import { StateType } from "@/Logic/reducers/store";
 
 interface PieceProps {
   isDragging: boolean;
@@ -12,6 +14,17 @@ interface PieceProps {
   square: Square;
 }
 type Review = { [key in Square]: AllIcons };
+
+const colors: Record<boardThemes, { light: string; dark: string }> = {
+  default: { light: "#f0d2ad", dark: "#654e2f" },
+  ocean: { light: "#D5E0E6", dark: "#6aa4c8" },
+  wood: { light: "#c8ac89", dark: "#6e543f" },
+  geometric: { light: "#C7C3AB", dark: "#77534c" },
+  cosmos: { light: "#94a1ad", dark: "#464c53" },
+  dash: { light: "#EDF3F4", dark: "#7e8a99" },
+  glass: { light: "#dbdbdb", dark: "#687578" },
+  nature: { light: "#c4d49b", dark: "#68926f" },
+};
 
 const customPieces = (
   theme: string,
@@ -59,32 +72,22 @@ const customPieces = (
 };
 
 function JustBoard() {
-  const context = useContext(AppContext);
-  //   const colorContext = useContext(ColorContext);
-  if (!context) {
-    throw new Error("can't get context");
-  }
   const {
-    state: {
-      btheme,
-      allowMoves,
-      fen,
-      bottom,
-      animation,
-      bestMove,
-      Game,
-      moveIndex,
-      termination,
-      analysis,
-      highlight,
-      stage,
-      boardStage,
-    },
-  } = context;
-  //   const {
-  //     state: { colors },
-  //   } = colorContext;
-  //   const { light, dark } = colors[btheme];
+    allowMoves,
+    fen,
+    bottom,
+    Game,
+    moveIndex,
+    termination,
+    analysis,
+    stage,
+    boardStage,
+  } = useSelector((state: StateType) => state.game);
+  const { animation, bestMove, btheme, highlight } = useSelector(
+    (state: StateType) => state.settings
+  );
+
+  const { light, dark } = colors[btheme];
 
   const arrow: [Square, Square, string?][] = [];
   const highlights: { [square: string]: React.CSSProperties } = {};
@@ -145,8 +148,8 @@ function JustBoard() {
       customArrows={arrow}
       customSquareStyles={highlights}
       //
-      //   customLightSquareStyle={{ backgroundColor: light }}
-      //   customDarkSquareStyle={{ backgroundColor: dark }}
+      customLightSquareStyle={{ backgroundColor: light }}
+      customDarkSquareStyle={{ backgroundColor: dark }}
     />
   );
 }

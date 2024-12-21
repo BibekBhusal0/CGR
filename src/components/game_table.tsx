@@ -1,4 +1,4 @@
-import { FC, useContext, useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import {
   chessResults,
   drawResults,
@@ -17,11 +17,17 @@ import {
   TableRow,
   TableCell,
 } from "@nextui-org/table";
-import { AppContext } from "../App";
 import { Chess } from "chess.js";
 import TimeControl from "./timeControls";
-import { terminationType } from "../Logic/reducers";
+import {
+  changeState,
+  flipBoard,
+  setGame,
+  setTermination,
+  terminationType,
+} from "../Logic/reducers/game";
 import { GOT } from "./moveTypes";
+import { useDispatch } from "react-redux";
 
 const titles = ["Time Control", "White Player", "", "Balck Player"];
 
@@ -33,9 +39,7 @@ function reformatLostResult(result: chessResults): GOT {
   ) {
     return result;
   }
-  if (result === "abandoned") {
-    return "resigned";
-  }
+  if (result === "abandoned") return "resigned";
   return "checkmated";
 }
 
@@ -48,18 +52,13 @@ export const GameTable: FC<TableProps> = ({
   tableData: { games },
   userName,
 }) => {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error();
-  }
-
-  const { dispatch } = context;
+  const dispatch = useDispatch();
   const handleClick = (game: game) => {
     const { black, pgn, initial_setup, white } = game;
     const chess = new Chess(initial_setup);
     chess.loadPgn(pgn);
     if (black.username === userName) {
-      dispatch({ type: "FlipBoard" });
+      dispatch(flipBoard());
     }
     var termination: terminationType | undefined;
     if (drawResults.includes(black.result)) {
@@ -70,9 +69,9 @@ export const GameTable: FC<TableProps> = ({
       termination = { winner: "w", overBy: reformatLostResult(black.result) };
     }
 
-    dispatch({ type: "SetTermination", termination });
-    dispatch({ type: "SetGame", game: chess });
-    dispatch({ type: "ChangeState", stage: "second" });
+    dispatch(setTermination(termination));
+    dispatch(setGame(chess));
+    dispatch(changeState("second"));
   };
 
   const getColors: (game: game) => string = (game) => {

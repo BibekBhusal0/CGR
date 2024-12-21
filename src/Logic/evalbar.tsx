@@ -1,15 +1,12 @@
-import { useContext } from "react";
-import { AppContext } from "../App";
+import { useSelector } from "react-redux";
 import { evaluationType } from "./stockfish";
+import { StateType } from "./reducers/store";
 
 function EvalBar() {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error("context not avalilable for eval bar");
-  }
-  const {
-    state: { evaluation, moveIndex, bottom, stage },
-  } = context;
+  const { evaluation, moveIndex, bottom, stage } = useSelector(
+    (state: StateType) => state.game
+  );
+
   const { type, value } = evaluation;
   var showVal: number | string = value;
 

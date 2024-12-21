@@ -10,8 +10,15 @@ import {
   FaStepForward,
 } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
-import { FC, useContext, useEffect, useRef, useState } from "react";
-import { AppContext } from "../App";
+import { FC, useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { StateType } from "@/Logic/reducers/store";
+import {
+  changeState,
+  flipBoard,
+  setFen,
+  setIndex,
+} from "@/Logic/reducers/game";
 
 interface TTButtonProps {
   name: string;
@@ -21,20 +28,13 @@ interface TTButtonProps {
 }
 
 export function Controls() {
-  const context = useContext(AppContext);
+  const { moveIndex, Game, analysis, boardStage, index2, fen } = useSelector(
+    (state: StateType) => state.game
+  );
   const [pause, setPause] = useState(false);
+  const dispatch = useDispatch();
   const [showingIndex, setShowingIndex] = useState(0);
-  if (!context) {
-    throw new Error();
-  }
-
-  const {
-    state: { moveIndex, Game, analysis, boardStage, index2, fen },
-    dispatch,
-  } = context;
-  if (!Game) {
-    throw new Error();
-  }
+  if (!Game) throw new Error();
   const n_moves = Game.history().length;
   const atEnd = moveIndex === n_moves - 1;
   const atStart = moveIndex === -1;
@@ -60,22 +60,20 @@ export function Controls() {
         fen !== currentFen
       ) {
         try {
-          dispatch({ type: "SetFen", fen: currentFen });
+          dispatch(setFen(currentFen));
           prevShowingIndexRef.current = showingIndex;
         } catch (error) {
           console.error(`Sorry, can't show moves: ${error}`);
         }
       }
     }
-  }, [showingIndex, linesToShow, dispatch, fen]);
+  }, [showingIndex, linesToShow, fen]);
 
   useEffect(() => {
     if (boardStage === "bestMove") {
       setPause(true);
       setShowingIndex(0);
-    } else if (boardStage === "normal") {
-      setPause(false);
-    }
+    } else if (boardStage === "normal") setPause(false);
   }, [boardStage]);
 
   useEffect(() => {
@@ -88,7 +86,7 @@ export function Controls() {
         if (boardStage === "bestMove" && linesToShow && !linesAtEnd) {
           setShowingIndex((prevIndex) => prevIndex + 1);
         } else if (boardStage === "normal" && moveIndex < n_moves - 1) {
-          dispatch({ type: "SetIndex", index: moveIndex + 1 });
+          dispatch(setIndex(moveIndex + 1));
         }
       }, 500);
 
@@ -103,19 +101,18 @@ export function Controls() {
     atEnd,
     moveIndex,
     n_moves,
-    dispatch,
   ]);
 
   const controlButtons: TTButtonProps[] = [
     {
       name: "Flip Board",
-      clickHandler: () => dispatch({ type: "FlipBoard" }),
+      clickHandler: () => dispatch(flipBoard()),
       disabled: false,
       icon: <PiDeviceRotateBold className="rotate-90 text-2xl scale-125" />,
     },
     {
       name: "Starting Position",
-      clickHandler: () => dispatch({ type: "SetIndex", index: -1 }),
+      clickHandler: () => dispatch(setIndex(-1)),
       disabled: atStart,
       icon: <FaStepBackward />,
     },
@@ -123,7 +120,7 @@ export function Controls() {
       name: "Previous Move",
       clickHandler: () => {
         if (boardStage === "normal") {
-          dispatch({ type: "SetIndex", index: moveIndex - 1 });
+          dispatch(setIndex(moveIndex - 1));
         } else if (boardStage === "bestMove") {
           setShowingIndex(showingIndex - 1);
         }
@@ -143,7 +140,7 @@ export function Controls() {
       name: "Next Move",
       clickHandler: () => {
         if (boardStage === "normal") {
-          dispatch({ type: "SetIndex", index: moveIndex + 1 });
+          dispatch(setIndex(moveIndex + 1));
         } else if (boardStage === "bestMove") {
           setShowingIndex(showingIndex + 1);
         }
@@ -153,13 +150,13 @@ export function Controls() {
     },
     {
       name: "Last Move",
-      clickHandler: () => dispatch({ type: "SetIndex", index: n_moves - 1 }),
+      clickHandler: () => dispatch(setIndex(n_moves - 1)),
       disabled: atEnd,
       icon: <FaStepForward />,
     },
     {
       name: "Reset",
-      clickHandler: () => dispatch({ type: "ChangeState", stage: "first" }),
+      clickHandler: () => dispatch(changeState("first")),
       disabled: false,
       icon: <FaArrowsRotate />,
     },
@@ -183,7 +180,7 @@ const TTButton: FC<TTButtonProps> = ({
   return (
     <Tooltip color="primary" showArrow={true} content={name}>
       <Button
-        onClick={clickHandler}
+        onPress={clickHandler}
         isDisabled={disabled}
         style={{ minWidth: 12 }}
         color="primary"

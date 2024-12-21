@@ -1,17 +1,14 @@
 import { Card } from "@nextui-org/card";
-import { FC, useContext } from "react";
-import { AppContext } from "../App";
+import { FC } from "react";
 import EvalBar from "../Logic/evalbar";
 import JustBoard from "./customBoard";
+import { useSelector } from "react-redux";
+import { StateType } from "@/Logic/reducers/store";
 
 function FullBoard() {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error("can't get context");
-  }
-  const {
-    state: { whitePlayer, blackPlayer, bottom },
-  } = context;
+  const { whitePlayer, blackPlayer, bottom } = useSelector(
+    (state: StateType) => state.game
+  );
 
   return (
     <Card className="basis-6/12 lg:basis-5/12 px-5">

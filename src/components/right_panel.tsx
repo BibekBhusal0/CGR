@@ -1,18 +1,13 @@
 import { Card } from "@nextui-org/card";
 import { Input } from "./input";
-import { useContext } from "react";
-import { AppContext } from "../App";
 import Moves from "./moves";
 import Summary from "./summary";
+import { useSelector } from "react-redux";
+import { StateType } from "@/Logic/reducers/store";
 
 function RightPanel() {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error();
-  }
-  const {
-    state: { stage },
-  } = context;
+  const { stage } = useSelector((state: StateType) => state.game);
+
   return (
     <div className="px-2 relative basis-3/12 lg:basis-4/12">
       <Card

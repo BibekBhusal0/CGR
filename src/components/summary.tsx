@@ -1,6 +1,5 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { allTypesOfMove, MoveClass, MT } from "./moveTypes";
-import { AppContext } from "../App";
 import { CardBody, CardFooter } from "@nextui-org/card";
 import { Button } from "@nextui-org/button";
 import { Progress } from "@nextui-org/progress";
@@ -8,6 +7,8 @@ import StockfishManager, { StockfishOutput } from "../Logic/stockfish";
 import EvalGraph from "../Logic/evalgraph";
 import { analysisType, analyze, analyzePropsType } from "../Logic/analyze";
 import AnimatedCounter from "./AnimatedCounter";
+import { useDispatch, useSelector } from "react-redux";
+import { StateType } from "@/Logic/reducers/store";
 
 export interface playerStats {
   accuracy: number;
@@ -23,20 +24,18 @@ const initStats = (): playerStats => ({
 });
 
 function Summary() {
-  const context = useContext(AppContext);
   const [progress, setProgress] = useState(0);
   const loading = !(progress === 1);
   const [playerSummary, setPlayerSummary] = useState({
     black: initStats(),
     white: initStats(),
   });
-  if (!context) {
-    throw new Error();
-  }
   const {
-    dispatch,
-    state: { whitePlayer, blackPlayer, Game, depth, analysis },
-  } = context;
+    game: { whitePlayer, blackPlayer, Game, analysis },
+    settings: { depth },
+  } = useSelector((state: StateType) => state);
+  const dispatch = useDispatch();
+
   if (!Game) {
     throw new Error();
   }
@@ -167,7 +166,7 @@ function Summary() {
       <CardFooter className="flex justify-center">
         <Button
           className="text-2xl px-6 py-4"
-          onClick={handleClick}
+          onPress={handleClick}
           variant="ghost"
           isDisabled={loading}
           color="primary">

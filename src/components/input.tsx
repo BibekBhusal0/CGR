@@ -2,30 +2,27 @@ import { Button } from "@nextui-org/button";
 import { Chip } from "@nextui-org/chip";
 import { Select, SelectItem } from "@nextui-org/select";
 import { Textarea } from "@nextui-org/input";
-import { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { FaChessQueen } from "react-icons/fa";
-import { AppContext } from "../App";
 import { SelectGame } from "./game_select";
 import { Chess } from "chess.js";
 import { IoSearch } from "react-icons/io5";
+import { useDispatch } from "react-redux";
+import { changeState, setGame } from "@/Logic/reducers/game";
 
 export function Input() {
   const [mode, setMode] = useState<string>("chess");
   const [val, setVal] = useState("");
   const [massage, setMassage] = useState("");
+  const dispatch = useDispatch();
 
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error();
-  }
-  const { dispatch } = context;
   function handleClick() {
     if (val.trim() !== "") {
       const chess = new Chess();
       try {
         chess.loadPgn(val);
-        dispatch({ type: "SetGame", game: chess });
-        dispatch({ type: "ChangeState", stage: "second" });
+        dispatch(setGame(chess));
+        dispatch(changeState("second"));
       } catch (error) {
         setMassage("Please Enter Valid PGN");
       }
