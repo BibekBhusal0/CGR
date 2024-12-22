@@ -8,6 +8,8 @@ import EvalGraph from "../Logic/evalgraph";
 import { analysisType, analyze } from "../Logic/analyze";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
+import { Move } from "chess.js";
+import { changeState, setAnalysis } from "@/Logic/reducers/game";
 
 export interface playerStats {
   accuracy: number;
@@ -37,7 +39,7 @@ function Summary() {
 
   if (!Game) throw new Error();
   const handleClick = () => {
-    dispatch({ type: "ChangeState", stage: "third" });
+    dispatch(changeState("third"));
   };
 
   useEffect(() => {
@@ -46,23 +48,21 @@ function Summary() {
     const analyzePosition = async (
       fen: string,
       prevEval: evaluationType,
-      moveIndex: number
+      moveIndex: number,
+      move: Move
     ) => {
-      const move = Game.history({ verbose: true })[moveIndex];
-      console.log(move);
       const SFresult = await stockfish.analyzePosition(fen, depth);
-      console.log(SFresult);
-      return await analyze({
+      const analysis = await analyze({
         stockfishAnalysis: SFresult,
         prevEval,
         positionDetails: move,
         moveIndex,
       });
+      return analysis;
     };
 
     const analysisLoop = async () => {
       const history = Game.history({ verbose: true });
-      console.log(history);
       const CM = Game.isCheckmate();
       const SM = Game.isStalemate();
       const gameOver = CM || SM;
@@ -73,7 +73,8 @@ function Summary() {
       const initialMove = await analyzePosition(
         history[0].before,
         prevEval,
-        -1
+        -1,
+        history[0]
       );
       analysisResult.push(initialMove);
       prevEval = initialMove.eval;
@@ -86,16 +87,16 @@ function Summary() {
           if (SM) prevEval = { type: "cp", value: 0 };
           else prevEval = { type: "mate", value: turn === "w" ? -1 : 1 };
         } else {
-          const analyzedMove = await analyzePosition(fen, prevEval, i);
-          analysisResult.push(analyzedMove);
-          prevEval = analyzedMove.eval;
+          const a = await analyzePosition(fen, prevEval, i, history[i]);
+          analysisResult.push(a);
+          prevEval = a.eval;
         }
 
         completed++;
         setProgress(completed / history.length);
       }
 
-      dispatch({ type: "SetAnalysis", analysis: analysisResult });
+      dispatch(setAnalysis(analysisResult));
       setPlayerSummary(countTypes(analysisResult));
     };
 
@@ -112,9 +113,11 @@ function Summary() {
     <>
       <CardBody>
         <div className="flex flex-col gap-3 text-lg items-center justify-center align-middle text-center p-3">
-          <div className="w-4/5 h-20 p-1 rounded-sm bg-red-300">
-            <EvalGraph />
-          </div>
+          {!loading && (
+            <div className="w-4/5 h-20 rounded-sm">
+              <EvalGraph />
+            </div>
+          )}
           {loading && (
             <Progress
               label={`Analyzing Game`}

@@ -1,20 +1,18 @@
-import { useEffect, useRef, useState } from "react";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
   ReferenceLine,
+  Area,
+  AreaChart,
+  YAxis,
 } from "recharts";
 import { rephraseEvaluation } from "./evalbar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "./reducers/store";
+import { changeState, setIndex } from "./reducers/game";
 
-const white = "#454545";
-const black = "#F1E4D2";
+// const white = "#F1E4D2";
+// const black = "#454545";
 
 function EvalGraph() {
   const { analysis } = useSelector((state: StateType) => state.game);
@@ -32,35 +30,15 @@ function EvalGraph() {
 
 const Graph = () => {
   const { analysis } = useSelector((state: StateType) => state.game);
-
-  if (!analysis) {
-    throw new Error("analysis not found");
-  }
-
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (containerRef.current) {
-        setDimensions({
-          width: containerRef.current.offsetWidth,
-          height: containerRef.current.offsetHeight,
-        });
-      }
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const dispatch = useDispatch();
+  if (!analysis) throw new Error("analysis not found");
 
   const maxEval = Math.max(
     ...analysis.map((a) =>
       a.eval.type === "cp" ? Math.abs(a.eval.value / 100) : 0
     )
   );
-  const threshold = Math.min(maxEval * 4, 25);
+  const threshold = Math.min(maxEval * 2, 6);
 
   const val: number[] = analysis.map((a) => {
     if (a.eval.type === "cp") {
@@ -73,19 +51,22 @@ const Graph = () => {
   });
 
   return (
-    <div ref={containerRef} className="size-full hide-axis">
+    <div className="size-full">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart
-          data={analysis.map((a, index) => ({
-            name: `Move ${index + 1}`,
+        <AreaChart
+          data={analysis.map((_, index) => ({
             value: val[index],
             index,
-          }))}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis domain={[-threshold, threshold]} />
+          }))}
+          onClick={(a) => {
+            if (!a) return;
+            if (typeof a.activeLabel !== "number") return;
+            dispatch(changeState("third"));
+            dispatch(setIndex(a.activeLabel));
+          }}>
+          <YAxis domain={[-threshold, threshold]} type="number" hide />
           <Tooltip
-            content={({ payload, label }) => {
+            content={({ payload }) => {
               const index =
                 payload && payload[0] ? payload[0].payload.index : -1;
               if (index !== -1) {
@@ -94,22 +75,17 @@ const Graph = () => {
               return null;
             }}
           />
-          <Line
+          <Area
             type="monotone"
             dataKey="value"
             stroke="#8884d8"
-            dot={false}
+            fill={""}
+            fillRule="nonzero"
             activeDot={{ r: 8 }}
-            // onClick={(data) => {
-            //   if (data.payload.index !== undefined && stage === "third") {
-            //     if (data.payload.index !== analysis.length - 1) {
-            //       dispatch({ type: "SetIndex", index: data.payload.index });
-            //     }
-            //   }
-            // }}
           />
+
           <ReferenceLine y={0} stroke="red" strokeDasharray="3 3" />
-        </LineChart>
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   );

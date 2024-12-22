@@ -45,8 +45,8 @@ const initialState: GameType = {
 };
 
 const gameSlice = createSlice({
-  name: "state",
-  initialState,
+  name: "game",
+  initialState: { ...initialState },
   reducers: {
     flipBoard(state) {
       state.bottom = state.bottom === "white" ? "black" : "white";
@@ -99,12 +99,8 @@ const gameSlice = createSlice({
       }
     },
     changeState(state, action: PayloadAction<stage>) {
-      if (action.payload === "first") {
-        state = { ...initialState };
-      } else if (action.payload === "second") {
-        state.stage = action.payload;
-        state.moveIndex = -1;
-      }
+      if (action.payload === "first") Object.assign(state, initialState);
+      else if (action.payload === "second") state.moveIndex = -1;
       state.stage = action.payload;
     },
     setGame(state, action: PayloadAction<Chess>) {
@@ -132,11 +128,9 @@ const gameSlice = createSlice({
       state.Game = action.payload;
     },
     setAnalysis(state, action: PayloadAction<analysisType[]>) {
-      console.log("setting analysis");
       state.analysis = action.payload;
     },
     setTermination(state, action: PayloadAction<terminationType | undefined>) {
-      console.log("setting termination");
       state.termination = action.payload;
     },
   },

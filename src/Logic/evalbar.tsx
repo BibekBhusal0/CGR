@@ -14,7 +14,8 @@ function EvalBar() {
     showVal = parseInt(showVal);
   }
 
-  var white_winning = showVal! < 0;
+  var white_winning = showVal > 0;
+  console.log(white_winning);
   var winChance = 50;
   const rot = bottom === "white" ? "" : "rotate-180";
   if (stage === "third" && moveIndex !== -1) {
@@ -37,7 +38,10 @@ function EvalBar() {
       <div
         id="eval-black"
         className="w-full absolute top-0 transition-height "
-        style={{ height: `${winChance}%`, backgroundColor: "#454545" }}></div>
+        style={{
+          height: `${100 - winChance}%`,
+          backgroundColor: "#454545",
+        }}></div>
       <div
         id="evalNum"
         className={`absolute w-full text-center font-bold text-xs  ${

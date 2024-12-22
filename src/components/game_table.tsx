@@ -29,7 +29,7 @@ import {
 import { GOT } from "./moveTypes";
 import { useDispatch } from "react-redux";
 
-const titles = ["Time Control", "White Player", "", "Balck Player"];
+const titles = ["Time Control", "White Player", "", "Black Player"];
 
 function reformatLostResult(result: chessResults): GOT {
   if (
@@ -57,9 +57,7 @@ export const GameTable: FC<TableProps> = ({
     const { black, pgn, initial_setup, white } = game;
     const chess = new Chess(initial_setup || DEFAULT_POSITION);
     chess.loadPgn(pgn);
-    if (black.username === userName) {
-      dispatch(flipBoard());
-    }
+    if (black.username === userName) dispatch(flipBoard());
     var termination: terminationType | undefined;
     if (drawResults.includes(black.result)) {
       termination = { overBy: "draw", winner: undefined };

@@ -25,6 +25,8 @@ const colors: Record<boardThemes, { light: string; dark: string }> = {
   glass: { light: "#dbdbdb", dark: "#687578" },
   nature: { light: "#c4d49b", dark: "#68926f" },
 };
+export const base_path =
+  "https://raw.githubusercontent.com/BibekBhusal0/CGR/23fab2b83de03e68e9f496b98b1001d420142513/public/images/pieces/";
 
 const customPieces = (
   theme: string,
@@ -33,8 +35,6 @@ const customPieces = (
   const pieceNames = ["K", "Q", "R", "B", "N", "P"];
   const pieces: { [key: string]: FC<PieceProps> } = {};
 
-  const base_path =
-    "https://raw.githubusercontent.com/BibekBhusal0/CGR/557306e3ad6b55c87def1d5ce01b4e6f2095542b/public/images/pieces/";
   ["w", "b"].forEach((color) => {
     pieceNames.forEach((piece) => {
       pieces[`${color}${piece}`] = ({

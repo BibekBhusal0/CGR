@@ -10,7 +10,6 @@ import { StateType } from "@/Logic/reducers/store";
 import { changeState, setIndex } from "@/Logic/reducers/game";
 
 function Moves() {
-  console.log("moves loaded");
   const { Game } = useSelector((state: StateType) => state.game);
   const dispatch = useDispatch();
   if (!Game) {

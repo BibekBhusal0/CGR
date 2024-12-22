@@ -12,6 +12,7 @@ import {
   setBoardTheme,
   changeDepth,
 } from "@/Logic/reducers/settings";
+import { base_path } from "./customBoard";
 
 const switchClassNames = {
   base: "flex-row-reverse justify-between w-full max-w-full border-default-400 border-dotted border-t-2 pt-3 mt-3",
@@ -150,7 +151,7 @@ function StockfishSettings() {
 }
 
 function getImageSource(theme: any, board_theme: string) {
-  return `https://raw.githubusercontent.com/BibekBhusal0/CGR/557306e3ad6b55c87def1d5ce01b4e6f2095542b/public/images/pieces/${board_theme.toLowerCase()}/${
+  return `${base_path}${board_theme.toLowerCase()}/${
     theme === "dark" ? "w" : "b"
   }P.svg`;
 }
