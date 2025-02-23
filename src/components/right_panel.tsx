@@ -1,4 +1,4 @@
-import { Card } from "@nextui-org/card";
+import { Card } from "@heroui/card";
 import { Input } from "./input";
 import Moves from "./moves";
 import Summary from "./summary";

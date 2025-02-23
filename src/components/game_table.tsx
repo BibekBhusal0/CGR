@@ -7,8 +7,8 @@ import {
   lostResults,
   player,
 } from "../api/CDC";
-import { Skeleton } from "@nextui-org/skeleton";
-import { Pagination } from "@nextui-org/pagination";
+import { Skeleton } from "@heroui/skeleton";
+import { Pagination } from "@heroui/pagination";
 import {
   Table,
   TableHeader,
@@ -16,7 +16,7 @@ import {
   TableColumn,
   TableRow,
   TableCell,
-} from "@nextui-org/table";
+} from "@heroui/table";
 import { Chess, DEFAULT_POSITION } from "chess.js";
 import TimeControl from "./timeControls";
 import {

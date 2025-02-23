@@ -1,5 +1,5 @@
-import { Input } from "@nextui-org/input";
-import { Listbox, ListboxItem, Snippet } from "@nextui-org/react";
+import { Input } from "@heroui/input";
+import { Listbox, ListboxItem, Snippet } from "@heroui/react";
 import { Dispatch, useContext } from "react";
 import { AppContext, ColorContext } from "../App";
 

@@ -2,7 +2,7 @@ import MoveIcon, { MoveExplained } from "./moveTypes";
 import { rephraseEvaluation } from "../Logic/evalbar";
 import { FC, useEffect, useState } from "react";
 import { evaluationType } from "../Logic/stockfish";
-import { Button } from "@nextui-org/button";
+import { Button } from "@heroui/button";
 import { BiSolidChess } from "react-icons/bi";
 import OpeningCard from "./opening";
 import { FaArrowRotateLeft } from "react-icons/fa6";

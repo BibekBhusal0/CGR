@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { NextUIProvider } from "@nextui-org/react";
+import { HeroUIProvider } from "@heroui/react";
 import { ThemeProvider } from "next-themes";
 
 const root = ReactDOM.createRoot(
@@ -11,13 +11,13 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <NextUIProvider>
+    <HeroUIProvider>
       <ThemeProvider attribute="class" defaultTheme="dark">
         <main>
           <App />
         </main>
       </ThemeProvider>
-    </NextUIProvider>
+    </HeroUIProvider>
   </React.StrictMode>
 );
 

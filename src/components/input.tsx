@@ -1,7 +1,7 @@
-import { Button } from "@nextui-org/button";
-import { Chip } from "@nextui-org/chip";
-import { Select, SelectItem } from "@nextui-org/select";
-import { Textarea } from "@nextui-org/input";
+import { Button } from "@heroui/button";
+import { Chip } from "@heroui/chip";
+import { Select, SelectItem } from "@heroui/select";
+import { Textarea } from "@heroui/input";
 import { useRef, useState } from "react";
 import { FaChessQueen } from "react-icons/fa";
 import { SelectGame } from "./game_select";
@@ -9,7 +9,7 @@ import { Chess } from "chess.js";
 import { IoSearch } from "react-icons/io5";
 import { useDispatch } from "react-redux";
 import { changeState, setGame } from "@/Logic/reducers/game";
-import { CardBody } from "@nextui-org/card";
+import { CardBody } from "@heroui/card";
 
 export function Input() {
   const [mode, setMode] = useState<string>("chess");

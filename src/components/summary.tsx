@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { allTypesOfMove, MoveClass, MT } from "./moveTypes";
-import { CardBody, CardFooter } from "@nextui-org/card";
-import { Button } from "@nextui-org/button";
-import { Progress } from "@nextui-org/progress";
+import { CardBody, CardFooter } from "@heroui/card";
+import { Button } from "@heroui/button";
+import { Progress } from "@heroui/progress";
 import StockfishManager, { evaluationType } from "../Logic/stockfish";
 import EvalGraph from "../Logic/evalgraph";
 import { analysisType, analyze } from "../Logic/analyze";

@@ -1,4 +1,4 @@
-import { Card } from "@nextui-org/card";
+import { Card } from "@heroui/card";
 import { FC } from "react";
 import EvalBar from "../Logic/evalbar";
 import JustBoard from "./customBoard";

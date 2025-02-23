@@ -1,5 +1,5 @@
-import { Button, ButtonGroup } from "@nextui-org/button";
-import { Tooltip } from "@nextui-org/tooltip";
+import { Button, ButtonGroup } from "@heroui/button";
+import { Tooltip } from "@heroui/tooltip";
 import { PiDeviceRotateBold } from "react-icons/pi";
 import {
   FaArrowLeft,

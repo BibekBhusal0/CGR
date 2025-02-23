@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef } from "react";
-import { CardBody, CardFooter, CardHeader } from "@nextui-org/card";
-import { Button } from "@nextui-org/button";
+import { CardBody, CardFooter, CardHeader } from "@heroui/card";
+import { Button } from "@heroui/button";
 import { Controls } from "./controls";
 import EvalGraph from "../Logic/evalgraph";
 import { MoveComment } from "./moveComment";

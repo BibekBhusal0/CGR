@@ -6,9 +6,9 @@ import {
   ModalContent,
   ModalHeader,
   useDisclosure,
-} from "@nextui-org/modal";
-import { Button } from "@nextui-org/button";
-import { CalendarDate } from "@nextui-org/calendar";
+} from "@heroui/modal";
+import { Button } from "@heroui/button";
+import { CalendarDate } from "@heroui/calendar";
 import { GameTable, LoadingTable } from "./game_table";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import ChooseMonth from "./chooseMonth";

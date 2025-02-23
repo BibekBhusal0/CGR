@@ -1,7 +1,7 @@
-import { Accordion, AccordionItem } from "@nextui-org/accordion";
-import { Select, SelectItem } from "@nextui-org/select";
-import { Slider } from "@nextui-org/slider";
-import { Switch, SwitchProps } from "@nextui-org/switch";
+import { Accordion, AccordionItem } from "@heroui/accordion";
+import { Select, SelectItem } from "@heroui/select";
+import { Slider } from "@heroui/slider";
+import { Switch, SwitchProps } from "@heroui/switch";
 import { useTheme } from "next-themes";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
