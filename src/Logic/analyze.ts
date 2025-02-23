@@ -132,9 +132,9 @@ export async function analyze({
     // best move according to engine
     moveType = "best";
   } else if (prevEval.type === "cp" && crrEval.type === "mate") {
-    //  mate in evaluation when previous evaluaiton don't have mate
+    //  mate in evaluation when previous evaluation don't have mate
     if (absEvaluation > 0) {
-      //  oppponent getting mated
+      //  opponent getting mated
       moveType = "best";
     } else if (absEvaluation >= -3) {
       moveType = "blunder";

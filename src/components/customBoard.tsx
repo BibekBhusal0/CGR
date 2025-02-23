@@ -1,10 +1,12 @@
-import { FC, useContext } from "react";
 import { Chessboard } from "react-chessboard";
-import { AppContext, ColorContext } from "../App";
+import { FC } from "react";
 import { Chess } from "chess.js";
 import { Square } from "react-chessboard/dist/chessboard/types";
 import MoveIcon, { AllIcons } from "../components/moveTypes";
 import { getPieces } from "../Logic/pieces";
+import { boardThemes } from "@/Logic/reducers/settings";
+import { useSelector } from "react-redux";
+import { StateType } from "@/Logic/reducers/store";
 
 interface PieceProps {
   isDragging: boolean;
@@ -13,6 +15,19 @@ interface PieceProps {
 }
 type Review = { [key in Square]: AllIcons };
 
+const colors: Record<boardThemes, { light: string; dark: string }> = {
+  default: { light: "#f0d2ad", dark: "#654e2f" },
+  ocean: { light: "#D5E0E6", dark: "#6aa4c8" },
+  wood: { light: "#c8ac89", dark: "#6e543f" },
+  geometric: { light: "#C7C3AB", dark: "#77534c" },
+  cosmos: { light: "#94a1ad", dark: "#464c53" },
+  dash: { light: "#EDF3F4", dark: "#7e8a99" },
+  glass: { light: "#dbdbdb", dark: "#687578" },
+  nature: { light: "#c4d49b", dark: "#68926f" },
+};
+export const base_path =
+  "https://raw.githubusercontent.com/BibekBhusal0/CGR/23fab2b83de03e68e9f496b98b1001d420142513/public/images/pieces/";
+
 const customPieces = (
   theme: string,
   reviews: Review[]
@@ -20,8 +35,6 @@ const customPieces = (
   const pieceNames = ["K", "Q", "R", "B", "N", "P"];
   const pieces: { [key: string]: FC<PieceProps> } = {};
 
-  const base_path =
-    "https://raw.githubusercontent.com/BibekBhusal0/CGR/557306e3ad6b55c87def1d5ce01b4e6f2095542b/public/images/pieces/";
   ["w", "b"].forEach((color) => {
     pieceNames.forEach((piece) => {
       pieces[`${color}${piece}`] = ({
@@ -59,31 +72,21 @@ const customPieces = (
 };
 
 function JustBoard() {
-  const context = useContext(AppContext);
-  const colorContext = useContext(ColorContext);
-  if (!context || !colorContext) {
-    throw new Error("can't get context");
-  }
   const {
-    state: {
-      btheme,
-      allowMoves,
-      fen,
-      bottom,
-      animation,
-      bestMove,
-      Game,
-      moveIndex,
-      termination,
-      analysis,
-      highlight,
-      stage,
-      boardStage,
-    },
-  } = context;
-  const {
-    state: { colors },
-  } = colorContext;
+    allowMoves,
+    fen,
+    bottom,
+    Game,
+    moveIndex,
+    termination,
+    analysis,
+    stage,
+    boardStage,
+  } = useSelector((state: StateType) => state.game);
+  const { animation, bestMove, btheme, highlight } = useSelector(
+    (state: StateType) => state.settings
+  );
+
   const { light, dark } = colors[btheme];
 
   const arrow: [Square, Square, string?][] = [];

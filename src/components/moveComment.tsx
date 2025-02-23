@@ -1,22 +1,22 @@
 import MoveIcon, { MoveExplained } from "./moveTypes";
 import { rephraseEvaluation } from "../Logic/evalbar";
-import { FC, useContext, useEffect, useState } from "react";
-import { AppContext } from "../App";
+import { FC, useEffect, useState } from "react";
 import { evaluationType } from "../Logic/stockfish";
-import { Button } from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
 import { BiSolidChess } from "react-icons/bi";
 import OpeningCard from "./opening";
 import { FaArrowRotateLeft } from "react-icons/fa6";
+import { useDispatch, useSelector } from "react-redux";
+import { StateType } from "@/Logic/reducers/store";
+import { setBoardStage, setIndex2 } from "@/Logic/reducers/game";
 
 export const MoveComment: FC = () => {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error();
-  }
   const {
-    state: { moveIndex, analysis, Game, bestMove, boardStage },
-    dispatch,
-  } = context;
+    game: { moveIndex, analysis, Game, boardStage },
+    settings: { bestMove },
+  } = useSelector((state: StateType) => state);
+  const dispatch = useDispatch();
+
   if (!analysis || !Game) {
     throw new Error("game not available or analysis not available");
   }
@@ -26,13 +26,11 @@ export const MoveComment: FC = () => {
     const lines = analysis[index].fenLines;
     var execute = lines.length !== 0;
     return () => {
-      // execute = false;
       if (execute) {
-        dispatch({ type: "SetIndex2", index });
-        dispatch({
-          type: "SetBoardStage",
-          stage: boardStage === "normal" ? "bestMove" : "normal",
-        });
+        dispatch(setIndex2(index));
+        dispatch(
+          setBoardStage(boardStage === "normal" ? "bestMove" : "normal")
+        );
       }
       return execute;
     };
@@ -97,11 +95,7 @@ export const MoveComment: FC = () => {
 };
 
 const ShowMoves: FC<{ ClickEvent: () => boolean }> = ({ ClickEvent }) => {
-  const context = useContext(AppContext);
-  if (!context) throw new Error("context not found");
-  const {
-    state: { boardStage },
-  } = context;
+  const { boardStage } = useSelector((state: StateType) => state.game);
 
   const [showing, setShowing] = useState(false);
   useEffect(() => {

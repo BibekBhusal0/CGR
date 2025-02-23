@@ -86,7 +86,7 @@ class StockfishManager {
         const response = await postChessApi(fen);
         return response;
       } catch (error) {
-        console.log("postChessApi falied", error);
+        console.log("postChessApi failed", error);
       }
     }
     if (depth < 16) {

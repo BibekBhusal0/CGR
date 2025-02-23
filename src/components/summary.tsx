@@ -1,11 +1,15 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { allTypesOfMove, MoveClass, MT } from "./moveTypes";
-import { AppContext } from "../App";
-import { Button, CardBody, CardFooter, Progress } from "@nextui-org/react";
-import StockfishManager, { StockfishOutput } from "../Logic/stockfish";
+import { CardBody, CardFooter } from "@nextui-org/card";
+import { Button } from "@nextui-org/button";
+import { Progress } from "@nextui-org/progress";
+import StockfishManager, { evaluationType } from "../Logic/stockfish";
 import EvalGraph from "../Logic/evalgraph";
-import { analysisType, analyze, analyzePropsType } from "../Logic/analyze";
-import AnimatedCounter from "./AnimatedCounter";
+import { analysisType, analyze } from "../Logic/analyze";
+import { useDispatch, useSelector } from "react-redux";
+import { StateType } from "@/Logic/reducers/store";
+import { Move } from "chess.js";
+import { changeState, setAnalysis } from "@/Logic/reducers/game";
 
 export interface playerStats {
   accuracy: number;
@@ -21,102 +25,99 @@ const initStats = (): playerStats => ({
 });
 
 function Summary() {
-  const context = useContext(AppContext);
   const [progress, setProgress] = useState(0);
   const loading = !(progress === 1);
   const [playerSummary, setPlayerSummary] = useState({
     black: initStats(),
     white: initStats(),
   });
-  if (!context) {
-    throw new Error();
-  }
   const {
-    dispatch,
-    state: { whitePlayer, blackPlayer, Game, depth, analysis },
-  } = context;
-  if (!Game) {
-    throw new Error();
-  }
+    game: { whitePlayer, blackPlayer, Game, analysis },
+    settings: { depth },
+  } = useSelector((state: StateType) => state);
+  const dispatch = useDispatch();
+
+  if (!Game) throw new Error();
   const handleClick = () => {
-    dispatch({ type: "ChangeState", stage: "third" });
+    dispatch(changeState("third"));
   };
+
   useEffect(() => {
     const stockfish = new StockfishManager();
+
+    const analyzePosition = async (
+      fen: string,
+      prevEval: evaluationType,
+      moveIndex: number,
+      move: Move
+    ) => {
+      const SFresult = await stockfish.analyzePosition(fen, depth);
+      const analysis = await analyze({
+        stockfishAnalysis: SFresult,
+        prevEval,
+        positionDetails: move,
+        moveIndex,
+      });
+      return analysis;
+    };
+
     const analysisLoop = async () => {
       const history = Game.history({ verbose: true });
       const CM = Game.isCheckmate();
       const SM = Game.isStalemate();
       const gameOver = CM || SM;
       let completed = 0;
-      const analysisResult: analysisType[] = [];
-      var prevEval = { type: "cp", value: 0 };
-      var SFresult: StockfishOutput = await stockfish.analyzePosition(
+      const analysisResult = [];
+      let prevEval = { type: "cp", value: 0 };
+
+      const initialMove = await analyzePosition(
         history[0].before,
-        depth
-      );
-      var analyzedMove = await analyze({
-        stockfishAnalysis: SFresult,
         prevEval,
-        positionDetails: history[0],
-        moveIndex: -1,
-      });
-      analysisResult.push(analyzedMove);
-      prevEval = analyzedMove.eval;
+        -1,
+        history[0]
+      );
+      analysisResult.push(initialMove);
+      prevEval = initialMove.eval;
+
       for (let i = 0; i < history.length; i++) {
         const fen = history[i].after;
-        if (!gameOver || !(i === history.length - 1)) {
-          SFresult = await stockfish.analyzePosition(fen, depth);
+
+        if (gameOver && i === history.length - 1) {
+          const turn = Game.turn();
+          if (SM) prevEval = { type: "cp", value: 0 };
+          else prevEval = { type: "mate", value: turn === "w" ? -1 : 1 };
         } else {
-          SFresult = {
-            bestMove: "",
-            eval: { type: "cp", value: 0 },
-            lines: [],
-          };
-          if (CM) {
-            const turn = Game.turn();
-            SFresult["eval"] = { type: "mate", value: turn === "w" ? -1 : 1 };
-          }
+          const a = await analyzePosition(fen, prevEval, i, history[i]);
+          analysisResult.push(a);
+          prevEval = a.eval;
         }
-
-        const analyzeProps: analyzePropsType = {
-          stockfishAnalysis: SFresult,
-          prevEval,
-          positionDetails: history[i],
-          moveIndex: i,
-        };
-
-        analyzedMove = await analyze(analyzeProps);
-        analysisResult.push(analyzedMove);
-        prevEval = analyzedMove.eval;
 
         completed++;
         setProgress(completed / history.length);
       }
-      dispatch({ type: "SetAnalysis", analysis: analysisResult });
+
+      dispatch(setAnalysis(analysisResult));
       setPlayerSummary(countTypes(analysisResult));
     };
 
-    if (!analysis) {
-      analysisLoop();
-    } else {
-      if (progress !== 1) {
-        setProgress(1);
-      }
+    if (!analysis) analysisLoop();
+    else {
+      if (progress !== 1) setProgress(1);
       setPlayerSummary(countTypes(analysis));
     }
-    return () => {
-      stockfish.terminate();
-    };
+
+    return () => stockfish.terminate();
   }, []);
 
   return (
     <>
       <CardBody>
         <div className="flex flex-col gap-3 text-lg items-center justify-center align-middle text-center p-3">
-          <div className="w-4/5 h-20 p-1 rounded-sm bg-red-300">
-            <EvalGraph />
-          </div>
+          {!loading && (
+            <div className="w-4/5 h-20 rounded-sm">
+              <EvalGraph />
+            </div>
+          )}
           {loading && (
             <Progress
               label={`Analyzing Game`}
@@ -130,21 +131,11 @@ function Summary() {
             <div className="text-xl font-bold col-span-2">VS</div>
             <div className="col-span-3">{blackPlayer}</div>
             <div className="text-center col-span-2">
-              {
-                <AnimatedCounter
-                  to={playerSummary.white.accuracy}
-                  round_off={false}
-                />
-              }
+              {playerSummary.white.accuracy.toFixed(2)} %
             </div>
             <div className="col-span-4">Accuracy</div>
             <div className="text-center col-span-2">
-              {
-                <AnimatedCounter
-                  to={playerSummary.black.accuracy}
-                  round_off={false}
-                />
-              }
+              {playerSummary.black.accuracy.toFixed(2)} %
             </div>
           </div>
           {allTypesOfMove.slice(0, allTypesOfMove.length - 1).map((m) => (
@@ -165,7 +156,7 @@ function Summary() {
       <CardFooter className="flex justify-center">
         <Button
           className="text-2xl px-6 py-4"
-          onClick={handleClick}
+          onPress={handleClick}
           variant="ghost"
           isDisabled={loading}
           color="primary">

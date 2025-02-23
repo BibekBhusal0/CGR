@@ -1,17 +1,23 @@
-import {
-  Accordion,
-  AccordionItem,
-  Select,
-  SelectItem,
-  Slider,
-  Switch,
-} from "@nextui-org/react";
+import { Accordion, AccordionItem } from "@nextui-org/accordion";
+import { Select, SelectItem } from "@nextui-org/select";
+import { Slider } from "@nextui-org/slider";
+import { Switch, SwitchProps } from "@nextui-org/switch";
 import { useTheme } from "next-themes";
-import { themes } from "../Logic/reducers";
-import { useContext } from "react";
-import { AppContext } from "../App";
-import { ColorPicker } from "./colors";
+import { useDispatch, useSelector } from "react-redux";
+import { StateType } from "@/Logic/reducers/store";
+import {
+  allBoardThemes,
+  boardThemes,
+  toggleValues,
+  setBoardTheme,
+  changeDepth,
+} from "@/Logic/reducers/settings";
+import { base_path } from "./customBoard";
 
+const switchClassNames = {
+  base: "flex-row-reverse justify-between w-full max-w-full border-default-400 border-dotted border-t-2 pt-3 mt-3",
+  label: "text-xl",
+};
 function LeftPanel() {
   return (
     <div className="basis-3/12">
@@ -21,7 +27,7 @@ function LeftPanel() {
         variant="splitted"
         defaultExpandedKeys={["1", "2"]}
         selectionMode="multiple">
-        <AccordionItem aria-label="Settings" title="General Settings " key="1">
+        <AccordionItem aria-label="Settings" title="General Settings" key="1">
           <GeneralSettings />
         </AccordionItem>
 
@@ -31,13 +37,6 @@ function LeftPanel() {
           key="2">
           <StockfishSettings />
         </AccordionItem>
-        <AccordionItem
-          aria-label="chooseColors"
-          subtitle="Choose Board Colors"
-          title="Colors"
-          key="3">
-          <ColorPicker />
-        </AccordionItem>
       </Accordion>
     </div>
   );
@@ -45,43 +44,34 @@ function LeftPanel() {
 
 function GeneralSettings() {
   const { theme, setTheme } = useTheme();
-  const context = useContext(AppContext);
-
-  if (!context) {
-    throw new Error(
-      "GeneralSettings must be used within an AppContext.Provider"
-    );
-  }
-
-  const {
-    state: { highlight, animation, btheme },
-    dispatch,
-  } = context;
+  const dispatch = useDispatch();
+  const { highlight, animation, btheme } = useSelector(
+    (state: StateType) => state.settings
+  );
 
   function changeTheme() {
     const not_theme = theme === "dark" ? "light" : "dark";
     setTheme(not_theme);
   }
 
-  const titles = ["Dark Mode", "Highlight Move", "Animation"];
-  const elem = [
-    <Switch
-      aria-label="dark mode"
-      isSelected={theme === "dark"}
-      onValueChange={changeTheme}
-    />,
-    <Switch
-      isSelected={highlight}
-      onValueChange={() => dispatch({ type: "ToggleHighlight" })}
-      aria-label="highlight move"
-      defaultSelected
-    />,
-    <Switch
-      isSelected={animation}
-      onValueChange={() => dispatch({ type: "ToggleAnimation" })}
-      aria-label="a"
-      defaultSelected
-    />,
+  const switches: SwitchProps[] = [
+    {
+      isSelected: theme === "dark",
+      onValueChange: changeTheme,
+      children: "Dark Mode",
+    },
+    {
+      isSelected: highlight,
+      onValueChange: () => dispatch(toggleValues("highlight")),
+      defaultSelected: true,
+      children: "Highlight Move",
+    },
+    {
+      isSelected: animation,
+      onValueChange: () => dispatch(toggleValues("animation")),
+      defaultSelected: true,
+      children: "Animation",
+    },
   ];
   return (
     <>
@@ -91,10 +81,9 @@ function GeneralSettings() {
           <img
             alt="select theme"
             className="w-8 h-auto pb-1"
-            src={getImageSorce(theme, btheme)}
+            src={getImageSource(theme, btheme)}
           />
         }
-        className="mb-4 "
         size="lg"
         classNames={{
           label: "text-xl",
@@ -103,87 +92,66 @@ function GeneralSettings() {
         }}
         onChange={(e) => {
           if (e.target.value.trim() !== "") {
-            dispatch({ type: "SetTheme", theme: e.target.value });
+            const v = e.target.value.trim() as boardThemes;
+            dispatch(setBoardTheme(v));
           }
         }}
         labelPlacement="outside-left"
         label="Board Theme">
-        {themes.map((board_theme) => (
-          <SelectItem aria-label={board_theme} key={board_theme}>
-            <div className="flex gap-2 capitalize flex-row realtive text-lg items-center">
+        {allBoardThemes.map((board_theme) => (
+          <SelectItem
+            startContent={
               <img
-                className="w-14 h-auto"
-                src={getImageSorce(theme, board_theme)}
+                className="w-10 h-auto"
+                src={getImageSource(theme, board_theme)}
                 alt={`${board_theme} board_theme Pawn`}
               />
-              {board_theme}
-            </div>
+            }
+            className="capitalize"
+            classNames={{ base: "items-center", title: "text-xl" }}
+            aria-label={board_theme}
+            key={board_theme}>
+            {board_theme}
           </SelectItem>
         ))}
       </Select>
-      {titles.map((title, index) => (
-        <TwoElement title={title} key={title} Component={elem[index]} />
+      {switches.map((props, i) => (
+        <Switch key={i} classNames={switchClassNames} {...props} />
       ))}
     </>
   );
 }
 function StockfishSettings() {
-  const titles = ["Show Best Moves"];
-  const context = useContext(AppContext);
-
-  if (!context) {
-    throw new Error("SFSettings must be used within an AppContext.Provider");
-  }
-
-  const {
-    state: { depth, bestMove },
-    dispatch,
-  } = context;
-
-  const elem = [
-    <Switch
-      aria-label="Best Moves"
-      isSelected={bestMove}
-      onValueChange={() => dispatch({ type: "ToggleBestMove" })}
-      defaultSelected
-    />,
-  ];
+  const { depth, bestMove } = useSelector((state: StateType) => state.settings);
+  const dispatch = useDispatch();
 
   return (
-    <div>
+    <>
       <Slider
         label={<h1 className="text-xl"> Depth </h1>}
         aria-label="depth"
         showTooltip
-        className="pb-3 pr-3"
         minValue={10}
         value={depth}
-        onChange={(e) => dispatch({ type: "ChangeDepth", depth: e })}
+        onChange={(e) => {
+          if (typeof e === "number") dispatch(changeDepth(e));
+        }}
         maxValue={30}
       />
-      {titles.map((title, index) => (
-        <TwoElement title={title} key={title} Component={elem[index]} />
-      ))}
-    </div>
+      <Switch
+        classNames={switchClassNames}
+        aria-label="Best Moves"
+        isSelected={bestMove}
+        onValueChange={() => dispatch(toggleValues("bestMove"))}
+        defaultSelected
+        children="Best Move"
+      />
+    </>
   );
 }
 
-interface TwoElementProps {
-  title: string;
-  Component: any;
-}
-function TwoElement({ title, Component }: TwoElementProps) {
-  const bt = typeof Component.type === "object" ? "border-t-1" : "";
-  return (
-    <div className={`grid p-2 grid-cols-4 border-gray-600 border-dotted ${bt}`}>
-      <div className="col-span-3 text-xl ">{title}</div>
-      <div className="col-span-1">{Component}</div>
-    </div>
-  );
-}
-
-function getImageSorce(theme: any, board_theme: string) {
-  return `https://raw.githubusercontent.com/BibekBhusal0/CGR/557306e3ad6b55c87def1d5ce01b4e6f2095542b/public/images/pieces/${board_theme.toLowerCase()}/${
+function getImageSource(theme: any, board_theme: string) {
+  return `${base_path}${board_theme.toLowerCase()}/${
     theme === "dark" ? "w" : "b"
   }P.svg`;
 }

@@ -1,4 +1,4 @@
-import { FC, useContext, useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import {
   chessResults,
   drawResults,
@@ -8,7 +8,7 @@ import {
   player,
 } from "../api/CDC";
 import { Skeleton } from "@nextui-org/skeleton";
-import { Pagination } from "@nextui-org/react";
+import { Pagination } from "@nextui-org/pagination";
 import {
   Table,
   TableHeader,
@@ -17,13 +17,19 @@ import {
   TableRow,
   TableCell,
 } from "@nextui-org/table";
-import { AppContext } from "../App";
-import { Chess } from "chess.js";
+import { Chess, DEFAULT_POSITION } from "chess.js";
 import TimeControl from "./timeControls";
-import { terminationType } from "../Logic/reducers";
+import {
+  changeState,
+  flipBoard,
+  setGame,
+  setTermination,
+  terminationType,
+} from "../Logic/reducers/game";
 import { GOT } from "./moveTypes";
+import { useDispatch } from "react-redux";
 
-const titles = ["Time Control", "White Player", "", "Balck Player"];
+const titles = ["Time Control", "White Player", "", "Black Player"];
 
 function reformatLostResult(result: chessResults): GOT {
   if (
@@ -33,9 +39,7 @@ function reformatLostResult(result: chessResults): GOT {
   ) {
     return result;
   }
-  if (result === "abandoned") {
-    return "resigned";
-  }
+  if (result === "abandoned") return "resigned";
   return "checkmated";
 }
 
@@ -48,19 +52,12 @@ export const GameTable: FC<TableProps> = ({
   tableData: { games },
   userName,
 }) => {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error();
-  }
-
-  const { dispatch } = context;
+  const dispatch = useDispatch();
   const handleClick = (game: game) => {
     const { black, pgn, initial_setup, white } = game;
-    const chess = new Chess(initial_setup);
+    const chess = new Chess(initial_setup || DEFAULT_POSITION);
     chess.loadPgn(pgn);
-    if (black.username === userName) {
-      dispatch({ type: "FlipBoard" });
-    }
+    if (black.username === userName) dispatch(flipBoard());
     var termination: terminationType | undefined;
     if (drawResults.includes(black.result)) {
       termination = { overBy: "draw", winner: undefined };
@@ -69,10 +66,9 @@ export const GameTable: FC<TableProps> = ({
     } else if (white.result === "win") {
       termination = { winner: "w", overBy: reformatLostResult(black.result) };
     }
-
-    dispatch({ type: "SetTermination", termination });
-    dispatch({ type: "SetGame", game: chess });
-    dispatch({ type: "ChangeState", stage: "second" });
+    dispatch(setTermination(termination));
+    dispatch(setGame(chess));
+    dispatch(changeState("second"));
   };
 
   const getColors: (game: game) => string = (game) => {
@@ -128,7 +124,7 @@ export const GameTable: FC<TableProps> = ({
         ))}
       </TableHeader>
       <TableBody
-        emptyContent={`${userName} has not palyed any games this month you can try diffent month`}>
+        emptyContent={`${userName} has not played any games this month you can try different month`}>
         {items.map((g) => (
           <TableRow
             key={g.uuid}
@@ -165,7 +161,7 @@ const Player: FC<PlayerProps> = ({ player_info: { username, rating } }) => {
 export const LoadingTable: FC = () => {
   return (
     <Table
-      aria-label="loaidng table"
+      aria-label="loading table"
       selectionMode="none"
       classNames={{
         td: ["text-xl"],

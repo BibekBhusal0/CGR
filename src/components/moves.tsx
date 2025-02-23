@@ -1,20 +1,17 @@
-import { FC, useContext, useEffect, useRef } from "react";
-import { AppContext } from "../App";
-import { Button, CardBody, CardFooter, CardHeader } from "@nextui-org/react";
+import { FC, useEffect, useRef } from "react";
+import { CardBody, CardFooter, CardHeader } from "@nextui-org/card";
+import { Button } from "@nextui-org/button";
 import { Controls } from "./controls";
 import EvalGraph from "../Logic/evalgraph";
 import { MoveComment } from "./moveComment";
 import MoveIcon from "./moveTypes";
+import { useDispatch, useSelector } from "react-redux";
+import { StateType } from "@/Logic/reducers/store";
+import { changeState, setIndex } from "@/Logic/reducers/game";
 
 function Moves() {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error();
-  }
-  const {
-    state: { Game },
-    dispatch,
-  } = context;
+  const { Game } = useSelector((state: StateType) => state.game);
+  const dispatch = useDispatch();
   if (!Game) {
     throw new Error();
   }
@@ -53,7 +50,7 @@ function Moves() {
           <MoveComment />
           <Controls />
           <Button
-            onPress={() => dispatch({ type: "ChangeState", stage: "second" })}
+            onPress={() => dispatch(changeState("second"))}
             variant="ghost"
             size="lg">
             <div className="text-2xl">Back</div>
@@ -65,14 +62,9 @@ function Moves() {
 }
 
 const SingleMove: FC<{ move: string; index: number }> = ({ move, index }) => {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error();
-  }
-  const {
-    state: { moveIndex, analysis },
-    dispatch,
-  } = context;
+  const { moveIndex, analysis } = useSelector((state: StateType) => state.game);
+  const dispatch = useDispatch();
+
   var moveType;
   if (index !== -1 && analysis !== undefined) {
     moveType = analysis[index].moveType;
@@ -89,7 +81,7 @@ const SingleMove: FC<{ move: string; index: number }> = ({ move, index }) => {
     }
   }, [moveIndex, index]);
   const ClickHandler = () => {
-    dispatch({ type: "SetIndex", index: index });
+    dispatch(setIndex(index));
   };
   const cls = moveIndex === index ? "bg-default-300" : "bg-default-100 ";
 
