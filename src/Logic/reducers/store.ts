@@ -4,7 +4,7 @@ import storage from "redux-persist/lib/storage";
 import gameReducer from "./game";
 import settingsReducer from "./settings";
 
-const persistConfig = { key: "setting", storage };
+const persistConfig = { key: "chess-settings", storage };
 
 export const store = configureStore({
   reducer: {

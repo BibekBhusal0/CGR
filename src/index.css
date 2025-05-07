@@ -1,6 +1,8 @@
 @import 'tailwindcss';
 
 @source '../node_modules/@heroui/theme/dist/components/**/*.js';
+@plugin './heroui.ts';
+@custom-variant dark (&:is(.dark *));
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
@@ -11,6 +13,7 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+
   *,
   ::after,
   ::before,
