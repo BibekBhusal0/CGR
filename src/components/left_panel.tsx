@@ -2,7 +2,7 @@ import { Accordion, AccordionItem } from "@heroui/accordion";
 import { Select, SelectItem } from "@heroui/select";
 import { Slider } from "@heroui/slider";
 import { Switch, SwitchProps } from "@heroui/switch";
-import { useTheme } from "next-themes";
+import { useTheme } from "@heroui/use-theme";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
 import {
