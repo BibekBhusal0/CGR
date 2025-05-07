@@ -21,7 +21,7 @@ const initialState: settingType = {
 };
 
 const settingSlice = createSlice({
-  name: "state",
+  name: "settings",
   initialState,
   reducers: {
     toggleValues(state, action: PayloadAction<"highlight" | "bestMove" | "animation">) {
@@ -33,6 +33,14 @@ const settingSlice = createSlice({
     setBoardTheme(state, action: PayloadAction<boardThemes>) {
       if (allBoardThemes.includes(action.payload)) state.btheme = action.payload;
     },
+    setSettings(state, action: PayloadAction<settingType>) {
+      for (const key in state) {
+        if (key in action.payload) {
+          // @ts-ignore
+          state[key] = action.payload[key];
+        }
+      }
+    }
   },
 });
 

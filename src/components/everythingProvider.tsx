@@ -1,19 +1,23 @@
 import { HeroUIProvider } from "@heroui/system";
 import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
-import { persistor, store } from "@/Logic/reducers/store";
-import { ReactNode } from "react";
+import { store, loadSettings as load } from "@/Logic/reducers/store";
+import { ReactNode, useEffect } from "react";
 
 type ep = { children: ReactNode; }
+
+const LoadSettings = ({ children }: ep) => {
+  useEffect(() => { load() }, [])
+  return (children)
+}
 
 const EverythingProvider = ({ children }: ep) => {
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <HeroUIProvider disableAnimation={false}>
+      <HeroUIProvider disableAnimation={false}>
+        <LoadSettings>
           {children}
-        </HeroUIProvider>
-      </PersistGate>
+        </LoadSettings>
+      </HeroUIProvider>
     </Provider>
   );
 };
