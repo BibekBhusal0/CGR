@@ -10,88 +10,85 @@ import { StateType } from "@/Logic/reducers/store";
 import { changeState, setIndex } from "@/Logic/reducers/game";
 
 function Moves() {
-    const { Game } = useSelector((state: StateType) => state.game);
-    const dispatch = useDispatch();
-    if (!Game) {
-        throw new Error();
+  const { Game } = useSelector((state: StateType) => state.game);
+  const dispatch = useDispatch();
+  if (!Game) {
+    throw new Error();
+  }
+  const history = Game.history();
+  const makePear = (moves: string[]) => {
+    let movePears = [];
+    for (let i = 0; i < moves.length; i += 2) {
+      movePears.push(moves.slice(i, i + 2));
     }
-    const history = Game.history();
-    const makePear = (moves: string[]) => {
-        let movePears = [];
-        for (let i = 0; i < moves.length; i += 2) {
-            movePears.push(moves.slice(i, i + 2));
-        }
-        return movePears;
-    };
-    const Pears = makePear(history);
+    return movePears;
+  };
+  const Pears = makePear(history);
 
-    return (
-        <>
-            <CardHeader className="flex h-20 w-full flex-col justify-center bg-default-100 px-3">
-                <EvalGraph />
-            </CardHeader>
-            <CardBody>
-                <div className="max-h-96 min-h-20 overflow-auto">
-                    {Pears.map((p, rowIndex) => (
-                        <div className="flex" key={rowIndex}>
-                            <div className="basis-2/12 text-center text-lg">{rowIndex + 1}.</div>
-                            {p.map((move, colIndex) => {
-                                const i = rowIndex * 2 + colIndex;
-                                return <SingleMove key={colIndex} move={move} index={i} />;
-                            })}
-                        </div>
-                    ))}
-                </div>
-            </CardBody>
-            <CardFooter>
-                <div className="align-center flex w-full flex-col justify-center gap-3 align-middle">
-                    <MoveComment />
-                    <Controls />
-                    <Button
-                        onPress={() => dispatch(changeState("second"))}
-                        variant="ghost"
-                        size="lg">
-                        <div className="text-2xl">Back</div>
-                    </Button>
-                </div>
-            </CardFooter>
-        </>
-    );
+  return (
+    <>
+      <CardHeader className="flex h-20 w-full flex-col justify-center bg-default-100 px-3">
+        <EvalGraph />
+      </CardHeader>
+      <CardBody>
+        <div className="max-h-96 min-h-20 overflow-auto">
+          {Pears.map((p, rowIndex) => (
+            <div className="flex" key={rowIndex}>
+              <div className="basis-2/12 text-center text-lg">{rowIndex + 1}.</div>
+              {p.map((move, colIndex) => {
+                const i = rowIndex * 2 + colIndex;
+                return <SingleMove key={colIndex} move={move} index={i} />;
+              })}
+            </div>
+          ))}
+        </div>
+      </CardBody>
+      <CardFooter>
+        <div className="align-center flex w-full flex-col justify-center gap-3 align-middle">
+          <MoveComment />
+          <Controls />
+          <Button onPress={() => dispatch(changeState("second"))} variant="ghost" size="lg">
+            <div className="text-2xl">Back</div>
+          </Button>
+        </div>
+      </CardFooter>
+    </>
+  );
 }
 
 const SingleMove: FC<{ move: string; index: number }> = ({ move, index }) => {
-    const { moveIndex, analysis } = useSelector((state: StateType) => state.game);
-    const dispatch = useDispatch();
+  const { moveIndex, analysis } = useSelector((state: StateType) => state.game);
+  const dispatch = useDispatch();
 
-    var moveType;
-    if (index !== -1 && analysis !== undefined) {
-        moveType = analysis[index].moveType;
+  var moveType;
+  if (index !== -1 && analysis !== undefined) {
+    moveType = analysis[index].moveType;
+  }
+
+  const elementRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (elementRef.current) {
+      if (moveIndex === index) {
+        elementRef.current.scrollIntoView();
+      } else if (moveIndex === -1 && index === 0) {
+        elementRef.current.scrollIntoView();
+      }
     }
+  }, [moveIndex, index]);
+  const ClickHandler = () => {
+    dispatch(setIndex(index));
+  };
+  const cls = moveIndex === index ? "bg-default-300" : "bg-default-100 ";
 
-    const elementRef = useRef<HTMLDivElement>(null);
-    useEffect(() => {
-        if (elementRef.current) {
-            if (moveIndex === index) {
-                elementRef.current.scrollIntoView();
-            } else if (moveIndex === -1 && index === 0) {
-                elementRef.current.scrollIntoView();
-            }
-        }
-    }, [moveIndex, index]);
-    const ClickHandler = () => {
-        dispatch(setIndex(index));
-    };
-    const cls = moveIndex === index ? "bg-default-300" : "bg-default-100 ";
-
-    return (
-        <div
-            ref={elementRef}
-            className={`${cls} flex basis-5/12 cursor-pointer items-center gap-1 p-1 pl-4 text-xl hover:bg-default-200`}
-            onClick={ClickHandler}>
-            {moveType && <MoveIcon type={moveType} />}
-            <div>{move}</div>
-        </div>
-    );
+  return (
+    <div
+      ref={elementRef}
+      className={`${cls} flex basis-5/12 cursor-pointer items-center gap-1 p-1 pl-4 text-xl hover:bg-default-200`}
+      onClick={ClickHandler}>
+      {moveType && <MoveIcon type={moveType} />}
+      <div>{move}</div>
+    </div>
+  );
 };
 
 export default Moves;

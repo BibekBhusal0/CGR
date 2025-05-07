@@ -12,75 +12,75 @@ import { changeState, setGame } from "@/Logic/reducers/game";
 import { CardBody } from "@heroui/card";
 
 export function Input() {
-    const [mode, setMode] = useState<string>("chess");
-    const [val, setVal] = useState("");
-    const [massage, setMassage] = useState("");
-    const dispatch = useDispatch();
+  const [mode, setMode] = useState<string>("chess");
+  const [val, setVal] = useState("");
+  const [massage, setMassage] = useState("");
+  const dispatch = useDispatch();
 
-    function handleClick() {
-        if (val.trim() !== "") {
-            const chess = new Chess();
-            try {
-                chess.loadPgn(val);
-                dispatch(setGame(chess));
-                dispatch(changeState("second"));
-            } catch (error) {
-                setMassage("Please Enter Valid PGN");
-            }
-        } else {
-            setMassage("Please Enter Your  PGN");
-        }
+  function handleClick() {
+    if (val.trim() !== "") {
+      const chess = new Chess();
+      try {
+        chess.loadPgn(val);
+        dispatch(setGame(chess));
+        dispatch(changeState("second"));
+      } catch (error) {
+        setMassage("Please Enter Valid PGN");
+      }
+    } else {
+      setMassage("Please Enter Your  PGN");
     }
+  }
 
-    const pgnRef = useRef<any>(null);
-    return (
-        <CardBody className="flex-center flex-col gap-7 px-3 py-5">
-            <Chip
-                size="lg"
-                startContent={<IoSearch className="text-4xl" />}
-                color="primary"
-                className="gap-3 p-8 text-2xl">
-                <div>Chess Game Review</div>
-            </Chip>
-            <Textarea
-                aria-label="pgn"
-                value={val}
-                onValueChange={(e) => {
-                    setVal(e);
-                    if (val.trim() !== "") setMassage("");
-                }}
-                ref={pgnRef}
-                label={mode === "pgn" ? "Paste PGN" : "Chess.com Username"}
-                minRows={mode === "pgn" ? 8 : 1}
-                maxRows={mode === "pgn" ? 10 : 1}
-            />
-            <Select
-                aria-label="type"
-                defaultSelectedKeys={[mode]}
-                value={mode}
-                onChange={(item) => {
-                    if (item.target.value.trim() !== "") {
-                        setMode(item.target.value);
-                        setVal("");
-                        pgnRef.current.focus();
-                    }
-                }}>
-                <SelectItem key="chess">Chess.com</SelectItem>
-                <SelectItem key="pgn">PGN</SelectItem>
-            </Select>
-            {mode === "pgn" ? (
-                <Button
-                    className="w-full py-8 text-2xl font-semibold"
-                    variant="shadow"
-                    color="primary"
-                    startContent={<FaChessQueen className="text-3xl" />}
-                    onPress={handleClick}>
-                    Analyze
-                </Button>
-            ) : (
-                <SelectGame input={val} />
-            )}
-            {massage && <div className="py-2 text-xl text-danger">{massage}</div>}
-        </CardBody>
-    );
+  const pgnRef = useRef<any>(null);
+  return (
+    <CardBody className="flex-center flex-col gap-7 px-3 py-5">
+      <Chip
+        size="lg"
+        startContent={<IoSearch className="text-4xl" />}
+        color="primary"
+        className="gap-3 p-8 text-2xl">
+        <div>Chess Game Review</div>
+      </Chip>
+      <Textarea
+        aria-label="pgn"
+        value={val}
+        onValueChange={(e) => {
+          setVal(e);
+          if (val.trim() !== "") setMassage("");
+        }}
+        ref={pgnRef}
+        label={mode === "pgn" ? "Paste PGN" : "Chess.com Username"}
+        minRows={mode === "pgn" ? 8 : 1}
+        maxRows={mode === "pgn" ? 10 : 1}
+      />
+      <Select
+        aria-label="type"
+        defaultSelectedKeys={[mode]}
+        value={mode}
+        onChange={(item) => {
+          if (item.target.value.trim() !== "") {
+            setMode(item.target.value);
+            setVal("");
+            pgnRef.current.focus();
+          }
+        }}>
+        <SelectItem key="chess">Chess.com</SelectItem>
+        <SelectItem key="pgn">PGN</SelectItem>
+      </Select>
+      {mode === "pgn" ? (
+        <Button
+          className="w-full py-8 text-2xl font-semibold"
+          variant="shadow"
+          color="primary"
+          startContent={<FaChessQueen className="text-3xl" />}
+          onPress={handleClick}>
+          Analyze
+        </Button>
+      ) : (
+        <SelectGame input={val} />
+      )}
+      {massage && <div className="py-2 text-xl text-danger">{massage}</div>}
+    </CardBody>
+  );
 }
