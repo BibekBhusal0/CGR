@@ -1,7 +1,7 @@
 name: Format
 
 permissions:
-  contents: write
+  workflows: write 
 
 on:
   push:
