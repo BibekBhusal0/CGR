@@ -141,7 +141,7 @@ function StockfishSettings() {
   );
 }
 
-function getImageSource(theme: any, board_theme: string) {
+function getImageSource(theme: string, board_theme: string) {
   return `${base_path}${board_theme.toLowerCase()}/${theme === "dark" ? "w" : "b"}P.svg`;
 }
 

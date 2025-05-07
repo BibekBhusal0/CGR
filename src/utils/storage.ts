@@ -1,6 +1,5 @@
-
-export const saveToLocalStorage = (key: string, data: any): Promise<void> => {
-  return new Promise((resolve, reject) => {
+export const saveToLocalStorage = (key: string, data: unknown): Promise<void> => {
+  return new Promise((resolve,) => {
     try {
       localStorage.setItem(key, JSON.stringify(data));
       resolve();
@@ -10,18 +9,14 @@ export const saveToLocalStorage = (key: string, data: any): Promise<void> => {
   });
 };
 
-export const loadFromLocalStorage = (key: string): Promise<any | null> => {
+export const loadFromLocalStorage = (key: string): Promise<unknown | null> => {
   return new Promise((resolve) => {
     try {
       const data = localStorage.getItem(key);
       resolve(data ? JSON.parse(data) : null);
     } catch (error) {
+      console.error(error)
       resolve(null)
     }
   });
 };
-
-export const clearLocalStorage = () => {
-  localStorage.clear();
-};
-

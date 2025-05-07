@@ -103,7 +103,7 @@ export const MoveClass: FC<{
   type: MT;
   counts?: { white: number; black: number };
 }> = ({ type, counts }) => {
-  var black, white;
+  let black, white;
   if (!counts) {
     black = 0;
     white = 0;

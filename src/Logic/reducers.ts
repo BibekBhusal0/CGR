@@ -46,7 +46,7 @@ export type Action =
   | { type: "SetIndex2"; index: number }
   | { type: "SetBoardStage"; stage: Boardstage }
   | { type: "ChangeState"; stage: stage }
-  | { type: "ChangeDepth"; depth: any }
+  | { type: "ChangeDepth"; depth: number }
   | { type: "SetTermination"; termination?: terminationType }
   | { type: "SetGame"; game: Chess }
   | { type: "SetAnalysis"; analysis: analysisType[] };
@@ -165,9 +165,9 @@ export function reducer(state: stateProps, action: Action): stateProps {
       };
 
     case "SetIndex":
-      var moveIndex = action.index;
-      var fen;
-      var evaluation: evaluationType = { value: 0, type: "cp" };
+      const moveIndex = action.index;
+      let fen;
+      let evaluation: evaluationType = { value: 0, type: "cp" };
 
       if (!state.Game || !state.analysis) {
         throw new Error("game not entered");
@@ -180,6 +180,7 @@ export function reducer(state: stateProps, action: Action): stateProps {
           evaluation = state.analysis[moveIndex].eval;
         } catch (error) {
           console.log(`can't get evaluation of position `);
+          console.error(error)
         }
         fen = full_history[moveIndex].after;
       }

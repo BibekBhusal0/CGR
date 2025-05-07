@@ -1,5 +1,5 @@
 import MoveIcon, { MoveExplained } from "./moveTypes";
-import { rephraseEvaluation } from "../Logic/evalbar";
+import { rephraseEvaluation } from "../Logic/rephraseEvaluation";
 import { FC, useEffect, useState } from "react";
 import { evaluationType } from "../Logic/stockfish";
 import { Button } from "@heroui/button";
@@ -20,11 +20,11 @@ export const MoveComment: FC = () => {
   if (!analysis || !Game) {
     throw new Error("game not available or analysis not available");
   }
-  var crrMove, crrPositionAnalysis, prevPositionAnalysis;
+  let crrMove, crrPositionAnalysis, prevPositionAnalysis;
 
   const getClickHandler = (index: number): (() => boolean) => {
     const lines = analysis[index].fenLines;
-    var execute = lines.length !== 0;
+    const execute = lines.length !== 0;
     return () => {
       if (execute) {
         dispatch(setIndex2(index));

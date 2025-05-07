@@ -47,10 +47,9 @@ class StockfishManager {
           const parts = data.split(" ");
           const evalIndex = parts.indexOf("score") + 2;
           const evalType = parts[evalIndex - 1];
-          var evalValue: any = parts[evalIndex];
+          let evalValue: number = parseInt(parts[evalIndex]);
           const pvIndex = parts.indexOf("pv") + 1;
           const lines = parts.slice(pvIndex);
-          evalValue = parseInt(evalValue);
           evalValue = this.blackToMove ? evalValue * -1 : evalValue;
           this.output.eval = { type: evalType, value: evalValue };
           this.output.lines = lines;

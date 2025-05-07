@@ -32,7 +32,7 @@ export interface analysisType extends StockfishOutput {
 }
 
 export function convertToSAN(SF: StockfishOutput, fen: string) {
-  var { bestMove, lines } = SF;
+  let { bestMove, lines } = SF;
   const chess = new Chess(fen);
   const fenLines: string[] = [];
 
@@ -83,10 +83,10 @@ export async function analyze({
   moveIndex,
 }: analyzePropsType): Promise<analysisType> {
   //
-  var lichessResponse: openingType | undefined;
+  let lichessResponse: openingType | undefined;
   const fen = positionDetails[moveIndex === -1 ? "before" : "after"];
-  var inBook = false;
-  var opName, moveComment, bestMoveComment;
+  let inBook = false;
+  let opName, moveComment, bestMoveComment;
 
   const SFanalysis = convertToSAN(stockfishAnalysis, fen);
   if (moveIndex) {
@@ -111,8 +111,8 @@ export async function analyze({
     }
   }
 
-  var moveType: MT;
-  var accuracy: number = 100;
+  let moveType: MT;
+  let accuracy: number = 100;
   const chess = new Chess(fen);
   const legalMoves = chess.moves();
   const isWhiteTurn = chess.turn() === "w";

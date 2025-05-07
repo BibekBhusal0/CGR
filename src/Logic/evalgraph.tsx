@@ -1,5 +1,5 @@
 import { Tooltip, ResponsiveContainer, ReferenceLine, Area, AreaChart, YAxis } from "recharts";
-import { rephraseEvaluation } from "./evalbar";
+import { rephraseEvaluation } from "./rephraseEvaluation";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "./reducers/store";
 import { changeState, setIndex } from "./reducers/game";

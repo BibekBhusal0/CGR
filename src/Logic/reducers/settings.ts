@@ -36,7 +36,7 @@ const settingSlice = createSlice({
     setSettings(state, action: PayloadAction<settingType>) {
       for (const key in state) {
         if (key in action.payload) {
-          // @ts-ignore
+          // @ts-expect-error This is safe mr eslint stop souting
           state[key] = action.payload[key];
         }
       }

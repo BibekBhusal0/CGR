@@ -1,5 +1,4 @@
 import { useSelector } from "react-redux";
-import { evaluationType } from "./stockfish";
 import { StateType } from "./reducers/store";
 import { cn } from "@heroui/theme";
 
@@ -7,15 +6,14 @@ function EvalBar() {
   const { evaluation, moveIndex, bottom, stage } = useSelector((state: StateType) => state.game);
 
   const { type, value } = evaluation;
-  var showVal: number | string = value;
+  let showVal: number | string = value;
 
   if (typeof showVal === "string") {
     showVal = parseInt(showVal);
   }
 
-  var white_winning = showVal > 0;
-  console.log(white_winning);
-  var winChance = 50;
+  const white_winning = showVal > 0;
+  let winChance = 50;
   const rot = bottom === "white" ? "" : "rotate-180";
   if (stage === "third" && moveIndex !== -1) {
     if (type === "mate") {
@@ -55,22 +53,3 @@ function EvalBar() {
 }
 
 export default EvalBar;
-
-export function rephraseEvaluation(evaluation: evaluationType) {
-  const { type, value } = evaluation;
-  var out: number | string = value;
-
-  if (typeof out === "string") {
-    out = parseInt(out);
-  }
-
-  var white_winning = out > 0;
-  if (type === "mate") {
-    out = `M${Math.abs(out)}`;
-  } else {
-    out /= 100;
-    out = Math.abs(out).toFixed(2);
-  }
-  out = white_winning ? "+" + out : "-" + out;
-  return out;
-}

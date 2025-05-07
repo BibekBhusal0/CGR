@@ -6,7 +6,7 @@ import { FaSun } from "react-icons/fa";
 import { CgSandClock } from "react-icons/cg";
 import { FC } from "react";
 
-export function getIcon(timeControl: timeControls) {
+function getIcon(timeControl: timeControls) {
   switch (timeControl) {
     case "rapid":
       return { icon: <LuTimer />, color: "#7EB144" };

@@ -18,7 +18,7 @@ function Moves() {
   }
   const history = Game.history();
   const makePear = (moves: string[]) => {
-    let movePears = [];
+    const movePears = [];
     for (let i = 0; i < moves.length; i += 2) {
       movePears.push(moves.slice(i, i + 2));
     }
@@ -61,7 +61,7 @@ const SingleMove: FC<{ move: string; index: number }> = ({ move, index }) => {
   const { moveIndex, analysis } = useSelector((state: StateType) => state.game);
   const dispatch = useDispatch();
 
-  var moveType;
+  let moveType;
   if (index !== -1 && analysis !== undefined) {
     moveType = analysis[index].moveType;
   }

@@ -58,7 +58,7 @@ export async function postChessApi(fen: string): Promise<StockfishOutput> {
     throw new Error(`Chess Api Error`);
   }
   const mate = data.mate !== null;
-  var e = mate ? data.mate : data.eval * 100;
+  const e = mate ? data.mate : data.eval * 100;
 
   const out: StockfishOutput = {
     bestMove: data.san,
@@ -83,7 +83,7 @@ export async function getStockfishAPI(fen: string): Promise<StockfishOutput> {
     throw new Error(`Stockfish api failed ${data}`);
   }
   const mate = data.mate !== null;
-  var e = mate ? data.mate : data.evaluation * 100;
+  const e = mate ? data.mate : data.evaluation * 100;
   // if (fen.includes(" b ")) {
   //   e *= 1;
   // }

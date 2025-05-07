@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { allTypesOfMove, MoveClass, MT } from "./moveTypes";
+import { allTypesOfMove, MT } from "./moveTypes";
+import { MoveClass } from "./MoveClass";
 import { CardBody, CardFooter } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { Progress } from "@heroui/progress";
@@ -141,9 +142,9 @@ function Summary() {
                 loading
                   ? undefined
                   : {
-                      white: playerSummary.white.movesCount[m],
-                      black: playerSummary.black.movesCount[m],
-                    }
+                    white: playerSummary.white.movesCount[m],
+                    black: playerSummary.black.movesCount[m],
+                  }
               }></MoveClass>
           ))}
         </div>

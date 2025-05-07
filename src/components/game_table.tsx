@@ -37,7 +37,7 @@ export const GameTable: FC<TableProps> = ({ tableData: { games }, userName }) =>
     const chess = new Chess(initial_setup || DEFAULT_POSITION);
     chess.loadPgn(pgn);
     if (black.username === userName) dispatch(flipBoard());
-    var termination: terminationType | undefined;
+    let termination: terminationType | undefined;
     if (drawResults.includes(black.result)) {
       termination = { overBy: "draw", winner: undefined };
     } else if (black.result === "win") {

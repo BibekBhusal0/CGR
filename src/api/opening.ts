@@ -8,7 +8,7 @@ export interface LichessDatabaseResponse {
 }
 
 export function getOpeningName(fen: string) {
-  let opening = openings.find((o) => fen.includes(o.fen));
+  const opening = openings.find((o) => fen.includes(o.fen));
   return opening;
 }
 

@@ -25,6 +25,7 @@ export function Input() {
         dispatch(setGame(chess));
         dispatch(changeState("second"));
       } catch (error) {
+        console.error(error)
         setMassage("Please Enter Valid PGN");
       }
     } else {
@@ -32,7 +33,7 @@ export function Input() {
     }
   }
 
-  const pgnRef = useRef<any>(null);
+  const pgnRef = useRef<HTMLTextAreaElement>(null);
   return (
     <CardBody className="flex-center flex-col gap-7 px-3 py-5">
       <Chip
@@ -62,7 +63,7 @@ export function Input() {
           if (item.target.value.trim() !== "") {
             setMode(item.target.value);
             setVal("");
-            pgnRef.current.focus();
+            pgnRef.current?.focus();
           }
         }}>
         <SelectItem key="chess">Chess.com</SelectItem>

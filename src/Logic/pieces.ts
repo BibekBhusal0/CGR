@@ -70,10 +70,10 @@ export function isLightSquare(square: Square): boolean {
 }
 
 export function getAttackers(fen: string, square: Square): SquarePiece[] {
-  let attackers: SquarePiece[] = [];
+  const attackers: SquarePiece[] = [];
 
-  let board = new Chess(fen);
-  let piece = board.get(square);
+  const board = new Chess(fen);
+  const piece = board.get(square);
 
   if (!piece) return [];
   // Set colour to move to opposite of attacked piece
@@ -84,9 +84,9 @@ export function getAttackers(fen: string, square: Square): SquarePiece[] {
   );
 
   // Find each legal move that captures attacked piece
-  let legalMoves = board.moves({ verbose: true });
+  const legalMoves = board.moves({ verbose: true });
 
-  for (let move of legalMoves) {
+  for (const move of legalMoves) {
     if (move.to === square) {
       attackers.push({
         square: move.from,
@@ -99,18 +99,18 @@ export function getAttackers(fen: string, square: Square): SquarePiece[] {
   // If there is an opposite king around the attacked piece add him as an attacker
   // if he is not the only attacker or it is a legal move for the king to capture it
   let oppositeKing: SquarePiece | undefined;
-  let oppositeColour = piece.color === "w" ? "b" : "w";
+  const oppositeColour = piece.color === "w" ? "b" : "w";
 
-  let pieceCoordinate = getBoardCoordinates(square);
+  const pieceCoordinate = getBoardCoordinates(square);
   for (let xOffset = -1; xOffset <= 1; xOffset++) {
     for (let yOffset = -1; yOffset <= 1; yOffset++) {
       if (xOffset === 0 && yOffset === 0) continue;
 
-      let offsetSquare = getSquare({
+      const offsetSquare = getSquare({
         x: Math.min(Math.max(pieceCoordinate.x + xOffset, 0), 7),
         y: Math.min(Math.max(pieceCoordinate.y + yOffset, 0), 7),
       });
-      let offsetPiece = board.get(offsetSquare);
+      const offsetPiece = board.get(offsetSquare);
       if (!offsetPiece) continue;
 
       if (offsetPiece.color === oppositeColour && offsetPiece.type === "k") {
@@ -145,9 +145,9 @@ export function getAttackers(fen: string, square: Square): SquarePiece[] {
 }
 
 export function getDefenders(fen: string, square: Square) {
-  let board = new Chess(fen);
-  let piece = board.get(square);
-  let testAttacker = getAttackers(fen, square)[0];
+  const board = new Chess(fen);
+  const piece = board.get(square);
+  const testAttacker = getAttackers(fen, square)[0];
 
   // If there is an attacker we can test capture the piece with
   if (testAttacker) {
@@ -157,7 +157,7 @@ export function getDefenders(fen: string, square: Square) {
     );
 
     // Capture the defended piece with the test attacker
-    for (let promotion of promotions) {
+    for (const promotion of promotions) {
       try {
         board.move({
           from: testAttacker.square,
@@ -190,14 +190,14 @@ export function getDefenders(fen: string, square: Square) {
 }
 
 export function isPieceHanging(lastFen: string, fen: string, square: Square) {
-  let lastBoard = new Chess(lastFen);
-  let board = new Chess(fen);
+  const lastBoard = new Chess(lastFen);
+  const board = new Chess(fen);
 
-  let lastPiece = lastBoard.get(square);
-  let piece = board.get(square);
+  const lastPiece = lastBoard.get(square);
+  const piece = board.get(square);
 
-  let attackers = getAttackers(fen, square);
-  let defenders = getDefenders(fen, square);
+  const attackers = getAttackers(fen, square);
+  const defenders = getDefenders(fen, square);
 
   // If piece was just traded equally or better, not hanging
   if (pieceValues[lastPiece.type] >= pieceValues[piece.type] && lastPiece.color !== piece.color) {
@@ -222,7 +222,7 @@ export function isPieceHanging(lastFen: string, fen: string, square: Square) {
 
   if (attackers.length > defenders.length) {
     let minAttackerValue = Infinity;
-    for (let attacker of attackers) {
+    for (const attacker of attackers) {
       minAttackerValue = Math.min(pieceValues[attacker.type], minAttackerValue);
     }
 
