@@ -7,10 +7,10 @@ import settingsReducer from "./settings";
 const persistConfig = { key: "setting", storage };
 
 export const store = configureStore({
-  reducer: {
-    game: gameReducer,
-    settings: persistReducer(persistConfig, settingsReducer),
-  },
+    reducer: {
+        game: gameReducer,
+        settings: persistReducer(persistConfig, settingsReducer),
+    },
 });
 
 export type StateType = ReturnType<typeof store.getState>;

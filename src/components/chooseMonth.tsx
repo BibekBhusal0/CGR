@@ -16,8 +16,7 @@ export default function ChooseMonth({ onClick }: chooseMonthProps) {
     const currentDate = today(getLocalTimeZone());
     const [start, setStart] = useState(startOfMonth(currentDate));
     const [open, setOpen] = useState(false);
-    const isCurrentMonth =
-        isSameMonth(start, currentDate) && isSameYear(start, currentDate);
+    const isCurrentMonth = isSameMonth(start, currentDate) && isSameYear(start, currentDate);
     const getRange = () => {
         const endDate = isCurrentMonth ? currentDate : endOfMonth(start);
         return {
@@ -29,19 +28,14 @@ export default function ChooseMonth({ onClick }: chooseMonthProps) {
     const changeMonth = (n: number) => {
         const add = n > 0;
         n = Math.abs(n);
-        const newDate = add
-            ? start.add({ months: n })
-            : start.subtract({ months: n });
+        const newDate = add ? start.add({ months: n }) : start.subtract({ months: n });
         setStart(newDate);
     };
 
     return (
-        <Popover
-            isOpen={open}
-            backdrop="blur"
-            onOpenChange={(open) => setOpen(open)}>
+        <Popover isOpen={open} backdrop="blur" onOpenChange={(open) => setOpen(open)}>
             <PopoverTrigger>
-                <Button color="primary" className="text-lg px-10 py-5">
+                <Button color="primary" className="px-10 py-5 text-lg">
                     Select Another Month
                 </Button>
             </PopoverTrigger>
