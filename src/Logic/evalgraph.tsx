@@ -12,7 +12,7 @@ function EvalGraph() {
   const showGraph = analysis !== undefined;
   return (
     <div className="size-full">
-      {showGraph ? <Graph /> : <div className="size-full animate-pulse bg-default-300"></div>}
+      {showGraph ? <Graph /> : <div className="bg-default-300 size-full animate-pulse"></div>}
     </div>
   );
 }

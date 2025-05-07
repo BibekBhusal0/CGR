@@ -36,7 +36,7 @@ function EvalBar() {
       className={cn("my-auto h-[450px] w-8 drop-shadow-2xl", rot)}>
       <div
         id="eval-black"
-        className="absolute top-0 w-full transition-height"
+        className="transition-height absolute top-0 w-full"
         style={{
           height: `${100 - winChance}%`,
           backgroundColor: "#454545",
@@ -47,8 +47,7 @@ function EvalBar() {
           "absolute w-full text-center text-xs font-bold",
           white_winning ? "top-0 text-white" : "bottom-0 text-black",
           rot
-        )}
-      >
+        )}>
         {showVal}
       </div>
     </div>

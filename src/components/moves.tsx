@@ -28,7 +28,7 @@ function Moves() {
 
   return (
     <>
-      <CardHeader className="flex h-20 w-full flex-col justify-center bg-default-100 px-3">
+      <CardHeader className="bg-default-100 flex h-20 w-full flex-col justify-center px-3">
         <EvalGraph />
       </CardHeader>
       <CardBody>
@@ -84,8 +84,8 @@ const SingleMove: FC<{ move: string; index: number }> = ({ move, index }) => {
     <div
       ref={elementRef}
       className={cn(
-        "flex basis-5/12 cursor-pointer items-center gap-1 p-1 pl-4 text-xl hover:bg-default-200",
-        moveIndex === index ? "bg-default-300" : "bg-default-100 "
+        "hover:bg-default-200 flex basis-5/12 cursor-pointer items-center gap-1 p-1 pl-4 text-xl",
+        moveIndex === index ? "bg-default-300" : "bg-default-100"
       )}
       onClick={ClickHandler}>
       {moveType && <MoveIcon type={moveType} />}

@@ -86,7 +86,7 @@ export function Controls() {
       name: "Flip Board",
       clickHandler: () => dispatch(flipBoard()),
       disabled: false,
-      icon: <PiDeviceRotateBold className="rotate-90 scale-125 text-2xl" />,
+      icon: <PiDeviceRotateBold className="scale-125 rotate-90 text-2xl" />,
     },
     {
       name: "Starting Position",

@@ -40,7 +40,7 @@ export const MoveComment: FC = () => {
     prevPositionAnalysis = analysis[moveIndex];
   }
   return (
-    <div className="flex flex-col gap-2 rounded-md bg-success-50 px-8 py-3">
+    <div className="bg-success-50 flex flex-col gap-2 rounded-md px-8 py-3">
       {moveIndex === -1 ? (
         <div className="text-lg">Start Analyzing Game</div>
       ) : (

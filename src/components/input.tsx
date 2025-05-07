@@ -80,7 +80,7 @@ export function Input() {
       ) : (
         <SelectGame input={val} />
       )}
-      {massage && <div className="py-2 text-xl text-danger">{massage}</div>}
+      {massage && <div className="text-danger py-2 text-xl">{massage}</div>}
     </CardBody>
   );
 }
