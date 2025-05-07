@@ -109,7 +109,7 @@ function Summary() {
       <CardBody>
         <div className="flex flex-col items-center justify-center gap-3 p-3 text-center align-middle text-lg">
           {!loading && (
-            <div className="h-20 w-4/5 rounded-sm">
+            <div className="h-20 w-4/5 rounded-xs">
               <EvalGraph />
             </div>
           )}

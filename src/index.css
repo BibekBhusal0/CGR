@@ -1,24 +1,45 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-@layer components {
-  .flex-center {
-    @apply flex items-center justify-center;
+@source '../node_modules/@heroui/theme/dist/components/**/*.js';
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
   }
-  .between {
-    @apply flex items-center justify-between;
-  }
-  .full-between {
-    @apply between w-full gap-4;
-  }
-  .horizontal-center {
-    @apply absolute left-1/2 -translate-x-1/2;
-  }
-  .vertical-center {
-    @apply absolute top-1/2 -translate-y-1/2;
-  }
-  .absolute-center {
-    @apply horizontal-center vertical-center;
-  }
+}
+
+@utility flex-center {
+  @apply flex items-center justify-center;
+}
+
+@utility between {
+  @apply flex items-center justify-between;
+}
+
+@utility full-between {
+  @apply between w-full gap-4;
+}
+
+@utility horizontal-center {
+  @apply absolute left-1/2 -translate-x-1/2;
+}
+
+@utility vertical-center {
+  @apply absolute top-1/2 -translate-y-1/2;
+}
+
+@utility absolute-center {
+  @apply horizontal-center vertical-center;
 }

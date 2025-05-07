@@ -33,7 +33,7 @@ export default function ChooseMonth({ onClick }: chooseMonthProps) {
   };
 
   return (
-    <Popover isOpen={open} backdrop="blur" onOpenChange={(open) => setOpen(open)}>
+    <Popover isOpen={open} backdrop="blur-sm" onOpenChange={(open) => setOpen(open)}>
       <PopoverTrigger>
         <Button color="primary" className="px-10 py-5 text-lg">
           Select Another Month

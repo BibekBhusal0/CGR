@@ -151,7 +151,7 @@ export const LoadingTable: FC = () => {
           <TableRow key={i}>
             {[...Array(4)].map((_, j) => (
               <TableCell key={`${i}_${j}`}>
-                <Skeleton className="rounded-sm p-3" />
+                <Skeleton className="rounded-xs p-3" />
               </TableCell>
             ))}
           </TableRow>

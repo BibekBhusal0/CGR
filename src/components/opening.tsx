@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { openingType } from "../Logic/analyze";
 import { FC, useEffect, useState } from "react";
+import { cn } from "@heroui/theme";
 
 const OpeningCard: FC<{ opening?: openingType }> = ({ opening }) => {
   const [name, setName] = useState("");
@@ -53,11 +54,11 @@ const WinRateGraph: FC<{
 
   return (
     <div className="relative mb-5 h-4 w-full">
-      {entries.map(({ label, value, offset, z, pValue }) => (
+      {entries.map(({ label, value, color, offset, z, pValue }) => (
         <>
           <motion.div
             style={{ zIndex: z }}
-            className={`absolute top-0 h-full rounded-full`}
+            className={cn("absolute top-0 h-full rounded-full", color)}
             initial={{ width: 0 }}
             animate={{
               width: `${(value / total) * 100}%`,
@@ -66,7 +67,7 @@ const WinRateGraph: FC<{
             style={{ left: `${(offset * 100) / total}%` }}
             initial={{ y: 0 }}
             animate={{ y: `18px` }}
-            className="absolute z-[19] text-xs">
+            className="absolute z-19 text-xs">
             {label}: {((pValue / total) * 100).toFixed(1)} %
           </motion.div>
         </>
