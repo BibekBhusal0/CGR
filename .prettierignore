@@ -1,0 +1,5 @@
+.github/workflows/
+node_modules/
+build/
+dist/
+public/
