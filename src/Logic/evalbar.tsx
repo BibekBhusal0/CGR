@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { evaluationType } from "./stockfish";
 import { StateType } from "./reducers/store";
+import { cn } from "@heroui/theme";
 
 function EvalBar() {
   const { evaluation, moveIndex, bottom, stage } = useSelector((state: StateType) => state.game);
@@ -32,7 +33,7 @@ function EvalBar() {
         backgroundColor: "#F1E4D2",
       }}
       id="eval-white"
-      className={`my-auto h-[450px] w-8 ${rot} drop-shadow-2xl`}>
+      className={cn("my-auto h-[450px] w-8 drop-shadow-2xl", rot)}>
       <div
         id="eval-black"
         className="absolute top-0 w-full transition-height"
@@ -42,9 +43,12 @@ function EvalBar() {
         }}></div>
       <div
         id="evalNum"
-        className={`absolute w-full text-center text-xs font-bold ${
-          white_winning ? "top-0 text-white" : "bottom-0 text-black"
-        } ${rot}`}>
+        className={cn(
+          "absolute w-full text-center text-xs font-bold",
+          white_winning ? "top-0 text-white" : "bottom-0 text-black",
+          rot
+        )}
+      >
         {showVal}
       </div>
     </div>

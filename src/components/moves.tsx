@@ -8,6 +8,7 @@ import MoveIcon from "./moveTypes";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
 import { changeState, setIndex } from "@/Logic/reducers/game";
+import { cn } from "@heroui/theme";
 
 function Moves() {
   const { Game } = useSelector((state: StateType) => state.game);
@@ -78,12 +79,14 @@ const SingleMove: FC<{ move: string; index: number }> = ({ move, index }) => {
   const ClickHandler = () => {
     dispatch(setIndex(index));
   };
-  const cls = moveIndex === index ? "bg-default-300" : "bg-default-100 ";
 
   return (
     <div
       ref={elementRef}
-      className={`${cls} flex basis-5/12 cursor-pointer items-center gap-1 p-1 pl-4 text-xl hover:bg-default-200`}
+      className={cn(
+        "flex basis-5/12 cursor-pointer items-center gap-1 p-1 pl-4 text-xl hover:bg-default-200",
+        moveIndex === index ? "bg-default-300" : "bg-default-100 "
+      )}
       onClick={ClickHandler}>
       {moveType && <MoveIcon type={moveType} />}
       <div>{move}</div>

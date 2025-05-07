@@ -53,11 +53,11 @@ const WinRateGraph: FC<{
 
   return (
     <div className="relative mb-5 h-4 w-full">
-      {entries.map(({ label, value, color, offset, z, pValue }) => (
+      {entries.map(({ label, value, offset, z, pValue }) => (
         <>
           <motion.div
             style={{ zIndex: z }}
-            className={`${color} absolute top-0 h-full rounded-full`}
+            className={`absolute top-0 h-full rounded-full`}
             initial={{ width: 0 }}
             animate={{
               width: `${(value / total) * 100}%`,
