@@ -71,7 +71,7 @@ export function Input() {
       {mode === "pgn" ? (
         <Button
           className="w-full py-8 text-2xl font-semibold"
-          variant="shadow-sm"
+          variant="shadow"
           color="primary"
           startContent={<FaChessQueen className="text-3xl" />}
           onPress={handleClick}>

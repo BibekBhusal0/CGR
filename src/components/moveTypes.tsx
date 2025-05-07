@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, JSX } from "react";
 import { BsFillStarFill } from "react-icons/bs";
 import { FaBookOpen, FaCheck, FaFlag, FaTrophy } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";

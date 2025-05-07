@@ -10,7 +10,7 @@ import {
   FaStepForward,
 } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, JSX, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
 import { changeState, flipBoard, setFen, setIndex } from "@/Logic/reducers/game";

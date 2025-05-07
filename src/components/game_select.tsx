@@ -35,7 +35,7 @@ export const SelectGame: FC<{ input: string }> = ({ input }) => {
   return (
     <>
       <Button
-        variant="shadow-sm"
+        variant="shadow"
         color="primary"
         className="py-8 text-2xl font-semibold"
         isDisabled={input.trim() === ""}
