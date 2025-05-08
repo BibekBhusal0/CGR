@@ -3,20 +3,20 @@ import { Provider } from "react-redux";
 import { store, loadSettings as load } from "@/Logic/reducers/store";
 import { ReactNode, useEffect } from "react";
 
-type ep = { children: ReactNode; }
+type ep = { children: ReactNode };
 
 const LoadSettings = ({ children }: ep) => {
-  useEffect(() => { load() }, [])
-  return (children)
-}
+  useEffect(() => {
+    load();
+  }, []);
+  return children;
+};
 
 const EverythingProvider = ({ children }: ep) => {
   return (
     <Provider store={store}>
       <HeroUIProvider disableAnimation={false}>
-        <LoadSettings>
-          {children}
-        </LoadSettings>
+        <LoadSettings>{children}</LoadSettings>
       </HeroUIProvider>
     </Provider>
   );

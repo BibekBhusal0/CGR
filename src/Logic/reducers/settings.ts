@@ -40,7 +40,7 @@ const settingSlice = createSlice({
           state[key] = action.payload[key];
         }
       }
-    }
+    },
   },
 });
 

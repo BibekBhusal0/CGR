@@ -180,7 +180,7 @@ export function reducer(state: stateProps, action: Action): stateProps {
           evaluation = state.analysis[moveIndex].eval;
         } catch (error) {
           console.log(`can't get evaluation of position `);
-          console.error(error)
+          console.error(error);
         }
         fen = full_history[moveIndex].after;
       }

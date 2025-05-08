@@ -25,7 +25,7 @@ export function Input() {
         dispatch(setGame(chess));
         dispatch(changeState("second"));
       } catch (error) {
-        console.error(error)
+        console.error(error);
         setMassage("Please Enter Valid PGN");
       }
     } else {
