@@ -23,7 +23,7 @@ jobs:
       run: npm ci
 
     - name: Run TypeScript type check
-      run: tsc --noEmit
+      run: tsc --build
 
     - name: Run ESLint
       run: npm run lint 
