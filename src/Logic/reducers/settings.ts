@@ -21,8 +21,8 @@ const initialState: settingType = {
 };
 
 const changeBoardTheme = (state: settingType, theme: boardThemes) => {
-  if (allBoardThemes.includes(theme)) state.btheme = theme
-}
+  if (allBoardThemes.includes(theme)) state.btheme = theme;
+};
 
 const settingSlice = createSlice({
   name: "settings",
@@ -35,15 +35,14 @@ const settingSlice = createSlice({
       state.depth = action.payload;
     },
     setBoardTheme(state, action: PayloadAction<boardThemes>) {
-      changeBoardTheme(state, action.payload)
+      changeBoardTheme(state, action.payload);
     },
     setSettings(state, action: PayloadAction<settingType>) {
       for (const key in state) {
         if (key in action.payload) {
-          if (key === "btheme") changeBoardTheme(state, action.payload[key])
+          if (key === "btheme") changeBoardTheme(state, action.payload[key]);
           // @ts-expect-error This is safe mr eslint stop shouting
           else state[key] = action.payload[key];
-
         }
       }
     },
