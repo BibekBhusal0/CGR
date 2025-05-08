@@ -9,12 +9,14 @@ export const loadSettings = async () => {
   store.dispatch({ type: "settings/setSettings", payload: data });
 };
 
-const middleware: Middleware = (store) => (next) => (action: any) => {
-  const val = next(action);
-  const s = action.type.split("/")[0];
-  if (s === "settings") {
-    saveToLocalStorage(KEY, store.getState()[s]);
+const middleware: Middleware = (store) => (next) => (action) => {
+  if (typeof action === 'object' && action !== null && 'type' in action && typeof action.type === 'string') {
+    const s = action.type.split("/")[0];
+    if (s === "settings") {
+      saveToLocalStorage(KEY, store.getState()[s as keyof StateType]);
+    }
   }
+  const val = next(action);
   return val;
 };
 
