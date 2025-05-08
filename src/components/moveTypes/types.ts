@@ -43,4 +43,3 @@ export const MoveExplained: MoveCommentType = {
   blunder: "a Blunder",
   forcing: "only possible move",
 };
-

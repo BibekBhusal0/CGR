@@ -5,7 +5,6 @@ import { ImArrowRight } from "react-icons/im";
 import { IoClose } from "react-icons/io5";
 import { MoveMappingType } from "./types";
 
-
 export const MoveMaping: MoveMappingType = {
   brilliant: { color: "#26C2A3", item: "!!" },
   great: { color: "#749BBF", item: "!" },
@@ -28,4 +27,3 @@ export const MoveMaping: MoveMappingType = {
   blunder: { color: "#FA412D", item: "??" },
   forcing: { color: "#96AF8B", item: <ImArrowRight /> },
 };
-

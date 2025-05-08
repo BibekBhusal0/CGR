@@ -3,10 +3,9 @@ import { MT } from "./types";
 import { MoveIcon } from "./MoveIcon";
 import { MoveMaping } from "./MoveMaping";
 
-
 export const MoveClass: FC<{
   type: MT;
-  counts?: { white: number; black: number; };
+  counts?: { white: number; black: number };
 }> = ({ type, counts }) => {
   let black, white;
   if (!counts) {
@@ -46,4 +45,3 @@ export const MoveClass: FC<{
     </div>
   );
 };
-

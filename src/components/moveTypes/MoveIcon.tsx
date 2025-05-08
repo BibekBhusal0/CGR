@@ -2,8 +2,7 @@ import { FC } from "react";
 import { AllIcons } from "./types";
 import { mapping } from "./IconMapping";
 
-
-export const MoveIcon: FC<{ type: AllIcons; }> = ({ type }) => {
+export const MoveIcon: FC<{ type: AllIcons }> = ({ type }) => {
   const { color, item } = mapping[type];
   return (
     <div
@@ -18,4 +17,3 @@ export const MoveIcon: FC<{ type: AllIcons; }> = ({ type }) => {
     </div>
   );
 };
-
