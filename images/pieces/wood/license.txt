@@ -1,0 +1,3 @@
+Author: Armando Hernandez Marroquin 
+GPLv2+ License
+https://www.gnu.org/licenses/gpl-2.0.txt
