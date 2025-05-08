@@ -83,7 +83,6 @@ const iState: stateProps = {
   ...reset,
 };
 export const initialState = { ...iState };
-export const themes = ["default", "ocen", "wood", "geometric", "cosmos", "dash", "glass", "nature"];
 
 export function reducer(state: stateProps, action: Action): stateProps {
   switch (action.type) {

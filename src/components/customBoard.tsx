@@ -23,7 +23,6 @@ const colors: Record<boardThemes, { light: string; dark: string }> = {
   geometric: { light: "#C7C3AB", dark: "#77534c" },
   cosmos: { light: "#94a1ad", dark: "#464c53" },
   dash: { light: "#EDF3F4", dark: "#7e8a99" },
-  glass: { light: "#dbdbdb", dark: "#687578" },
   nature: { light: "#c4d49b", dark: "#68926f" },
 };
 export const base_path =
