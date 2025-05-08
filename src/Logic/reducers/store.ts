@@ -10,7 +10,12 @@ export const loadSettings = async () => {
 };
 
 const middleware: Middleware = (store) => (next) => (action) => {
-  if (typeof action === 'object' && action !== null && 'type' in action && typeof action.type === 'string') {
+  if (
+    typeof action === "object" &&
+    action !== null &&
+    "type" in action &&
+    typeof action.type === "string"
+  ) {
     const s = action.type.split("/")[0];
     if (s === "settings") {
       saveToLocalStorage(KEY, store.getState()[s as keyof StateType]);
