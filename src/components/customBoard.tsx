@@ -26,7 +26,7 @@ const colors: Record<boardThemes, { light: string; dark: string }> = {
   nature: { light: "#c4d49b", dark: "#68926f" },
 };
 export const base_path =
-  "https://raw.githubusercontent.com/BibekBhusal0/CGR/23fab2b83de03e68e9f496b98b1001d420142513/public/images/pieces/";
+  "https://raw.githubusercontent.com/BibekBhusal0/CGR/e3bc436ef9d23fc37ad0d9364b3d7fd697963ee3/public/images/pieces/";
 
 const customPieces = (theme: string, reviews: Review[]): { [key: string]: FC<PieceProps> } => {
   const pieceNames = ["K", "Q", "R", "B", "N", "P"];

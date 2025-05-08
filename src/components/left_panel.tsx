@@ -18,6 +18,7 @@ const switchClassNames = {
   base: "flex-row-reverse justify-between w-full max-w-full border-default-400 border-dotted border-t-2 pt-3 mt-3",
   label: "text-xl",
 };
+
 function LeftPanel() {
   return (
     <div className="basis-3/12">
@@ -30,7 +31,6 @@ function LeftPanel() {
         <AccordionItem aria-label="Settings" title="General Settings" key="1">
           <GeneralSettings />
         </AccordionItem>
-
         <AccordionItem aria-label="stockfish" title="Stockfish Settings" key="2">
           <StockfishSettings />
         </AccordionItem>
@@ -43,7 +43,6 @@ function GeneralSettings() {
   const { theme, setTheme } = useTheme();
   const dispatch = useDispatch();
   const { highlight, animation, btheme } = useSelector((state: StateType) => state.settings);
-
   function changeTheme() {
     const not_theme = theme === "dark" ? "light" : "dark";
     setTheme(not_theme);
@@ -68,6 +67,7 @@ function GeneralSettings() {
       children: "Animation",
     },
   ];
+
   return (
     <>
       <Select
@@ -75,9 +75,9 @@ function GeneralSettings() {
         startContent={
           <img alt="select theme" className="h-auto w-8 pb-1" src={getImageSource(theme, btheme)} />
         }
-        size="lg"
+        size="md"
         classNames={{
-          label: "text-xl",
+          label: "text-xl pl-2",
           trigger: "capitalize",
           listbox: "px-0",
         }}
@@ -93,13 +93,13 @@ function GeneralSettings() {
           <SelectItem
             startContent={
               <img
-                className="h-auto w-10"
+                className="h-auto w-9"
                 src={getImageSource(theme, board_theme)}
                 alt={`${board_theme} board_theme Pawn`}
               />
             }
             className="capitalize"
-            classNames={{ base: "items-center", title: "text-xl" }}
+            classNames={{ base: "items-center", title: "text-sm" }}
             aria-label={board_theme}
             key={board_theme}>
             {board_theme}
@@ -112,6 +112,7 @@ function GeneralSettings() {
     </>
   );
 }
+
 function StockfishSettings() {
   const { depth, bestMove } = useSelector((state: StateType) => state.settings);
   const dispatch = useDispatch();
