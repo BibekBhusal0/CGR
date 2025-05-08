@@ -1,6 +1,6 @@
 import { Chess, Move } from "chess.js";
 import { getOpeningName, openingDatabase } from "../api/opening";
-import { MT } from "../components/moveTypes";
+import { MT } from "../components/moveTypes/types";
 import { evaluationType, StockfishOutput } from "./stockfish";
 
 export interface openingType {

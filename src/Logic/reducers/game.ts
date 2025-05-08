@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Chess, DEFAULT_POSITION } from "chess.js";
 import { evaluationType } from "@/Logic/stockfish";
 import { analysisType } from "@/Logic/analyze";
-import { GOT } from "@/components/moveTypes";
+import { GOT } from "@/components/moveTypes/types";
 
 type stage = "first" | "second" | "third";
 type Boardstage = "normal" | "bestMove" | "interact" | "practice";

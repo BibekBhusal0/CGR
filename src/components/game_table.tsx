@@ -12,7 +12,7 @@ import {
   setTermination,
   terminationType,
 } from "../Logic/reducers/game";
-import { GOT } from "./moveTypes";
+import { GOT } from "./moveTypes/types";
 import { useDispatch } from "react-redux";
 
 const titles = ["Time Control", "White Player", "", "Black Player"];

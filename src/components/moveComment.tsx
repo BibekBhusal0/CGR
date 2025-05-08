@@ -1,4 +1,3 @@
-import MoveIcon, { MoveExplained } from "./moveTypes";
 import { rephraseEvaluation } from "../Logic/rephraseEvaluation";
 import { FC, useEffect, useState } from "react";
 import { evaluationType } from "../Logic/stockfish";
@@ -9,6 +8,8 @@ import { FaArrowRotateLeft } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
 import { setBoardStage, setIndex2 } from "@/Logic/reducers/game";
+import { MoveIcon } from "./moveTypes/MoveIcon";
+import { MoveExplained } from "./moveTypes/types";
 
 export const MoveComment: FC = () => {
   const {

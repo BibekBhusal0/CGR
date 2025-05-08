@@ -2,7 +2,7 @@ import { Chess } from "chess.js";
 import { Dispatch } from "react";
 import { evaluationType } from "./stockfish";
 import { analysisType } from "./analyze";
-import { GOT } from "../components/moveTypes";
+import { GOT } from "../components/moveTypes/types";
 
 type stage = "first" | "second" | "third";
 type Boardstage = "normal" | "bestMove" | "interact" | "practice";

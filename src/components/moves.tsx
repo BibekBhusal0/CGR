@@ -4,11 +4,11 @@ import { Button } from "@heroui/button";
 import { Controls } from "./controls";
 import EvalGraph from "../Logic/evalgraph";
 import { MoveComment } from "./moveComment";
-import MoveIcon from "./moveTypes";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
 import { changeState, setIndex } from "@/Logic/reducers/game";
 import { cn } from "@heroui/theme";
+import { MoveIcon } from "./moveTypes/MoveIcon";
 
 function Moves() {
   const { Game } = useSelector((state: StateType) => state.game);

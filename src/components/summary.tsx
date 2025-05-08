@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { allTypesOfMove, MT } from "./moveTypes";
-import { MoveClass } from "./MoveClass";
+import { allTypesOfMove, MT } from "./moveTypes/types";
 import { CardBody, CardFooter } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { Progress } from "@heroui/progress";
@@ -11,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
 import { Move } from "chess.js";
 import { changeState, setAnalysis } from "@/Logic/reducers/game";
+import { MoveClass } from "./moveTypes";
 
 export interface playerStats {
   accuracy: number;
