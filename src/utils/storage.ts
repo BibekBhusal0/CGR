@@ -1,5 +1,5 @@
 export const saveToLocalStorage = (key: string, data: unknown): Promise<void> => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     try {
       localStorage.setItem(key, JSON.stringify(data));
       resolve();

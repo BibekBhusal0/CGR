@@ -1,4 +1,4 @@
-import { configureStore, Middleware, AnyAction } from "@reduxjs/toolkit";
+import { configureStore, Middleware, } from "@reduxjs/toolkit";
 import gameReducer from "./game";
 import settingsReducer from "./settings";
 import { loadFromLocalStorage, saveToLocalStorage } from "@/utils/storage";
@@ -9,7 +9,7 @@ export const loadSettings = async () => {
   store.dispatch({ type: "settings/setSettings", payload: data });
 };
 
-const middleware: Middleware = (store) => (next) => (action: AnyAction) => {
+const middleware: Middleware = (store) => (next) => (action: any) => {
   const val = next(action);
   const s = action.type.split("/")[0];
   if (s === "settings") {
