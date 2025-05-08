@@ -20,6 +20,10 @@ const initialState: settingType = {
   btheme: "default",
 };
 
+const changeBoardTheme = (state: settingType, theme: boardThemes) => {
+  if (allBoardThemes.includes(theme)) state.btheme = theme
+}
+
 const settingSlice = createSlice({
   name: "settings",
   initialState,
@@ -31,13 +35,15 @@ const settingSlice = createSlice({
       state.depth = action.payload;
     },
     setBoardTheme(state, action: PayloadAction<boardThemes>) {
-      if (allBoardThemes.includes(action.payload)) state.btheme = action.payload;
+      changeBoardTheme(state, action.payload)
     },
     setSettings(state, action: PayloadAction<settingType>) {
       for (const key in state) {
         if (key in action.payload) {
-          // @ts-expect-error This is safe mr eslint stop souting
-          state[key] = action.payload[key];
+          if (key === "btheme") changeBoardTheme(state, action.payload[key])
+          // @ts-expect-error This is safe mr eslint stop shouting
+          else state[key] = action.payload[key];
+
         }
       }
     },
