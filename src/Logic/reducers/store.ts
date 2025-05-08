@@ -1,4 +1,4 @@
-import { configureStore, Middleware, } from "@reduxjs/toolkit";
+import { configureStore, Middleware } from "@reduxjs/toolkit";
 import gameReducer from "./game";
 import settingsReducer from "./settings";
 import { loadFromLocalStorage, saveToLocalStorage } from "@/utils/storage";
