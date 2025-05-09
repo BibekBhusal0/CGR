@@ -147,6 +147,7 @@ export function getAttackers(fen: string, square: Square): SquarePiece[] {
 export function getDefenders(fen: string, square: Square) {
   const board = new Chess(fen);
   const piece = board.get(square);
+  if (!piece) return ([])
   const testAttacker = getAttackers(fen, square)[0];
 
   // If there is an attacker we can test capture the piece with
@@ -195,6 +196,7 @@ export function isPieceHanging(lastFen: string, fen: string, square: Square) {
 
   const lastPiece = lastBoard.get(square);
   const piece = board.get(square);
+  if (!piece || !lastPiece) return []
 
   const attackers = getAttackers(fen, square);
   const defenders = getDefenders(fen, square);
