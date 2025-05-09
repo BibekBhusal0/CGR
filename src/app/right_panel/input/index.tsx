@@ -9,11 +9,11 @@ import { useDispatch } from "react-redux";
 import { changeState, setGame } from "@/Logic/reducers/game";
 import { CardBody } from "@heroui/card";
 import { icons } from "@/components/icons";
+import { addToast, } from "@heroui/toast";
 
 export function Input() {
   const [mode, setMode] = useState<string>("chess");
   const [val, setVal] = useState("");
-  const [massage, setMassage] = useState("");
   const dispatch = useDispatch();
 
   function handleClick() {
@@ -24,15 +24,15 @@ export function Input() {
         dispatch(setGame(chess));
         dispatch(changeState("second"));
       } catch (error) {
-        console.error(error);
-        setMassage("Please Enter Valid PGN");
+        addToast({ title: "Please Enter Valid PGN", variant: 'flat', color: 'danger' });
       }
     } else {
-      setMassage("Please Enter Your  PGN");
+      addToast({ title: "Please Enter Your  PGN", variant: 'flat', color: 'danger' });
     }
   }
 
   const pgnRef = useRef<HTMLTextAreaElement>(null);
+
   return (
     <CardBody className="flex-center flex-col gap-7 px-3 py-5">
       <Chip
@@ -47,7 +47,6 @@ export function Input() {
         value={val}
         onValueChange={(e) => {
           setVal(e);
-          if (val.trim() !== "") setMassage("");
         }}
         ref={pgnRef}
         label={mode === "pgn" ? "Paste PGN" : "Chess.com Username"}
@@ -80,7 +79,6 @@ export function Input() {
       ) : (
         <SelectGame input={val} />
       )}
-      {massage && <div className="text-danger py-2 text-xl">{massage}</div>}
     </CardBody>
   );
 }

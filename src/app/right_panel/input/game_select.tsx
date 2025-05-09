@@ -1,11 +1,11 @@
 import { FC, useState } from "react";
-import { CDCresponse, gamesOnChessDotCom, isGameResponse } from "../../../api/CDC";
+import { CDCresponse, gamesOnChessDotCom, isGameResponse } from "@/api/CDC";
 import { Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from "@heroui/modal";
 import { Button } from "@heroui/button";
 import { CalendarDate } from "@heroui/calendar";
 import { GameTable, LoadingTable } from "./game_table";
 import { today, getLocalTimeZone } from "@internationalized/date";
-import ChooseMonth from "../../../components/chooseMonth";
+import ChooseMonth from "@/components/chooseMonth";
 
 export const SelectGame: FC<{ input: string }> = ({ input }) => {
   const [data, setData] = useState<CDCresponse>();
