@@ -3,13 +3,12 @@ import { Chip } from "@heroui/chip";
 import { Select, SelectItem } from "@heroui/select";
 import { Textarea } from "@heroui/input";
 import { useRef, useState } from "react";
-import { FaChessQueen } from "react-icons/fa";
 import { SelectGame } from "./game_select";
 import { Chess } from "chess.js";
-import { IoSearch } from "react-icons/io5";
 import { useDispatch } from "react-redux";
 import { changeState, setGame } from "@/Logic/reducers/game";
 import { CardBody } from "@heroui/card";
+import { icons } from "@/components/icons"
 
 export function Input() {
   const [mode, setMode] = useState<string>("chess");
@@ -38,7 +37,7 @@ export function Input() {
     <CardBody className="flex-center flex-col gap-7 px-3 py-5">
       <Chip
         size="lg"
-        startContent={<IoSearch className="text-4xl" />}
+        startContent={<div className="text-4xl" children = {icons.chess.rook_pawn} />}
         color="primary"
         className="gap-3 p-8 text-2xl">
         <div>Chess Game Review</div>
@@ -74,7 +73,7 @@ export function Input() {
           className="w-full py-8 text-2xl font-semibold"
           variant="shadow"
           color="primary"
-          startContent={<FaChessQueen className="text-3xl" />}
+          endContent={<div className="text-4xl"  children = {icons.others.rocket}/>}
           onPress={handleClick}>
           Analyze
         </Button>

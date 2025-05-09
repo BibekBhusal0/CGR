@@ -1,7 +1,6 @@
 import { FC } from "react";
-import { MT } from "./types";
+import { MT, MoveTypeColors } from "./types";
 import { MoveIcon } from "./MoveIcon";
-import { MoveMaping } from "./MoveMaping";
 
 export const MoveClass: FC<{
   type: MT;
@@ -17,7 +16,7 @@ export const MoveClass: FC<{
   }
   return (
     <div
-      style={{ color: MoveMaping[type].color }}
+      style={{ color: MoveTypeColors[type] }}
       className="grid w-full grid-cols-8 text-center text-lg">
       <div className="col-span-2">{white}</div>
       <div className="col-span-4">
@@ -26,10 +25,10 @@ export const MoveClass: FC<{
             {!counts ? (
               <>
                 <div
-                  style={{ backgroundColor: MoveMaping[type].color }}
+                  style={{ backgroundColor: MoveTypeColors[type] }}
                   className="size-7 animate-pulse rounded-full"></div>
                 <div
-                  style={{ backgroundColor: MoveMaping[type].color }}
+                  style={{ backgroundColor: MoveTypeColors[type] }}
                   className="my-1 h-5 w-20 animate-pulse rounded-md"></div>
               </>
             ) : (

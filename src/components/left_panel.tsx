@@ -13,6 +13,7 @@ import {
   changeDepth,
 } from "@/Logic/reducers/settings";
 import { base_path } from "./customBoard";
+import IconPreview from "./icons_preview";
 
 const switchClassNames = {
   base: "flex-row-reverse justify-between w-full max-w-full border-default-400 border-dotted border-t-2 pt-3 mt-3",
@@ -33,6 +34,9 @@ function LeftPanel() {
         </AccordionItem>
         <AccordionItem aria-label="stockfish" title="Stockfish Settings" key="2">
           <StockfishSettings />
+        </AccordionItem>
+        <AccordionItem aria-label="preview" title="Icons D" key="3">
+          <IconPreview />
         </AccordionItem>
       </Accordion>
     </div>

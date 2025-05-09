@@ -1,9 +1,11 @@
 import { FC } from "react";
-import { AllIcons } from "./types";
-import { mapping } from "./IconMapping";
+import { AllColors, AllIcons } from "./types";
+import { icons } from "../icons";
+const moveIcons = { ...icons.move, ...icons.game_over }
 
 export const MoveIcon: FC<{ type: AllIcons }> = ({ type }) => {
-  const { color, item } = mapping[type];
+  const color = AllColors[type];
+  const item = moveIcons[type]
   return (
     <div
       style={{

@@ -2,14 +2,13 @@ import { rephraseEvaluation } from "../Logic/rephraseEvaluation";
 import { FC, useEffect, useState } from "react";
 import { evaluationType } from "../Logic/stockfish";
 import { Button } from "@heroui/button";
-import { BiSolidChess } from "react-icons/bi";
 import OpeningCard from "./opening";
-import { FaArrowRotateLeft } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
 import { setBoardStage, setIndex2 } from "@/Logic/reducers/game";
 import { MoveIcon } from "./moveTypes/MoveIcon";
 import { MoveExplained } from "./moveTypes/types";
+import { icons } from "./icons";
 
 export const MoveComment: FC = () => {
   const {
@@ -63,7 +62,13 @@ export const MoveComment: FC = () => {
               {!bestMove && (
                 <Button variant="flat" color="danger">
                   <div className="flex items-center gap-2 font-semibold">
-                    <FaArrowRotateLeft className="text-xl" />
+                    {/* <FaArrowRotateLeft className="text-xl" /> */}
+                    <div className="text-xl">
+
+                      {icons.others.retry
+                      }
+                    </div>
+
                     <div className="text-lg">Retry</div>
                   </div>
                 </Button>
@@ -113,7 +118,10 @@ const ShowMoves: FC<{ ClickEvent: () => boolean }> = ({ ClickEvent }) => {
       color={showing ? "danger" : "primary"}
       onPress={handleClick}>
       <div className="flex gap-2">
-        <BiSolidChess className="text-2xl" />
+        {/* <BiSolidChess className="text-2xl" /> */}
+        <div className="text-2xl">
+          {icons.chess.small_board}
+        </div>
         <div className="text-lg font-semibold">{showing ? "Hide Moves" : "Show Moves"}</div>
       </div>
     </Button>

@@ -1,19 +1,11 @@
 import { Button, ButtonGroup } from "@heroui/button";
 import { Tooltip } from "@heroui/tooltip";
-import { PiDeviceRotateBold } from "react-icons/pi";
-import {
-  FaArrowLeft,
-  FaArrowRight,
-  FaPause,
-  FaPlay,
-  FaStepBackward,
-  FaStepForward,
-} from "react-icons/fa";
-import { FaArrowsRotate } from "react-icons/fa6";
 import { FC, JSX, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
 import { changeState, flipBoard, setFen, setIndex } from "@/Logic/reducers/game";
+import { icons as all_icons } from '@/components/icons'
+const icons = all_icons.controls
 
 interface TTButtonProps {
   name: string;
@@ -86,13 +78,13 @@ export function Controls() {
       name: "Flip Board",
       clickHandler: () => dispatch(flipBoard()),
       disabled: false,
-      icon: <PiDeviceRotateBold className="scale-125 rotate-90 text-2xl" />,
+      icon: icons.flip,
     },
     {
       name: "Starting Position",
       clickHandler: () => dispatch(setIndex(-1)),
       disabled: atStart,
-      icon: <FaStepBackward />,
+      icon: icons.first,
     },
     {
       name: "Previous Move",
@@ -104,7 +96,7 @@ export function Controls() {
         }
       },
       disabled: boardStage === "normal" ? atStart : linesAtStart,
-      icon: <FaArrowLeft />,
+      icon: icons.previous,
     },
     {
       name: pause ? "Play" : "Pause",
@@ -112,7 +104,7 @@ export function Controls() {
         setPause((prevPause) => !prevPause);
       },
       disabled: boardStage === "normal" ? atEnd : linesAtEnd,
-      icon: pause ? <FaPause /> : <FaPlay />,
+      icon: pause ? icons.pause : icons.play,
     },
     {
       name: "Next Move",
@@ -124,19 +116,19 @@ export function Controls() {
         }
       },
       disabled: boardStage === "normal" ? atEnd : linesAtEnd,
-      icon: <FaArrowRight />,
+      icon: icons.next,
     },
     {
       name: "Last Move",
       clickHandler: () => dispatch(setIndex(n_moves - 1)),
       disabled: atEnd,
-      icon: <FaStepForward />,
+      icon: icons.last,
     },
     {
       name: "Reset",
       clickHandler: () => dispatch(changeState("first")),
       disabled: false,
-      icon: <FaArrowsRotate />,
+      icon: icons.reset,
     },
   ];
 
@@ -158,7 +150,7 @@ const TTButton: FC<TTButtonProps> = ({ name, clickHandler, icon, disabled }) => 
         style={{ minWidth: 12 }}
         color="primary"
         size="sm"
-        className="text-2xl"
+        className="text-3xl"
         variant="light">
         {icon}
       </Button>

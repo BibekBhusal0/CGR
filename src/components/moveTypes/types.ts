@@ -24,11 +24,36 @@ export const GameOverTypes = ["win", "draw", "checkmated", "resigned", "timeout"
 export type GOT = (typeof GameOverTypes)[number];
 export type MT = (typeof allTypesOfMove)[number];
 export type AllIcons = GOT | MT;
+export type MoveCommentType = { [key in MT]: string };
 
 export type MoveMappingType = { [key in MT]: MoveProperty };
-export type MoveCommentType = { [key in MT]: string };
 export type GameOverMappingType = { [key in GOT]: MoveProperty };
-export type AllMappingType = MoveMappingType | GameOverMappingType;
+export type MoveIconsType = MoveMappingType | GameOverMappingType;
+
+
+export const GameOverColors = {
+  resigned: "#312E2B",
+  draw: "#DBAC16",
+  timeout: "#312E2B",
+  win: "#DBAC16",
+  checkmated: "#312E2B",
+};
+
+export const MoveTypeColors = {
+  brilliant: "#26C2A3",
+  great: "#749BBF",
+  best: "#81B64C",
+  excellent: "#81B64C",
+  good: "#77915F",
+  book: "#D2C4B8",
+  inaccuracy: "#F7C631",
+  mistake: "#FFA459",
+  miss: "#FF7769",
+  blunder: "#FA412D",
+  forcing: "#96AF8B",
+};
+
+export const AllColors = { ...GameOverColors, ...MoveTypeColors }
 
 export const MoveExplained: MoveCommentType = {
   brilliant: "a Brilliancy",
