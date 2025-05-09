@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { changeState, setGame } from "@/Logic/reducers/game";
 import { CardBody } from "@heroui/card";
 import { icons } from "@/components/icons";
-import { addToast, } from "@heroui/toast";
+import { addToast } from "@heroui/toast";
 import { useDisclosure } from "@heroui/modal";
 
 export function Input() {
@@ -28,16 +28,17 @@ export function Input() {
           dispatch(setGame(chess));
           dispatch(changeState("second"));
         } catch (error) {
-          addToast({ title: "Please Enter Valid PGN", variant: 'flat', color: 'danger' });
+          addToast({ title: "Please Enter Valid PGN", variant: "flat", color: "danger" });
         }
-      }
-      else onOpen()
+      } else onOpen();
     } else {
-
-      addToast({ title: mode === 'pgn' ? "Please Enter Your  PGN" : "Please Enter username", variant: 'flat', color: 'danger' });
+      addToast({
+        title: mode === "pgn" ? "Please Enter Your  PGN" : "Please Enter username",
+        variant: "flat",
+        color: "danger",
+      });
     }
   }
-
 
   return (
     <CardBody className="flex-center flex-col gap-7 px-3 py-5">
@@ -75,8 +76,7 @@ export function Input() {
             setMode(item.target.value);
             setVal("");
             pgnRef.current?.focus();
-          }
-          else return
+          } else return;
         }}>
         <SelectItem key="chess">Chess.com</SelectItem>
         <SelectItem key="pgn">PGN</SelectItem>
@@ -86,9 +86,14 @@ export function Input() {
         className="w-full py-8 text-2xl font-semibold"
         variant="shadow"
         color="primary"
-        startContent={<div className="text-4xl" children={mode === 'pgn' ? icons.others.rocket : icons.others.search} />}
+        startContent={
+          <div
+            className="text-4xl"
+            children={mode === "pgn" ? icons.others.rocket : icons.others.search}
+          />
+        }
         onPress={handleClick}>
-        {mode === 'pgn' ? "Analyze" : "Search"}
+        {mode === "pgn" ? "Analyze" : "Search"}
       </Button>
       <SelectGame {...{ input: val, onOpenChange, isOpen }} />
     </CardBody>
