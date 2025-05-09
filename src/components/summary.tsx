@@ -38,12 +38,12 @@ function Summary() {
   } = useSelector((state: StateType) => state);
   const dispatch = useDispatch();
 
-  if (!Game) throw new Error();
   const handleClick = () => {
     dispatch(changeState("third"));
   };
 
   useEffect(() => {
+    if (!Game) return
     const stockfish = new StockfishManager();
 
     const analyzePosition = async (
@@ -104,6 +104,7 @@ function Summary() {
 
     return () => stockfish.terminate();
   }, []);
+  if (!Game) throw new Error();
 
   return (
     <>
@@ -142,9 +143,9 @@ function Summary() {
                 loading
                   ? undefined
                   : {
-                      white: playerSummary.white.movesCount[m],
-                      black: playerSummary.black.movesCount[m],
-                    }
+                    white: playerSummary.white.movesCount[m],
+                    black: playerSummary.black.movesCount[m],
+                  }
               }></MoveClass>
           ))}
         </div>
