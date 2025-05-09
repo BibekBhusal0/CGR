@@ -32,7 +32,7 @@ class StockfishManager {
     this.stockfish = new Worker(wasmSupported ? "stockfish.wasm.js" : "stockfish.js");
 
     this.stockfish.addEventListener("message", (e) => {
-      console.log("stock fish called")
+      console.log("stock fish called");
       const data = e.data;
       // __AUTO_GENERATED_PRINT_VAR_START__
       console.log("StockfishManager#initializeStockfish#(anon) data: %s", data); // __AUTO_GENERATED_PRINT_VAR_END__
@@ -102,7 +102,7 @@ class StockfishManager {
     console.log("Using Local Stockfish");
     this.blackToMove = fen.includes(" b ");
     return new Promise((resolve) => {
-      console.log("lll")
+      console.log("lll");
       this.resolveCallback = resolve;
       this.output = { ...EmptyValue };
       this.sendCommand(`position fen ${fen}`);
