@@ -32,10 +32,15 @@ class StockfishManager {
     this.stockfish = new Worker(wasmSupported ? "stockfish.wasm.js" : "stockfish.js");
 
     this.stockfish.addEventListener("message", (e) => {
+      console.log("stock fish called")
       const data = e.data;
+      // __AUTO_GENERATED_PRINT_VAR_START__
+      console.log("StockfishManager#initializeStockfish#(anon) data: %s", data); // __AUTO_GENERATED_PRINT_VAR_END__
       if (typeof data === "string") {
         if (data.includes("bestmove")) {
           const bestMove = data.split(" ")[1];
+          // __AUTO_GENERATED_PRINT_VAR_START__
+          console.log("StockfishManager#initializeStockfish#(anon)#if#if bestMove: %s", bestMove); // __AUTO_GENERATED_PRINT_VAR_END__
           this.output.bestMove = bestMove;
           if (this.resolveCallback) {
             this.resolveCallback(this.output);
@@ -76,7 +81,7 @@ class StockfishManager {
   }
 
   async analyzePosition(fen: string, depth: number): Promise<StockfishOutput> {
-    if (depth < 19) {
+    if (depth > 190) {
       try {
         const response = await postChessApi(fen);
         return response;
@@ -84,7 +89,7 @@ class StockfishManager {
         console.log("postChessApi failed", error);
       }
     }
-    if (depth < 16) {
+    if (depth > 160) {
       console.log("using stockfish API");
       try {
         const response = await getStockfishAPI(fen);
@@ -97,6 +102,7 @@ class StockfishManager {
     console.log("Using Local Stockfish");
     this.blackToMove = fen.includes(" b ");
     return new Promise((resolve) => {
+      console.log("lll")
       this.resolveCallback = resolve;
       this.output = { ...EmptyValue };
       this.sendCommand(`position fen ${fen}`);
