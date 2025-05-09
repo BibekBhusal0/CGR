@@ -29,7 +29,7 @@ class StockfishManager {
     const wasmSupported =
       typeof WebAssembly === "object" &&
       WebAssembly.validate(Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00));
-    this.stockfish = new Worker(wasmSupported ? 'stockfish.wasm.js' : 'stockfish.js');
+    this.stockfish = new Worker(wasmSupported ? "stockfish.wasm.js" : "stockfish.js");
 
     this.stockfish.addEventListener("message", (e) => {
       const data = e.data;

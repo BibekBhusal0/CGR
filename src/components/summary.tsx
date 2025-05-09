@@ -43,7 +43,7 @@ function Summary() {
   };
 
   useEffect(() => {
-    if (!Game) return
+    if (!Game) return;
     const stockfish = new StockfishManager();
 
     const analyzePosition = async (
@@ -143,9 +143,9 @@ function Summary() {
                 loading
                   ? undefined
                   : {
-                    white: playerSummary.white.movesCount[m],
-                    black: playerSummary.black.movesCount[m],
-                  }
+                      white: playerSummary.white.movesCount[m],
+                      black: playerSummary.black.movesCount[m],
+                    }
               }></MoveClass>
           ))}
         </div>
