@@ -28,6 +28,7 @@ export function Input() {
           dispatch(setGame(chess));
           dispatch(changeState("second"));
         } catch (error) {
+          console.error(error)
           addToast({ title: "Please Enter Valid PGN", variant: "flat", color: "danger" });
         }
       } else onOpen();

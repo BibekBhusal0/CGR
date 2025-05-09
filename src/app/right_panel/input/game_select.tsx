@@ -6,7 +6,7 @@ import { GameTable, LoadingTable } from "./game_table";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import ChooseMonth from "@/components/chooseMonth";
 
-type SelectGameProps = { input: string; onOpenChange: () => any; isOpen: boolean };
+type SelectGameProps = { input: string; onOpenChange: () => void; isOpen: boolean };
 
 export const SelectGame: FC<SelectGameProps> = ({ input, onOpenChange, isOpen }) => {
   const [data, setData] = useState<CDCresponse>();
