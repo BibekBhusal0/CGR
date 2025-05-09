@@ -4,8 +4,8 @@ import { FC, JSX, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
 import { changeState, flipBoard, setFen, setIndex } from "@/Logic/reducers/game";
-import { icons as all_icons } from '@/components/icons'
-const icons = all_icons.controls
+import { icons as all_icons } from "@/components/icons";
+const icons = all_icons.controls;
 
 interface TTButtonProps {
   name: string;

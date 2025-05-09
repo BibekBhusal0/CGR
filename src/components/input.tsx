@@ -8,7 +8,7 @@ import { Chess } from "chess.js";
 import { useDispatch } from "react-redux";
 import { changeState, setGame } from "@/Logic/reducers/game";
 import { CardBody } from "@heroui/card";
-import { icons } from "@/components/icons"
+import { icons } from "@/components/icons";
 
 export function Input() {
   const [mode, setMode] = useState<string>("chess");
@@ -37,7 +37,7 @@ export function Input() {
     <CardBody className="flex-center flex-col gap-7 px-3 py-5">
       <Chip
         size="lg"
-        startContent={<div className="text-4xl" children = {icons.chess.rook_pawn} />}
+        startContent={<div className="text-4xl" children={icons.chess.rook_pawn} />}
         color="primary"
         className="gap-3 p-8 text-2xl">
         <div>Chess Game Review</div>
@@ -73,7 +73,7 @@ export function Input() {
           className="w-full py-8 text-2xl font-semibold"
           variant="shadow"
           color="primary"
-          endContent={<div className="text-4xl"  children = {icons.others.rocket}/>}
+          endContent={<div className="text-4xl" children={icons.others.rocket} />}
           onPress={handleClick}>
           Analyze
         </Button>

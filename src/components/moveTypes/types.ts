@@ -30,7 +30,6 @@ export type MoveMappingType = { [key in MT]: MoveProperty };
 export type GameOverMappingType = { [key in GOT]: MoveProperty };
 export type MoveIconsType = MoveMappingType | GameOverMappingType;
 
-
 export const GameOverColors = {
   resigned: "#312E2B",
   draw: "#DBAC16",
@@ -53,7 +52,7 @@ export const MoveTypeColors = {
   forcing: "#96AF8B",
 };
 
-export const AllColors = { ...GameOverColors, ...MoveTypeColors }
+export const AllColors = { ...GameOverColors, ...MoveTypeColors };
 
 export const MoveExplained: MoveCommentType = {
   brilliant: "a Brilliancy",

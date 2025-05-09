@@ -63,11 +63,7 @@ export const MoveComment: FC = () => {
                 <Button variant="flat" color="danger">
                   <div className="flex items-center gap-2 font-semibold">
                     {/* <FaArrowRotateLeft className="text-xl" /> */}
-                    <div className="text-xl">
-
-                      {icons.others.retry
-                      }
-                    </div>
+                    <div className="text-xl">{icons.others.retry}</div>
 
                     <div className="text-lg">Retry</div>
                   </div>
@@ -119,9 +115,7 @@ const ShowMoves: FC<{ ClickEvent: () => boolean }> = ({ ClickEvent }) => {
       onPress={handleClick}>
       <div className="flex gap-2">
         {/* <BiSolidChess className="text-2xl" /> */}
-        <div className="text-2xl">
-          {icons.chess.small_board}
-        </div>
+        <div className="text-2xl">{icons.chess.small_board}</div>
         <div className="text-lg font-semibold">{showing ? "Hide Moves" : "Show Moves"}</div>
       </div>
     </Button>
