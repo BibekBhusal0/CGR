@@ -1,17 +1,17 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { CDCresponse, gamesOnChessDotCom, isGameResponse } from "@/api/CDC";
-import { Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from "@heroui/modal";
-import { Button } from "@heroui/button";
+import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
 import { CalendarDate } from "@heroui/calendar";
 import { GameTable, LoadingTable } from "./game_table";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import ChooseMonth from "@/components/chooseMonth";
 
-export const SelectGame: FC<{ input: string }> = ({ input }) => {
+type SelectGameProps = { input: string, onOpenChange: () => any, isOpen: boolean }
+
+export const SelectGame: FC<SelectGameProps> = ({ input, onOpenChange, isOpen }) => {
   const [data, setData] = useState<CDCresponse>();
   const [date, setDate] = useState(today(getLocalTimeZone()));
   const [loaded, setLoaded] = useState(false);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const month = new Date(date.year, date.month - 1).toLocaleString("default", {
     month: "long",
   });
@@ -31,20 +31,15 @@ export const SelectGame: FC<{ input: string }> = ({ input }) => {
     setDate(newDate);
     fetchData(newDate);
   };
+  useEffect(() => {
+    if (isOpen) {
+      if (input !== "") fetchData(date);
+    } else setDate(today(getLocalTimeZone()))
+  }, [isOpen])
+
 
   return (
     <>
-      <Button
-        variant="shadow"
-        color="primary"
-        className="py-8 text-2xl font-semibold"
-        isDisabled={input.trim() === ""}
-        onPress={() => {
-          onOpen();
-          fetchData(date);
-        }}>
-        Choose Games
-      </Button>
       <Modal size="3xl" isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           <ModalHeader className="flex flex-col justify-center gap-3 text-center">
