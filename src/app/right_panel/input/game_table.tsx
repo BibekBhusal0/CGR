@@ -1,5 +1,12 @@
 import { FC, useMemo, useState } from "react";
-import { chessResults, drawResults, game, GameResponse, lostResults, player } from "../../../api/CDC";
+import {
+  chessResults,
+  drawResults,
+  game,
+  GameResponse,
+  lostResults,
+  player,
+} from "../../../api/CDC";
 import { Skeleton } from "@heroui/skeleton";
 import { Pagination } from "@heroui/pagination";
 import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/table";
