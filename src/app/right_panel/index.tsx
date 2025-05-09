@@ -1,9 +1,9 @@
 import { Card } from "@heroui/card";
 import { Input } from "./input";
-import Moves from "./moves";
 import Summary from "./summary";
 import { useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
+import Moves from "./moves";
 
 function RightPanel() {
   const { stage } = useSelector((state: StateType) => state.game);

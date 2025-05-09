@@ -2,13 +2,13 @@ import { FC, useEffect, useRef } from "react";
 import { CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { Controls } from "./controls";
-import EvalGraph from "../Logic/evalgraph";
+import EvalGraph from "@/Logic/evalgraph";
 import { MoveComment } from "./moveComment";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
 import { changeState, setIndex } from "@/Logic/reducers/game";
 import { cn } from "@heroui/theme";
-import { MoveIcon } from "./moveTypes/MoveIcon";
+import { MoveIcon } from "@/components/moveTypes/MoveIcon";
 
 function Moves() {
   const { Game } = useSelector((state: StateType) => state.game);

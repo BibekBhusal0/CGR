@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { StateType } from "./reducers/store";
+import { StateType } from "../../Logic/reducers/store";
 import { cn } from "@heroui/theme";
 
 function EvalBar() {

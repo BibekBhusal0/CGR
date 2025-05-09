@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import { allTypesOfMove, MT } from "./moveTypes/types";
+import { allTypesOfMove, MT } from "@/components/moveTypes/types";
 import { CardBody, CardFooter } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { Progress } from "@heroui/progress";
-import StockfishManager, { evaluationType } from "../Logic/stockfish";
-import EvalGraph from "../Logic/evalgraph";
-import { analysisType, analyze } from "../Logic/analyze";
+import StockfishManager, { evaluationType } from "@/Logic/stockfish";
+import EvalGraph from "@/Logic/evalgraph";
+import { analysisType, analyze } from "@/Logic/analyze";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
 import { Move } from "chess.js";
 import { changeState, setAnalysis } from "@/Logic/reducers/game";
-import { MoveClass } from "./moveTypes";
+import { MoveClass } from "@/components/moveTypes";
 
 export interface playerStats {
   accuracy: number;
@@ -143,9 +143,9 @@ function Summary() {
                 loading
                   ? undefined
                   : {
-                      white: playerSummary.white.movesCount[m],
-                      black: playerSummary.black.movesCount[m],
-                    }
+                    white: playerSummary.white.movesCount[m],
+                    black: playerSummary.black.movesCount[m],
+                  }
               }></MoveClass>
           ))}
         </div>

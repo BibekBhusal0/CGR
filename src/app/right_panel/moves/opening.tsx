@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { openingType } from "../Logic/analyze";
+import { openingType } from "@/Logic/analyze";
 import { FC, useEffect, useState } from "react";
 import { cn } from "@heroui/theme";
 

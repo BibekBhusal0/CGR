@@ -1,14 +1,14 @@
-import { rephraseEvaluation } from "../Logic/rephraseEvaluation";
+import { rephraseEvaluation } from "@/Logic/rephraseEvaluation";
 import { FC, useEffect, useState } from "react";
-import { evaluationType } from "../Logic/stockfish";
+import { evaluationType } from "@/Logic/stockfish";
 import { Button } from "@heroui/button";
 import OpeningCard from "./opening";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
 import { setBoardStage, setIndex2 } from "@/Logic/reducers/game";
-import { MoveIcon } from "./moveTypes/MoveIcon";
-import { MoveExplained } from "./moveTypes/types";
-import { icons } from "./icons";
+import { MoveIcon } from "@/components/moveTypes/MoveIcon";
+import { MoveExplained } from "@/components/moveTypes/types";
+import { icons } from "@/components/icons";
 
 export const MoveComment: FC = () => {
   const {

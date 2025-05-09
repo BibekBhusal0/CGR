@@ -1,18 +1,18 @@
 import { FC, useMemo, useState } from "react";
-import { chessResults, drawResults, game, GameResponse, lostResults, player } from "../api/CDC";
+import { chessResults, drawResults, game, GameResponse, lostResults, player } from "../../../api/CDC";
 import { Skeleton } from "@heroui/skeleton";
 import { Pagination } from "@heroui/pagination";
 import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/table";
 import { Chess, DEFAULT_POSITION } from "chess.js";
-import TimeControl from "./timeControls";
+import TimeControl from "../../../components/timeControls";
 import {
   changeState,
   flipBoard,
   setGame,
   setTermination,
   terminationType,
-} from "../Logic/reducers/game";
-import { GOT } from "./moveTypes/types";
+} from "../../../Logic/reducers/game";
+import { GOT } from "../../../components/moveTypes/types";
 import { useDispatch } from "react-redux";
 
 const titles = ["Time Control", "White Player", "", "Black Player"];

@@ -12,8 +12,8 @@ import {
   setBoardTheme,
   changeDepth,
 } from "@/Logic/reducers/settings";
-import { base_path } from "./customBoard";
-import IconPreview from "./icons_preview";
+import { base_path } from "../full_board/customBoard";
+import IconPreview from "../../components/icons_preview";
 
 const switchClassNames = {
   base: "flex-row-reverse justify-between w-full max-w-full border-default-400 border-dotted border-t-2 pt-3 mt-3",

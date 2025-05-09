@@ -1,6 +1,6 @@
 import { Card } from "@heroui/card";
 import { FC } from "react";
-import EvalBar from "../Logic/evalbar";
+import EvalBar from "./evalbar";
 import JustBoard from "./customBoard";
 import { useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";

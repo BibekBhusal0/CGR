@@ -1,6 +1,6 @@
-import FullBoard from "./components/full_board";
-import LeftPanel from "./components/left_panel";
-import RightPanel from "./components/right_panel";
+import FullBoard from "./full_board";
+import LeftPanel from "./left_panel";
+import RightPanel from "./right_panel";
 
 function App() {
   return (
