@@ -6,7 +6,7 @@ import {
 } from "@/utils/archive";
 import { getCurrentGameToSave, importGame } from "@/utils/import_export";
 import { saveToJson } from "@/utils/import_export";
-import { Button, ButtonProps } from "@heroui/button";
+import { Button, ButtonGroup, ButtonProps } from "@heroui/button";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/modal";
 import { useState, useRef } from "react";
 import { icons } from "@/components/icons";
@@ -14,12 +14,16 @@ import { cn } from "@heroui/theme";
 import { Fragment } from "react/jsx-runtime";
 import { addToast } from "@heroui/toast";
 import { saveType } from "@/Logic/reducers/game";
+import { useSelector } from "react-redux";
+import { StateType } from "@/Logic/reducers/store";
+
 
 export default function Archive() {
   const [warningOpen, setWarningOpen] = useState(false);
   const [archiveOpen, setArchiveOpen] = useState(false);
   const [games, setGames] = useState<any[]>([]);
   const fileRef = useRef<HTMLInputElement | null>(null);
+  const { Game, analysis } = useSelector((state: StateType) => state.game)
 
   const loadGames = async () => {
     const all = await getAllGamesFromArchive();
@@ -33,9 +37,16 @@ export default function Archive() {
       addToast({ title: "No game to save", color: "danger" });
       return;
     }
+    const all = await getAllGamesFromArchive();
+    const alreadySaved = all.some((game) => game.pgn === g.pgn);
+    if (alreadySaved) {
+      addToast({ title: "Game already archived", color: "warning" });
+      return;
+    }
     await addGameToArchive(g as saveType);
     addToast({ title: "Game archived", color: "success" });
   };
+
 
   const handleImportArchive = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -45,6 +56,8 @@ export default function Archive() {
     if (Array.isArray(games)) {
       await importGamesToArchive(games);
       addToast({ title: "Archive imported", color: "success" });
+    } else {
+      addToast({ title: "Invalid Archive Format", color: "danger" });
     }
   };
 
@@ -54,6 +67,13 @@ export default function Archive() {
     addToast({ title: "Archive downloaded", color: "success" });
   };
 
+  const handleDeleteGame = async (id: string) => {
+    const db = await (await import("@/utils/archive")).getDb();
+    await db.delete("games", id);
+    loadGames();
+    addToast({ title: "Game deleted", color: "danger" });
+  };
+
   const handleClear = async () => {
     await clearArchive();
     setWarningOpen(false);
@@ -61,7 +81,10 @@ export default function Archive() {
   };
 
   const allButtons: Partial<ButtonProps>[] = [
-    { children: "Add This Game", startContent: icons.others.add, onPress: handleAddGame },
+    {
+      children: "Add This Game", startContent: icons.others.add, onPress: handleAddGame,
+      disabled: (!Game || !analysis)
+    },
     { children: "Load From archive", startContent: icons.left_panel.archive, onPress: loadGames },
     {
       children: "Upload to archive",
@@ -124,25 +147,52 @@ export default function Archive() {
       {/* Load Archive Modal */}
       <Modal isOpen={archiveOpen} onOpenChange={setArchiveOpen} size="md">
         <ModalContent>
-          <ModalHeader>Select a Game</ModalHeader>
-          <ModalBody className="max-h-64 overflow-auto">
-            {games.map((game, i) => (
-              <Button
-                key={game.id}
-                className="w-full mb-2 justify-start"
-                variant="ghost"
-                onPress={() => {
-                  importGame(game);
-                  setArchiveOpen(false);
-                }}
-              >
-                {game.name || `Game ${i + 1}`}
-              </Button>
-            ))}
+          <ModalHeader>
+            {games.length === 0 ? "Archive Empty" :
+              "Select a Game"}
+          </ModalHeader>
+          <ModalBody className="max-h-96 overflow-auto flex flex-col">
+
+            {games.length === 0 ? (
+              <div className="text-center text-gray-500 pb-5">
+                You can add a game to archive using the <strong>"Add This Game"</strong> button when you are analyzing a game. Once archived, games will appear here for easy loading.
+              </div>
+            ) : (
+
+
+              games.map((game, i) => (
+                <>
+
+                  <ButtonGroup
+                    key={game.id}
+                    className="w-full mb-2"
+                  >
+                    <Button
+                      className="w-full justify-start"
+                      variant="solid"
+                      onPress={() => {
+                        importGame(game);
+                        setArchiveOpen(false);
+                      }}
+                    >
+                      {game.name || `Game ${i + 1}`}
+                    </Button>
+                    <Button
+                      color="danger"
+                      variant="flat"
+                      className='text-xl'
+                      onPress={() => handleDeleteGame(game.id)}
+                      isIconOnly
+                    >
+                      {icons.others.trash}
+                    </Button>
+                  </ButtonGroup>
+                </>
+
+              )))}
           </ModalBody>
         </ModalContent>
       </Modal>
     </div>
   );
 }
-
