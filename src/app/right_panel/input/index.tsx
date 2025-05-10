@@ -5,16 +5,18 @@ import { Textarea } from "@heroui/input";
 import { useRef, useState } from "react";
 import { SelectGame } from "./game_select";
 import { Chess } from "chess.js";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { changeState, setGame } from "@/Logic/reducers/game";
 import { CardBody } from "@heroui/card";
 import { icons } from "@/components/icons";
 import { addToast } from "@heroui/toast";
 import { useDisclosure } from "@heroui/modal";
+import { StateType } from "@/Logic/reducers/store";
+import { allInputModes, inputModes, setInputMode } from "@/Logic/reducers/settings";
 
 export function Input() {
-  const [mode, setMode] = useState<string>("chess");
   const [val, setVal] = useState("");
+  const mode = useSelector((state: StateType) => state.settings.inputMode)
   const dispatch = useDispatch();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const pgnRef = useRef<HTMLTextAreaElement>(null);
@@ -70,17 +72,22 @@ export function Input() {
 
       <Select
         aria-label="type"
-        defaultSelectedKeys={[mode]}
+        size='lg'
+        selectedKeys={[mode]}
         value={mode}
+        classNames={{ trigger: "uppercase" }}
         onChange={(item) => {
-          if (item.target.value.trim() !== "") {
-            setMode(item.target.value);
-            setVal("");
-            pgnRef.current?.focus();
-          } else return;
+          dispatch(setInputMode(item.target.value as inputModes))
+          setVal("");
+          pgnRef.current?.focus();
         }}>
-        <SelectItem key="chess">Chess.com</SelectItem>
-        <SelectItem key="pgn">PGN</SelectItem>
+        {allInputModes.map((item) =>
+          <SelectItem
+            key={item}
+            children={item}
+            className="uppercase"
+          />
+        )}
       </Select>
 
       <Button
