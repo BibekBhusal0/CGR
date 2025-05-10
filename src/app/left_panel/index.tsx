@@ -6,10 +6,10 @@ import Archive from "./archive";
 import { icons } from "@/components/icons";
 
 const Items = {
-  "General Settings": { content: <GeneralSettings />, icon: icons.others.settings },
-  "Stockfish Settings": { content: <StockfishSettings />, icon: icons.others.engine },
-  "Archive": { content: <Archive />, icon: icons.others.archive },
-  "Icons D": { content: <IconPreview />, icon: icons.others.code },
+  "General Settings": { content: <GeneralSettings />, icon: icons.left_panel.settings },
+  "Stockfish Settings": { content: <StockfishSettings />, icon: icons.left_panel.engine },
+  "Archive": { content: <Archive />, icon: icons.left_panel.archive },
+  "Icons D": { content: <IconPreview />, icon: icons.left_panel.code },
 }
 
 function LeftPanel() {
