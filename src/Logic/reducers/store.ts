@@ -10,6 +10,7 @@ export const loadSettings = async () => {
 };
 
 const middleware: Middleware = (store) => (next) => (action) => {
+  const val = next(action);
   if (
     typeof action === "object" &&
     action !== null &&
@@ -21,7 +22,6 @@ const middleware: Middleware = (store) => (next) => (action) => {
       saveToLocalStorage(KEY, store.getState()[s as keyof StateType]);
     }
   }
-  const val = next(action);
   return val;
 };
 
