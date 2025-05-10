@@ -61,13 +61,11 @@ function GeneralSettings() {
     {
       isSelected: highlight,
       onValueChange: () => dispatch(toggleValues("highlight")),
-      defaultSelected: true,
       children: "Highlight Move",
     },
     {
       isSelected: animation,
       onValueChange: () => dispatch(toggleValues("animation")),
-      defaultSelected: true,
       children: "Animation",
     },
   ];
@@ -118,7 +116,7 @@ function GeneralSettings() {
 }
 
 function StockfishSettings() {
-  const { depth, bestMove } = useSelector((state: StateType) => state.settings);
+  const { depth, bestMove, localStockfish } = useSelector((state: StateType) => state.settings);
   const dispatch = useDispatch();
 
   return (
@@ -139,8 +137,13 @@ function StockfishSettings() {
         aria-label="Best Moves"
         isSelected={bestMove}
         onValueChange={() => dispatch(toggleValues("bestMove"))}
-        defaultSelected
         children="Best Move"
+      /><Switch
+        classNames={switchClassNames}
+        aria-label="Local Stockfish"
+        isSelected={localStockfish}
+        onValueChange={() => dispatch(toggleValues("localStockfish"))}
+        children="Always use local Stockfish"
       />
     </>
   );

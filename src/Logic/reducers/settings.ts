@@ -8,6 +8,7 @@ export interface settingType {
   depth: number;
   highlight: boolean;
   bestMove: boolean;
+  localStockfish: boolean;
   animation: boolean;
   btheme: boardThemes;
 }
@@ -15,6 +16,7 @@ export interface settingType {
 const initialState: settingType = {
   depth: 12,
   highlight: true,
+  localStockfish: true,
   bestMove: true,
   animation: true,
   btheme: "default",
@@ -28,7 +30,7 @@ const settingSlice = createSlice({
   name: "settings",
   initialState,
   reducers: {
-    toggleValues(state, action: PayloadAction<"highlight" | "bestMove" | "animation">) {
+    toggleValues(state, action: PayloadAction<"highlight" | "bestMove" | "animation" | "localStockfish">) {
       state[action.payload] = !state[action.payload];
     },
     changeDepth(state, action: PayloadAction<number>) {

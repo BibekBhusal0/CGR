@@ -34,7 +34,7 @@ function Summary() {
   });
   const {
     game: { whitePlayer, blackPlayer, Game, analysis },
-    settings: { depth },
+    settings: { depth, localStockfish },
   } = useSelector((state: StateType) => state);
   const dispatch = useDispatch();
 
@@ -52,7 +52,7 @@ function Summary() {
       moveIndex: number,
       move: Move
     ) => {
-      const SFresult = await stockfish.analyzePosition(fen, depth);
+      const SFresult = await stockfish.analyzePosition(fen, depth, localStockfish);
       const analysis = await analyze({
         stockfishAnalysis: SFresult,
         prevEval,
@@ -143,9 +143,9 @@ function Summary() {
                 loading
                   ? undefined
                   : {
-                      white: playerSummary.white.movesCount[m],
-                      black: playerSummary.black.movesCount[m],
-                    }
+                    white: playerSummary.white.movesCount[m],
+                    black: playerSummary.black.movesCount[m],
+                  }
               }></MoveClass>
           ))}
         </div>

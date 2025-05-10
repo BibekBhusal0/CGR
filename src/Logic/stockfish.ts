@@ -75,22 +75,25 @@ class StockfishManager {
     }
   }
 
-  async analyzePosition(fen: string, depth: number): Promise<StockfishOutput> {
-    if (depth < 19) {
-      try {
-        const response = await postChessApi(fen);
-        return response;
-      } catch (error) {
-        console.log("postChessApi failed", error);
+  async analyzePosition(fen: string, depth: number, local: boolean = true): Promise<StockfishOutput> {
+    if (!local) {
+
+      if (depth < 19) {
+        try {
+          const response = await postChessApi(fen);
+          return response;
+        } catch (error) {
+          console.log("postChessApi failed", error);
+        }
       }
-    }
-    if (depth < 16) {
-      console.log("using stockfish API");
-      try {
-        const response = await getStockfishAPI(fen);
-        return response;
-      } catch (error) {
-        console.log("stockfishAPI failed", error);
+      if (depth < 16) {
+        console.log("using stockfish API");
+        try {
+          const response = await getStockfishAPI(fen);
+          return response;
+        } catch (error) {
+          console.log("stockfishAPI failed", error);
+        }
       }
     }
 
