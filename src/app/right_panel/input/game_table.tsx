@@ -13,7 +13,6 @@ import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from 
 import { Chess, DEFAULT_POSITION } from "chess.js";
 import TimeControl from "../../../components/timeControls";
 import {
-  changeState,
   flipBoard,
   setGame,
   setTermination,
@@ -54,7 +53,6 @@ export const GameTable: FC<TableProps> = ({ tableData: { games }, userName }) =>
     }
     dispatch(setTermination(termination));
     dispatch(setGame(chess));
-    dispatch(changeState("second"));
   };
 
   const getColors: (game: game) => string = (game) => {

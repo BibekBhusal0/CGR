@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 import { SelectGame } from "./game_select";
 import { Chess } from "chess.js";
 import { useDispatch, useSelector } from "react-redux";
-import { changeState, setGame } from "@/Logic/reducers/game";
+import { setGame } from "@/Logic/reducers/game";
 import { CardBody } from "@heroui/card";
 import { icons } from "@/components/icons";
 import { addToast } from "@heroui/toast";
@@ -28,7 +28,6 @@ export function Input() {
         try {
           chess.loadPgn(val);
           dispatch(setGame(chess));
-          dispatch(changeState("second"));
         } catch (error) {
           console.error(error)
           addToast({ title: "Please Enter Valid PGN", variant: "flat", color: "danger" });

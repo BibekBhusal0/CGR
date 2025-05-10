@@ -122,6 +122,8 @@ const gameSlice = createSlice({
         state.blackPlayer
       );
       state.Game = action.payload;
+      state.moveIndex = -1;
+      state.stage = 'second'
     },
     setAnalysis(state, action: PayloadAction<analysisType[]>) {
       state.analysis = action.payload;
