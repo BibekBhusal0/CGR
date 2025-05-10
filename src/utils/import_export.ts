@@ -1,9 +1,7 @@
-
 import { allSaveKeys, saveType } from "@/Logic/reducers/game";
 import { addToast } from "@heroui/toast";
 import { store } from "@/Logic/reducers/store";
 import { Chess } from "chess.js";
-
 
 export const saveToJson = (data: any, fileName: string = 'games') => {
   const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
@@ -40,8 +38,6 @@ export const saveGameJson = () => {
 
 export const importGame = (game: saveType) => {
   try {
-    // __AUTO_GENERATED_PRINTF_START__
-    console.log("importGame 1"); // __AUTO_GENERATED_PRINTF_END__
     console.log(game)
     store.dispatch({ type: 'game/loadGame', payload: game })
     const chess = new Chess()

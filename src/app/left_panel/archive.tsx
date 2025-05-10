@@ -1,79 +1,148 @@
-// import { importGameFromJson, saveGameJson } from "@/utils/import_export";
-// import { useRef } from "react";
-import { icons } from "@/components/icons";
+import {
+  addGameToArchive,
+  clearArchive,
+  getAllGamesFromArchive,
+  importGamesToArchive,
+} from "@/utils/archive";
+import { getCurrentGameToSave, importGame } from "@/utils/import_export";
+import { saveToJson } from "@/utils/import_export";
 import { Button, ButtonProps } from "@heroui/button";
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/modal";
+import { useState, useRef } from "react";
+import { icons } from "@/components/icons";
 import { cn } from "@heroui/theme";
 import { Fragment } from "react/jsx-runtime";
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/modal";
-import { useState } from "react";
+import { addToast } from "@heroui/toast";
+import { saveType } from "@/Logic/reducers/game";
 
 export default function Archive() {
-  const [warningOpen, setWarningOpen] = useState(false)
-  // const [selectOpen, setSelectOpen] = useState(false)
+  const [warningOpen, setWarningOpen] = useState(false);
+  const [archiveOpen, setArchiveOpen] = useState(false);
+  const [games, setGames] = useState<any[]>([]);
+  const fileRef = useRef<HTMLInputElement | null>(null);
+
+  const loadGames = async () => {
+    const all = await getAllGamesFromArchive();
+    setGames(all);
+    setArchiveOpen(true);
+  };
+
+  const handleAddGame = async () => {
+    const g = getCurrentGameToSave();
+    if (!g) {
+      addToast({ title: "No game to save", color: "danger" });
+      return;
+    }
+    await addGameToArchive(g as saveType);
+    addToast({ title: "Game archived", color: "success" });
+  };
+
+  const handleImportArchive = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || file.type !== "application/json") return;
+    const text = await file.text();
+    const games = JSON.parse(text);
+    if (Array.isArray(games)) {
+      await importGamesToArchive(games);
+      addToast({ title: "Archive imported", color: "success" });
+    }
+  };
+
+  const handleExportArchive = async () => {
+    const all = await getAllGamesFromArchive();
+    saveToJson(all, "chess_archive");
+    addToast({ title: "Archive downloaded", color: "success" });
+  };
+
+  const handleClear = async () => {
+    await clearArchive();
+    setWarningOpen(false);
+    addToast({ title: "Archive cleared", color: "warning" });
+  };
 
   const allButtons: Partial<ButtonProps>[] = [
-    { children: "Add This Game", startContent: icons.others.add },
-    { children: "Load From archive", startContent: icons.left_panel.archive },
-    { children: "Upload to  archive", startContent: icons.others.upload },
-    { children: "Download Archive", startContent: icons.others.download },
+    { children: "Add This Game", startContent: icons.others.add, onPress: handleAddGame },
+    { children: "Load From archive", startContent: icons.left_panel.archive, onPress: loadGames },
+    {
+      children: "Upload to archive",
+      startContent: icons.others.upload,
+      onPress: () => fileRef.current?.click(),
+    },
+    { children: "Download Archive", startContent: icons.others.download, onPress: handleExportArchive },
     {
       children: "Clear archive",
-      color: 'danger',
-      variant: 'flat', startContent: icons.others.trash,
-      onPress: () => setWarningOpen(true)
+      color: "danger",
+      variant: "flat",
+      startContent: icons.others.trash,
+      onPress: () => setWarningOpen(true),
     },
-  ]
+  ];
 
   const defaultProps: ButtonProps = {
-    className: 'w-full text-xl',
-    size: 'lg',
-    color: 'primary',
-    variant: 'solid',
-  }
+    className: "w-full text-xl",
+    size: "lg",
+    color: "primary",
+    variant: "solid",
+  };
 
   return (
-    <div className='flex-center gap-3 flex-col'>
-      {allButtons.map((button, i) => <Fragment>
-        {button.disabled ? <></> : <Button
-          key={i}
-          {...defaultProps}
-          {...button}
-          className={cn(button?.className, defaultProps?.className)}
-        />}
-      </Fragment>
-      )}
-      <Modal isOpen={warningOpen} onOpenChange={setWarningOpen} size='xs' hideCloseButton>
+    <div className="flex-center gap-3 flex-col">
+      {allButtons.map((button, i) => (
+        <Fragment key={i}>
+          {!button.disabled && (
+            <Button
+              {...defaultProps}
+              {...button}
+              className={cn(button?.className, defaultProps.className)}
+            />
+          )}
+        </Fragment>
+      ))}
+      <input
+        type="file"
+        accept=".json"
+        onChange={handleImportArchive}
+        hidden
+        ref={fileRef}
+      />
+
+      {/* Warning Modal */}
+      <Modal isOpen={warningOpen} onOpenChange={setWarningOpen} size="xs" hideCloseButton>
         <ModalContent>
-          <ModalHeader>
-            Are you sure you want to empty the archive
-          </ModalHeader>
+          <ModalHeader>Are you sure you want to empty the archive?</ModalHeader>
           <ModalFooter>
-            <Button>Yes</Button>
-            <Button>No</Button>
+            <Button size="sm" color="danger" onPress={handleClear}>
+              Yes
+            </Button>
+            <Button size="sm" onPress={() => setWarningOpen(false)}>
+              No
+            </Button>
           </ModalFooter>
         </ModalContent>
-
       </Modal>
-    </div >
-  )
+
+      {/* Load Archive Modal */}
+      <Modal isOpen={archiveOpen} onOpenChange={setArchiveOpen} size="md">
+        <ModalContent>
+          <ModalHeader>Select a Game</ModalHeader>
+          <ModalBody className="max-h-64 overflow-auto">
+            {games.map((game, i) => (
+              <Button
+                key={game.id}
+                className="w-full mb-2 justify-start"
+                variant="ghost"
+                onPress={() => {
+                  importGame(game);
+                  setArchiveOpen(false);
+                }}
+              >
+                {game.name || `Game ${i + 1}`}
+              </Button>
+            ))}
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </div>
+  );
 }
 
-/* export default function Archive() {
-  const fileRef = useRef<HTMLInputElement | null>(null);
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files ? e.target.files[0] : null;
-    if (!file) return;
-    if (file.type !== "application/json") return;
-    importGameFromJson(file);
-  };
-  const handleRestore = () => fileRef.current?.click();
-  const handleBackup = () => saveGameJson();
-  return (
-    <div>
-      <Button onPress={handleRestore} >Load Game </Button>
-      <Button onPress={handleBackup} >Save Game </Button>
-      <input type="file" accept=".json" onChange={handleFileChange} hidden ref={fileRef} />
-    </div>
-  )
-}
-*/
