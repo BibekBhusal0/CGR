@@ -1,13 +1,7 @@
 import { configureStore, Middleware } from "@reduxjs/toolkit";
 import gameReducer from "./game";
 import settingsReducer from "./settings";
-import { loadFromLocalStorage, saveToLocalStorage } from "@/utils/storage";
-
-export const KEY = "CHESS SETTINGS";
-export const loadSettings = async () => {
-  const data = await loadFromLocalStorage(KEY);
-  store.dispatch({ type: "settings/setSettings", payload: data });
-};
+import { saveToLocalStorage, SETTINGS_KEY } from "@/utils/storage";
 
 const middleware: Middleware = (store) => (next) => (action) => {
   const val = next(action);
@@ -19,7 +13,7 @@ const middleware: Middleware = (store) => (next) => (action) => {
   ) {
     const s = action.type.split("/")[0];
     if (s === "settings") {
-      saveToLocalStorage(KEY, store.getState()[s as keyof StateType]);
+      saveToLocalStorage(SETTINGS_KEY, store.getState()[s as keyof StateType]);
     }
   }
   return val;

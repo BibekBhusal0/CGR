@@ -2,12 +2,14 @@ import { Accordion, AccordionItem } from "@heroui/accordion";
 import IconPreview from "@/components/icons_preview";
 import GeneralSettings from "./generalSettings";
 import StockfishSettings from "./stockfishSettings";
+import Archive from "./archive";
 import { icons } from "@/components/icons";
 
 const Items = {
   "General Settings": { content: <GeneralSettings />, icon: icons.others.settings },
   "Stockfish Settings": { content: <StockfishSettings />, icon: icons.others.engine },
-  "Icons D": { content: <IconPreview />, icon: icons.others.code }
+  "Archive": { content: <Archive />, icon: icons.others.archive },
+  "Icons D": { content: <IconPreview />, icon: icons.others.code },
 }
 
 function LeftPanel() {

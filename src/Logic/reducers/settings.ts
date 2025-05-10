@@ -22,7 +22,7 @@ export interface settingType {
 const initialState: settingType = {
   depth: 12,
   highlight: true,
-  localStockfish: true,
+  localStockfish: false,
   bestMove: true,
   animation: true,
   btheme: "default",

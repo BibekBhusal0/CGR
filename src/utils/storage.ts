@@ -1,3 +1,7 @@
+import { store } from "@/Logic/reducers/store";
+
+export const SETTINGS_KEY = "CHESS SETTINGS";
+
 export const saveToLocalStorage = (key: string, data: unknown): Promise<void> => {
   return new Promise((resolve, reject) => {
     try {
@@ -19,4 +23,9 @@ export const loadFromLocalStorage = (key: string): Promise<unknown | null> => {
       resolve(null);
     }
   });
+};
+
+export const loadSettings = async () => {
+  const data = await loadFromLocalStorage(SETTINGS_KEY);
+  store.dispatch({ type: "settings/setSettings", payload: data });
 };
