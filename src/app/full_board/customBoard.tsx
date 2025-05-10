@@ -2,7 +2,6 @@ import { Chessboard } from "react-chessboard";
 import { FC } from "react";
 import { Chess } from "chess.js";
 import { Square } from "react-chessboard/dist/chessboard/types";
-import { getPieces } from "../../Logic/pieces";
 import { boardThemes } from "@/Logic/reducers/settings";
 import { useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
@@ -85,10 +84,8 @@ function JustBoard() {
       reviews.push({ [sq]: type } as Review);
 
       if (moveIndex === history.length - 1 && termination !== undefined) {
-        const whiteKing = getPieces(Game, "w", "k");
-        const blackKing = getPieces(Game, "b", "k");
-        const whiteKingSq = whiteKing[0].square;
-        const blackKingSq = blackKing[0].square;
+        const whiteKingSq = Game.findPiece({ type: 'k', color: 'w' })[0]
+        const blackKingSq = Game.findPiece({ type: 'k', color: 'b' })[0]
 
         if (!termination.winner) {
           reviews.push({ [whiteKingSq]: "draw" } as Review);
