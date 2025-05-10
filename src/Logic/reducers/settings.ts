@@ -3,6 +3,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const b = ["default", "ocean", "wood", "geometric", "cosmos", "dash", "nature"] as const;
 export type boardThemes = (typeof b)[number];
 export const allBoardThemes: boardThemes[] = [...b];
+export type booleanSettings = "highlight" | "bestMove" | "animation" | "localStockfish";
+
 
 export interface settingType {
   depth: number;
@@ -30,7 +32,7 @@ const settingSlice = createSlice({
   name: "settings",
   initialState,
   reducers: {
-    toggleValues(state, action: PayloadAction<"highlight" | "bestMove" | "animation" | "localStockfish">) {
+    toggleValues(state, action: PayloadAction<booleanSettings>) {
       state[action.payload] = !state[action.payload];
     },
     changeDepth(state, action: PayloadAction<number>) {
