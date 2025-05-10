@@ -2,11 +2,12 @@ import { Accordion, AccordionItem } from "@heroui/accordion";
 import IconPreview from "@/components/icons_preview";
 import GeneralSettings from "./generalSettings";
 import StockfishSettings from "./stockfishSettings";
+import { icons } from "@/components/icons";
 
 const Items = {
-  "General Settings": <GeneralSettings />,
-  "Stockfish Settings": <StockfishSettings />,
-  "Icons D": <IconPreview />
+  "General Settings": { content: <GeneralSettings />, icon: icons.others.settings },
+  "Stockfish Settings": { content: <StockfishSettings />, icon: icons.others.engine },
+  "Icons D": { content: <IconPreview />, icon: icons.others.code }
 }
 
 function LeftPanel() {
@@ -21,12 +22,13 @@ function LeftPanel() {
         {
           Object.entries(Items).map(([key, value]) => (
             <AccordionItem
-              classNames={{ content: 'space-y-4' }}
+              startContent={value.icon}
+              classNames={{ content: 'space-y-4', startContent: "text-2xl" }}
               aria-label={key}
               title={key}
               key={key}
             >
-              {value}
+              {value.content}
             </AccordionItem>
           ))
         }
