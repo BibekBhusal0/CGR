@@ -83,15 +83,12 @@ const gameSlice = createSlice({
       state.stage = action.payload;
     },
 
-
     setIndex(state, action: PayloadAction<number>) {
+      if (!state.Game || !state.analysis) throw new Error("game not entered");
       const moveIndex = action.payload;
       let fen;
       let evaluation: evaluationType = { value: 0, type: "cp" };
 
-      if (!state.Game || !state.analysis) {
-        throw new Error("game not entered");
-      }
 
       const full_history = state.Game.history({ verbose: true });
       if (moveIndex === -1) {
@@ -115,16 +112,11 @@ const gameSlice = createSlice({
 
     setBoardStage(state, action: PayloadAction<Boardstage>) {
       if (action.payload === "normal") {
-        if (!state.Game) {
-          throw new Error("game not found");
-        }
-
+        if (!state.Game) throw new Error("game not found");
         const fen = state.Game.history({ verbose: true })[state.moveIndex].after;
-        state.boardStage = action.payload;
         state.fen = fen;
-      } else {
-        state.boardStage = action.payload;
       }
+      state.boardStage = action.payload;
     },
 
     setGame(state, action: PayloadAction<Chess>) {

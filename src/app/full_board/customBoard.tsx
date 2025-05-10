@@ -5,8 +5,8 @@ import { Square } from "react-chessboard/dist/chessboard/types";
 import { boardThemes } from "@/Logic/reducers/settings";
 import { useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
-import { AllIcons } from "../../components/moveTypes/types";
-import { MoveIcon } from "../../components/moveTypes/MoveIcon";
+import { AllIcons } from "@/components/moveTypes/types";
+import { MoveIcon } from "@/components/moveTypes/MoveIcon";
 
 interface PieceProps {
   isDragging: boolean;

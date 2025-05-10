@@ -19,6 +19,7 @@ function GeneralSettings() {
   const { theme, setTheme } = useTheme();
   const dispatch = useDispatch();
   const { btheme } = useSelector((state: StateType) => state.settings);
+
   function changeTheme() {
     const not_theme = theme === "dark" ? "light" : "dark";
     setTheme(not_theme);
@@ -26,7 +27,6 @@ function GeneralSettings() {
 
   return (
     <>
-
       <Select
         selectedKeys={[btheme]}
         startContent={
@@ -46,6 +46,7 @@ function GeneralSettings() {
         }}
         labelPlacement="outside-left"
         label="Board Theme">
+
         {allBoardThemes.map((board_theme) => (
           <SelectItem
             startContent={
@@ -62,6 +63,7 @@ function GeneralSettings() {
             {board_theme}
           </SelectItem>
         ))}
+
       </Select>
 
       <Switch

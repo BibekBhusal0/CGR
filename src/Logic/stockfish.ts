@@ -77,7 +77,6 @@ class StockfishManager {
 
   async analyzePosition(fen: string, depth: number, local: boolean = true): Promise<StockfishOutput> {
     if (!local) {
-
       if (depth < 19) {
         try {
           const response = await postChessApi(fen);

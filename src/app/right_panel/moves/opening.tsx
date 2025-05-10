@@ -25,6 +25,7 @@ const WinRateGraph: FC<{
   const { white, draws, black } = data;
   const total = white + draws + black;
   if (total === 0) return null;
+
   const entries = [
     {
       label: "White",

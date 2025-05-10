@@ -8,7 +8,6 @@ const m = ['chess.com', 'pgn'] as const
 export type inputModes = (typeof m)[number]
 export const allInputModes: inputModes[] = [...m]
 
-
 export interface settingType {
   depth: number;
   highlight: boolean;
@@ -37,18 +36,23 @@ const settingSlice = createSlice({
   name: "settings",
   initialState,
   reducers: {
+
     toggleValues(state, action: PayloadAction<booleanSettings>) {
       state[action.payload] = !state[action.payload];
     },
+
     changeDepth(state, action: PayloadAction<number>) {
       state.depth = action.payload;
     },
+
     setBoardTheme(state, action: PayloadAction<boardThemes>) {
       changeBoardTheme(state, action.payload);
     },
+
     setInputMode(state, action: PayloadAction<inputModes>) {
       if (allInputModes.includes(action.payload)) state.inputMode = action.payload
     },
+
     setSettings(state, action: PayloadAction<settingType>) {
       for (const key in state) {
         if (key in action.payload) {

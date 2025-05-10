@@ -30,6 +30,7 @@ export interface ChessApiResponse {
   time: number;
   type: string;
 }
+
 export interface StockfishAPIResponse {
   success: boolean;
   evaluation: number;
@@ -84,9 +85,6 @@ export async function getStockfishAPI(fen: string): Promise<StockfishOutput> {
   }
   const mate = data.mate !== null;
   const e = mate ? data.mate : data.evaluation * 100;
-  // if (fen.includes(" b ")) {
-  //   e *= 1;
-  // }
 
   const out: StockfishOutput = {
     bestMove: data.bestmove.split(" ")[1],

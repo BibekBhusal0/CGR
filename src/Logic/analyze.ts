@@ -58,12 +58,10 @@ export function convertToSAN(SF: StockfishOutput, fen: string) {
 
 function reformatMove(move: string) {
   const uciRegex = /^[a-h][1-8][a-h][1-8](?:[qrbn])?$/i;
-
   if (uciRegex.test(move)) {
     const from = move.slice(0, 2);
     const to = move.slice(2, 4);
     const promotion = move.length > 4 ? move[4] : undefined;
-
     return { from, to, promotion };
   }
   return move;
@@ -180,6 +178,7 @@ export async function analyze({
     } else {
       moveType = "blunder";
     }
+
   } else if (prevEval.type === "mate" && crrEval.type === "cp") {
     // mate in previous move no mate now (escaped the mate)
     if (absPrevEvaluation < 0 && absEvaluation < 0) {

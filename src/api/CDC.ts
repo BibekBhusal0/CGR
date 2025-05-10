@@ -20,8 +20,8 @@ export type gameRules =
   | "threecheck"
   | "crazyhouse";
 
-export type timeControls = "daily" | "rapid" | "blitz" | "bullet" | "classical";
 
+export type timeControls = "daily" | "rapid" | "blitz" | "bullet" | "classical";
 export interface player {
   rating: number;
   username: string;
