@@ -16,7 +16,7 @@ import { allInputModes, inputModes, setInputMode } from "@/Logic/reducers/settin
 
 export function Input() {
   const [val, setVal] = useState("");
-  const mode = useSelector((state: StateType) => state.settings.inputMode)
+  const mode = useSelector((state: StateType) => state.settings.inputMode);
   const dispatch = useDispatch();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const pgnRef = useRef<HTMLTextAreaElement>(null);
@@ -29,7 +29,7 @@ export function Input() {
           chess.loadPgn(val);
           dispatch(setGame(chess));
         } catch (error) {
-          console.error(error)
+          console.error(error);
           addToast({ title: "Please Enter Valid PGN", variant: "flat", color: "danger" });
         }
       } else onOpen();
@@ -71,22 +71,18 @@ export function Input() {
 
       <Select
         aria-label="type"
-        size='lg'
+        size="lg"
         selectedKeys={[mode]}
         value={mode}
         classNames={{ trigger: "uppercase" }}
         onChange={(item) => {
-          dispatch(setInputMode(item.target.value as inputModes))
+          dispatch(setInputMode(item.target.value as inputModes));
           setVal("");
           pgnRef.current?.focus();
         }}>
-        {allInputModes.map((item) =>
-          <SelectItem
-            key={item}
-            children={item}
-            className="uppercase"
-          />
-        )}
+        {allInputModes.map((item) => (
+          <SelectItem key={item} children={item} className="uppercase" />
+        ))}
       </Select>
 
       <Button

@@ -178,7 +178,6 @@ export async function analyze({
     } else {
       moveType = "blunder";
     }
-
   } else if (prevEval.type === "mate" && crrEval.type === "cp") {
     // mate in previous move no mate now (escaped the mate)
     if (absPrevEvaluation < 0 && absEvaluation < 0) {

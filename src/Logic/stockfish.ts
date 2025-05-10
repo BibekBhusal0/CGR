@@ -75,7 +75,11 @@ class StockfishManager {
     }
   }
 
-  async analyzePosition(fen: string, depth: number, local: boolean = true): Promise<StockfishOutput> {
+  async analyzePosition(
+    fen: string,
+    depth: number,
+    local: boolean = true
+  ): Promise<StockfishOutput> {
     if (!local) {
       if (depth < 19) {
         try {

@@ -1,13 +1,9 @@
 import { Select, SelectItem } from "@heroui/select";
-import { Switch, } from "@heroui/switch";
+import { Switch } from "@heroui/switch";
 import { useTheme } from "@heroui/use-theme";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
-import {
-  allBoardThemes,
-  boardThemes,
-  setBoardTheme,
-} from "@/Logic/reducers/settings";
+import { allBoardThemes, boardThemes, setBoardTheme } from "@/Logic/reducers/settings";
 import { base_path } from "../full_board/customBoard";
 import ToggleSwitch, { switchClassNames } from "@/components/switch";
 
@@ -46,7 +42,6 @@ function GeneralSettings() {
         }}
         labelPlacement="outside-left"
         label="Board Theme">
-
         {allBoardThemes.map((board_theme) => (
           <SelectItem
             startContent={
@@ -63,7 +58,6 @@ function GeneralSettings() {
             {board_theme}
           </SelectItem>
         ))}
-
       </Select>
 
       <Switch
@@ -72,9 +66,8 @@ function GeneralSettings() {
         classNames={switchClassNames}
         children="Dark Mode"
       />
-      <ToggleSwitch item='highlight' children="Highlight Moves" />
-      <ToggleSwitch item='animation' />
-
+      <ToggleSwitch item="highlight" children="Highlight Moves" />
+      <ToggleSwitch item="animation" />
     </>
   );
 }

@@ -17,13 +17,12 @@ import { saveType } from "@/Logic/reducers/game";
 import { useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
 
-
 export default function Archive() {
   const [warningOpen, setWarningOpen] = useState(false);
   const [archiveOpen, setArchiveOpen] = useState(false);
   const [games, setGames] = useState<any[]>([]);
   const fileRef = useRef<HTMLInputElement | null>(null);
-  const { Game, analysis } = useSelector((state: StateType) => state.game)
+  const { Game, analysis } = useSelector((state: StateType) => state.game);
 
   const loadGames = async () => {
     const all = await getAllGamesFromArchive();
@@ -46,7 +45,6 @@ export default function Archive() {
     await addGameToArchive(g as saveType);
     addToast({ title: "Game archived", color: "success" });
   };
-
 
   const handleImportArchive = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -82,8 +80,10 @@ export default function Archive() {
 
   const allButtons: Partial<ButtonProps>[] = [
     {
-      children: "Add This Game", startContent: icons.others.add, onPress: handleAddGame,
-      disabled: (!Game || !analysis)
+      children: "Add This Game",
+      startContent: icons.others.add,
+      onPress: handleAddGame,
+      disabled: !Game || !analysis,
     },
     { children: "Load From archive", startContent: icons.left_panel.archive, onPress: loadGames },
     {
@@ -91,7 +91,11 @@ export default function Archive() {
       startContent: icons.others.upload,
       onPress: () => fileRef.current?.click(),
     },
-    { children: "Download Archive", startContent: icons.others.download, onPress: handleExportArchive },
+    {
+      children: "Download Archive",
+      startContent: icons.others.download,
+      onPress: handleExportArchive,
+    },
     {
       children: "Clear archive",
       color: "danger",
@@ -109,7 +113,7 @@ export default function Archive() {
   };
 
   return (
-    <div className="flex-center gap-3 flex-col">
+    <div className="flex-center flex-col gap-3">
       {allButtons.map((button, i) => (
         <Fragment key={i}>
           {!button.disabled && (
@@ -121,13 +125,7 @@ export default function Archive() {
           )}
         </Fragment>
       ))}
-      <input
-        type="file"
-        accept=".json"
-        onChange={handleImportArchive}
-        hidden
-        ref={fileRef}
-      />
+      <input type="file" accept=".json" onChange={handleImportArchive} hidden ref={fileRef} />
 
       {/* Warning Modal */}
       <Modal isOpen={warningOpen} onOpenChange={setWarningOpen} size="xs" hideCloseButton>
@@ -147,49 +145,38 @@ export default function Archive() {
       {/* Load Archive Modal */}
       <Modal isOpen={archiveOpen} onOpenChange={setArchiveOpen} size="md">
         <ModalContent>
-          <ModalHeader>
-            {games.length === 0 ? "Archive Empty" :
-              "Select a Game"}
-          </ModalHeader>
-          <ModalBody className="max-h-96 overflow-auto flex flex-col">
-
+          <ModalHeader>{games.length === 0 ? "Archive Empty" : "Select a Game"}</ModalHeader>
+          <ModalBody className="flex max-h-96 flex-col overflow-auto">
             {games.length === 0 ? (
-              <div className="text-center text-gray-500 pb-5">
-                You can add a game to archive using the <strong>"Add This Game"</strong> button when you are analyzing a game. Once archived, games will appear here for easy loading.
+              <div className="pb-5 text-center text-gray-500">
+                You can add a game to archive using the <strong>"Add This Game"</strong> button when
+                you are analyzing a game. Once archived, games will appear here for easy loading.
               </div>
             ) : (
-
-
               games.map((game, i) => (
                 <>
-
-                  <ButtonGroup
-                    key={game.id}
-                    className="w-full mb-2"
-                  >
+                  <ButtonGroup key={game.id} className="mb-2 w-full">
                     <Button
                       className="w-full justify-start"
                       variant="solid"
                       onPress={() => {
                         importGame(game);
                         setArchiveOpen(false);
-                      }}
-                    >
+                      }}>
                       {game.name || `Game ${i + 1}`}
                     </Button>
                     <Button
                       color="danger"
                       variant="flat"
-                      className='text-xl'
+                      className="text-xl"
                       onPress={() => handleDeleteGame(game.id)}
-                      isIconOnly
-                    >
+                      isIconOnly>
                       {icons.others.trash}
                     </Button>
                   </ButtonGroup>
                 </>
-
-              )))}
+              ))
+            )}
           </ModalBody>
         </ModalContent>
       </Modal>

@@ -1,20 +1,17 @@
-
 import { Slider } from "@heroui/slider";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
-import {
-  changeDepth,
-} from "@/Logic/reducers/settings";
+import { changeDepth } from "@/Logic/reducers/settings";
 import ToggleSwitch from "@/components/switch";
 
 function StockfishSettings() {
-  const { depth, } = useSelector((state: StateType) => state.settings);
+  const { depth } = useSelector((state: StateType) => state.settings);
   const dispatch = useDispatch();
 
   return (
     <>
       <Slider
-        label={'Depth'}
+        label={"Depth"}
         aria-label="depth"
         showTooltip
         minValue={10}
@@ -31,4 +28,4 @@ function StockfishSettings() {
   );
 }
 
-export default StockfishSettings  
+export default StockfishSettings;

@@ -4,9 +4,9 @@ const b = ["default", "ocean", "wood", "geometric", "cosmos", "dash", "nature"] 
 export type boardThemes = (typeof b)[number];
 export const allBoardThemes: boardThemes[] = [...b];
 export type booleanSettings = "highlight" | "bestMove" | "animation" | "localStockfish";
-const m = ['chess.com', 'pgn'] as const
-export type inputModes = (typeof m)[number]
-export const allInputModes: inputModes[] = [...m]
+const m = ["chess.com", "pgn"] as const;
+export type inputModes = (typeof m)[number];
+export const allInputModes: inputModes[] = [...m];
 
 export interface settingType {
   depth: number;
@@ -15,7 +15,7 @@ export interface settingType {
   localStockfish: boolean;
   animation: boolean;
   btheme: boardThemes;
-  inputMode: inputModes
+  inputMode: inputModes;
 }
 
 const initialState: settingType = {
@@ -25,7 +25,7 @@ const initialState: settingType = {
   bestMove: true,
   animation: true,
   btheme: "default",
-  inputMode: 'chess.com'
+  inputMode: "chess.com",
 };
 
 const changeBoardTheme = (state: settingType, theme: boardThemes) => {
@@ -36,7 +36,6 @@ const settingSlice = createSlice({
   name: "settings",
   initialState,
   reducers: {
-
     toggleValues(state, action: PayloadAction<booleanSettings>) {
       state[action.payload] = !state[action.payload];
     },
@@ -50,7 +49,7 @@ const settingSlice = createSlice({
     },
 
     setInputMode(state, action: PayloadAction<inputModes>) {
-      if (allInputModes.includes(action.payload)) state.inputMode = action.payload
+      if (allInputModes.includes(action.payload)) state.inputMode = action.payload;
     },
 
     setSettings(state, action: PayloadAction<settingType>) {

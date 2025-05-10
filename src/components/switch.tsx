@@ -10,21 +10,24 @@ export const switchClassNames = {
 };
 
 export type ToggleSwitchProps = Partial<SwitchProps> & {
-  item: booleanSettings
+  item: booleanSettings;
 };
 
 function ToggleSwitch({ item, ...props }: ToggleSwitchProps) {
-
   const value = useSelector((state: StateType) => state.settings[item]);
 
   const dispatch = useDispatch();
   const toggle = () => dispatch(toggleValues(item));
 
   return (
-    <Switch {...props} isSelected={value} onValueChange={toggle} children={props.children || item} classNames={switchClassNames} />
-
-  )
-
+    <Switch
+      {...props}
+      isSelected={value}
+      onValueChange={toggle}
+      children={props.children || item}
+      classNames={switchClassNames}
+    />
+  );
 }
 
-export default ToggleSwitch
+export default ToggleSwitch;

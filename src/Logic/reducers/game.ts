@@ -35,11 +35,11 @@ export interface loadType {
   analysis: analysisType[];
   termination?: terminationType;
 }
-export type saveType = loadType & { pgn: string, name: string, id: string }
+export type saveType = loadType & { pgn: string; name: string; id: string };
 
-const s = ['bottom', 'whitePlayer', 'blackPlayer', 'analysis', 'termination'] as const
-export type saveKeys = (typeof s)[number]
-export const allSaveKeys: saveKeys[] = [...s]
+const s = ["bottom", "whitePlayer", "blackPlayer", "analysis", "termination"] as const;
+export type saveKeys = (typeof s)[number];
+export const allSaveKeys: saveKeys[] = [...s];
 
 const initialState: GameType = {
   bottom: "white",
@@ -89,7 +89,6 @@ const gameSlice = createSlice({
       let fen;
       let evaluation: evaluationType = { value: 0, type: "cp" };
 
-
       const full_history = state.Game.history({ verbose: true });
       if (moveIndex === -1) {
         fen = full_history[0].before;
@@ -138,7 +137,7 @@ const gameSlice = createSlice({
       );
       state.Game = action.payload;
       state.moveIndex = -1;
-      state.stage = 'second'
+      state.stage = "second";
     },
 
     loadGame(state, action: PayloadAction<loadType>) {
@@ -148,7 +147,7 @@ const gameSlice = createSlice({
           state[key] = action.payload[key];
         }
       }
-    }
+    },
   },
 });
 

@@ -37,4 +37,3 @@ export const importGamesToArchive = async (games: saveType[]) => {
     await db.put(STORE_NAME, { ...game, id: uuidv4(), date: new Date().toISOString() });
   }
 };
-

@@ -84,8 +84,8 @@ function JustBoard() {
       reviews.push({ [sq]: type } as Review);
 
       if (moveIndex === history.length - 1 && termination !== undefined) {
-        const whiteKingSq = Game.findPiece({ type: 'k', color: 'w' })[0]
-        const blackKingSq = Game.findPiece({ type: 'k', color: 'b' })[0]
+        const whiteKingSq = Game.findPiece({ type: "k", color: "w" })[0];
+        const blackKingSq = Game.findPiece({ type: "k", color: "b" })[0];
 
         if (!termination.winner) {
           reviews.push({ [whiteKingSq]: "draw" } as Review);
