@@ -9,7 +9,7 @@ import { useTheme } from "@heroui/use-theme";
 type ep = { children: ReactNode };
 
 const LoadSettings = ({ children }: ep) => {
-  useTheme()
+  useTheme();
   useEffect(() => {
     load();
   }, []);

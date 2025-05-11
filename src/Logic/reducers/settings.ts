@@ -16,7 +16,7 @@ export interface settingType {
   animation: boolean;
   btheme: boardThemes;
   inputMode: inputModes;
-  openAccordions: string[]
+  openAccordions: string[];
 }
 
 const initialState: settingType = {
@@ -55,7 +55,7 @@ const settingSlice = createSlice({
     },
 
     setOpenAccordtions(state, action: PayloadAction<string[]>) {
-      state.openAccordions = action.payload
+      state.openAccordions = action.payload;
     },
 
     setSettings(state, action: PayloadAction<settingType>) {
@@ -70,6 +70,7 @@ const settingSlice = createSlice({
   },
 });
 
-export const { changeDepth, setOpenAccordtions, toggleValues, setBoardTheme, setInputMode } = settingSlice.actions;
+export const { changeDepth, setOpenAccordtions, toggleValues, setBoardTheme, setInputMode } =
+  settingSlice.actions;
 
 export default settingSlice.reducer;

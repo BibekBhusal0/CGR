@@ -9,25 +9,25 @@ import { StateType } from "@/Logic/reducers/store";
 import { setOpenAccordtions } from "@/Logic/reducers/settings";
 
 const Items = {
-  "General Settings": { content: <GeneralSettings />, icon: icons.left_panel.settings, },
-  "Stockfish Settings": { content: <StockfishSettings />, icon: icons.left_panel.engine, },
-  Archive: { content: <Archive />, icon: icons.left_panel.archive, },
-  "Icons D": { content: <IconPreview />, icon: icons.left_panel.code, },
+  "General Settings": { content: <GeneralSettings />, icon: icons.left_panel.settings },
+  "Stockfish Settings": { content: <StockfishSettings />, icon: icons.left_panel.engine },
+  Archive: { content: <Archive />, icon: icons.left_panel.archive },
+  "Icons D": { content: <IconPreview />, icon: icons.left_panel.code },
 };
 
 function LeftPanel() {
-  const { openAccordions } = useSelector((state: StateType) => state.settings)
-  const dispatch = useDispatch()
+  const { openAccordions } = useSelector((state: StateType) => state.settings);
+  const dispatch = useDispatch();
 
   return (
     <div className="basis-3/12">
       <Accordion
         onSelectionChange={(e) => {
-          if (typeof e === 'string') return
-          console.log(e)
+          if (typeof e === "string") return;
+          console.log(e);
           const opened: string[] = [];
-          e.forEach(i => opened.push(i as string))
-          dispatch(setOpenAccordtions(opened))
+          e.forEach((i) => opened.push(i as string));
+          dispatch(setOpenAccordtions(opened));
         }}
         itemClasses={{ title: "text-xl overflow-x-hidden", content: "mb-2" }}
         aria-label="left"
