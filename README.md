@@ -23,7 +23,7 @@
 
 Make sure you have **Node.js (>=16.0.0)** installed.
 
-~~~bash
+```bash
 # Clone the repository
 git clone https://github.com/bibekbhusal0/CGR.git
 
@@ -32,13 +32,13 @@ cd CGR
 
 # Install dependencies
 npm install
-~~~
+```
 
 ### 🚴 Run the App Locally
 
-~~~bash
+```bash
 npm run dev
-~~~
+```
 
 Then open your browser to:  
 [http://localhost:5173/](http://localhost:5173/)
@@ -57,4 +57,3 @@ See [LICENSE](./LICENSE) for details.
 Third-party assets, icons, and libraries are credited in [`credits.md`](./credits.md).
 
 ---
-

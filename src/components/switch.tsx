@@ -1,4 +1,4 @@
-import { Switch, } from "@heroui/switch";
+import { Switch } from "@heroui/switch";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
 import { toggleValues } from "@/Logic/reducers/settings";

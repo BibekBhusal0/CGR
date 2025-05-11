@@ -20,7 +20,7 @@ export const getCurrentGameToSave = () => {
   for (const i in allSaveKeys) {
     const key = allSaveKeys[i];
     // @ts-expect-error: safe key assignment
-    to_save[key] = state[key]
+    to_save[key] = state[key];
   }
   to_save.pgn = state.Game.pgn();
   to_save.name = state.whitePlayer + " VS " + state.blackPlayer;
