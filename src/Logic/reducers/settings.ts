@@ -16,6 +16,7 @@ export interface settingType {
   animation: boolean;
   btheme: boardThemes;
   inputMode: inputModes;
+  openAccordions: string[]
 }
 
 const initialState: settingType = {
@@ -26,6 +27,7 @@ const initialState: settingType = {
   animation: true,
   btheme: "default",
   inputMode: "chess.com",
+  openAccordions: ["General Settings", "Stockfish Settings"],
 };
 
 const changeBoardTheme = (state: settingType, theme: boardThemes) => {
@@ -52,6 +54,10 @@ const settingSlice = createSlice({
       if (allInputModes.includes(action.payload)) state.inputMode = action.payload;
     },
 
+    setOpenAccordtions(state, action: PayloadAction<string[]>) {
+      state.openAccordions = action.payload
+    },
+
     setSettings(state, action: PayloadAction<settingType>) {
       for (const key in state) {
         if (key in action.payload) {
@@ -64,6 +70,6 @@ const settingSlice = createSlice({
   },
 });
 
-export const { changeDepth, toggleValues, setBoardTheme, setInputMode } = settingSlice.actions;
+export const { changeDepth, setOpenAccordtions, toggleValues, setBoardTheme, setInputMode } = settingSlice.actions;
 
 export default settingSlice.reducer;
