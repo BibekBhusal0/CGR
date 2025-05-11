@@ -69,6 +69,7 @@ function GeneralSettings() {
       />
       <ToggleSwitch item="highlight" children="Highlight Moves" />
       <ToggleSwitch item="animation" />
+      <ToggleSwitch item="devMode" children="Dev Mode" />
     </>
   );
 }

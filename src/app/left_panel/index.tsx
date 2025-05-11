@@ -12,12 +12,17 @@ const Items = {
   "General Settings": { content: <GeneralSettings />, icon: icons.left_panel.settings },
   "Stockfish Settings": { content: <StockfishSettings />, icon: icons.left_panel.engine },
   Archive: { content: <Archive />, icon: icons.left_panel.archive },
-  "Icons D": { content: <IconPreview />, icon: icons.left_panel.code },
 };
 
+const devItems = {
+  "Icons D": { content: <IconPreview />, icon: icons.left_panel.code },
+}
+
 function LeftPanel() {
-  const { openAccordions } = useSelector((state: StateType) => state.settings);
+  const { openAccordions, devMode } = useSelector((state: StateType) => state.settings);
   const dispatch = useDispatch();
+  const accordionItems = devMode ? { ...Items, ...devItems } : Items;
+
 
   return (
     <div className="basis-3/12">
@@ -34,7 +39,7 @@ function LeftPanel() {
         selectedKeys={new Set(openAccordions)}
         variant="splitted"
         selectionMode="multiple">
-        {Object.entries(Items).map(([key, value]) => (
+        {Object.entries(accordionItems).map(([key, value]) => (
           <AccordionItem
             startContent={value.icon}
             classNames={{ content: "space-y-4", startContent: "text-2xl" }}
