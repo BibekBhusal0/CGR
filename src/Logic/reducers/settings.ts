@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const b = ["default", "ocean", "wood", "geometric", "cosmos", "dash", "nature"] as const;
 export type boardThemes = (typeof b)[number];
 export const allBoardThemes: boardThemes[] = [...b];
-export type booleanSettings = "highlight" | "bestMove" | "animation" | "localStockfish" | 'devMode'
+export type booleanSettings = "highlight" | "bestMove" | "animation" | "localStockfish" | "devMode";
 const m = ["chess.com", "pgn"] as const;
 export type inputModes = (typeof m)[number];
 export const allInputModes: inputModes[] = [...m];

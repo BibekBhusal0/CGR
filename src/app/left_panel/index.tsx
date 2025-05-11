@@ -16,13 +16,12 @@ const Items = {
 
 const devItems = {
   "Icons D": { content: <IconPreview />, icon: icons.left_panel.code },
-}
+};
 
 function LeftPanel() {
   const { openAccordions, devMode } = useSelector((state: StateType) => state.settings);
   const dispatch = useDispatch();
   const accordionItems = devMode ? { ...Items, ...devItems } : Items;
-
 
   return (
     <div className="basis-3/12">
