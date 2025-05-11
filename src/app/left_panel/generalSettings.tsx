@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
 import { allBoardThemes, boardThemes, setBoardTheme } from "@/Logic/reducers/settings";
 import { base_path } from "../full_board/customBoard";
-import ToggleSwitch, { switchClassNames } from "@/components/switch";
+import { ToggleSwitch, } from "@/components/switch";
+import { switchClassNames } from "@/components/switch_types";
 
 function getImageSource(theme: string, board_theme: string) {
   return `${base_path}${board_theme.toLowerCase()}/${theme === "dark" ? "w" : "b"}P.svg`;

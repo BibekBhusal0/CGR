@@ -3,7 +3,7 @@ import { addToast } from "@heroui/toast";
 import { store } from "@/Logic/reducers/store";
 import { Chess } from "chess.js";
 
-export const saveToJson = (data: any, fileName: string = "games") => {
+export const saveToJson = (data: unknown, fileName: string = "games") => {
   const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -17,9 +17,10 @@ export const getCurrentGameToSave = () => {
   const state = store.getState().game;
   if (!state.Game || !state.analysis) return null;
   const to_save: Partial<saveType> = {};
-  for (let i in allSaveKeys) {
+  for (const i in allSaveKeys) {
     const key = allSaveKeys[i];
-    to_save[key] = state[key] as any;
+    // @ts-expect-error: safe key assignment
+    to_save[key] = state[key]
   }
   to_save.pgn = state.Game.pgn();
   to_save.name = state.whitePlayer + " VS " + state.blackPlayer;

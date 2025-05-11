@@ -2,7 +2,7 @@ import { Slider } from "@heroui/slider";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "@/Logic/reducers/store";
 import { changeDepth } from "@/Logic/reducers/settings";
-import ToggleSwitch from "@/components/switch";
+import { ToggleSwitch } from "@/components/switch";
 
 function StockfishSettings() {
   const { depth } = useSelector((state: StateType) => state.settings);

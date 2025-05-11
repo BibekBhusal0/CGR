@@ -20,7 +20,7 @@ import { StateType } from "@/Logic/reducers/store";
 export default function Archive() {
   const [warningOpen, setWarningOpen] = useState(false);
   const [archiveOpen, setArchiveOpen] = useState(false);
-  const [games, setGames] = useState<any[]>([]);
+  const [games, setGames] = useState<saveType[]>([]);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const { Game, analysis } = useSelector((state: StateType) => state.game);
 
