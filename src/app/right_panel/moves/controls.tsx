@@ -71,20 +71,20 @@ export function Controls() {
 
       return () => clearInterval(crrMove);
     }
-  }, [pause, linesToShow, linesAtEnd, showingIndex, boardStage, atEnd, moveIndex, n_moves, ]);
+  }, [pause, linesToShow, linesAtEnd, showingIndex, boardStage, atEnd, moveIndex, n_moves]);
 
   const togglePlayPause = () => setPause((prevPause) => !prevPause);
   const goToFirstMove = () => {
-    setPause(false); 
+    setPause(false);
     dispatch(setIndex(-1));
   };
   const goToLastMove = () => {
-    setPause(false); 
+    setPause(false);
     dispatch(setIndex(n_moves - 1));
   };
 
   const goToPreviousMove = () => {
-    setPause(false); 
+    setPause(false);
     if (boardStage === "normal") {
       dispatch(setIndex(moveIndex - 1));
     } else if (boardStage === "bestMove") {
@@ -93,14 +93,13 @@ export function Controls() {
   };
 
   const goToNextMove = () => {
-    setPause(false); 
+    setPause(false);
     if (boardStage === "normal") {
       dispatch(setIndex(moveIndex + 1));
     } else if (boardStage === "bestMove") {
       setShowingIndex(showingIndex + 1);
     }
   };
-
 
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "ArrowLeft") {
@@ -193,4 +192,3 @@ const TTButton: FC<TTButtonProps> = ({ name, clickHandler, icon, disabled }) => 
     </Tooltip>
   );
 };
-
