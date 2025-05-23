@@ -71,7 +71,57 @@ export function Controls() {
 
       return () => clearInterval(crrMove);
     }
-  }, [pause, linesToShow, linesAtEnd, showingIndex, boardStage, atEnd, moveIndex, n_moves]);
+  }, [pause, linesToShow, linesAtEnd, showingIndex, boardStage, atEnd, moveIndex, n_moves, ]);
+
+  const togglePlayPause = () => setPause((prevPause) => !prevPause);
+  const goToFirstMove = () => {
+    setPause(false); 
+    dispatch(setIndex(-1));
+  };
+  const goToLastMove = () => {
+    setPause(false); 
+    dispatch(setIndex(n_moves - 1));
+  };
+
+  const goToPreviousMove = () => {
+    setPause(false); 
+    if (boardStage === "normal") {
+      dispatch(setIndex(moveIndex - 1));
+    } else if (boardStage === "bestMove") {
+      setShowingIndex(showingIndex - 1);
+    }
+  };
+
+  const goToNextMove = () => {
+    setPause(false); 
+    if (boardStage === "normal") {
+      dispatch(setIndex(moveIndex + 1));
+    } else if (boardStage === "bestMove") {
+      setShowingIndex(showingIndex + 1);
+    }
+  };
+
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "ArrowLeft") {
+      goToPreviousMove();
+    } else if (event.key === "ArrowRight") {
+      goToNextMove();
+    } else if (event.key === "ArrowUp") {
+      goToFirstMove();
+    } else if (event.key === "ArrowDown") {
+      goToLastMove();
+    } else if (event.key === " ") {
+      togglePlayPause();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   const controlButtons: TTButtonProps[] = [
     {
@@ -82,45 +132,31 @@ export function Controls() {
     },
     {
       name: "Starting Position",
-      clickHandler: () => dispatch(setIndex(-1)),
+      clickHandler: goToFirstMove,
       disabled: atStart,
       icon: icons.first,
     },
     {
       name: "Previous Move",
-      clickHandler: () => {
-        if (boardStage === "normal") {
-          dispatch(setIndex(moveIndex - 1));
-        } else if (boardStage === "bestMove") {
-          setShowingIndex(showingIndex - 1);
-        }
-      },
+      clickHandler: goToPreviousMove,
       disabled: boardStage === "normal" ? atStart : linesAtStart,
       icon: icons.previous,
     },
     {
       name: pause ? "Play" : "Pause",
-      clickHandler: () => {
-        setPause((prevPause) => !prevPause);
-      },
+      clickHandler: togglePlayPause,
       disabled: boardStage === "normal" ? atEnd : linesAtEnd,
       icon: pause ? icons.pause : icons.play,
     },
     {
       name: "Next Move",
-      clickHandler: () => {
-        if (boardStage === "normal") {
-          dispatch(setIndex(moveIndex + 1));
-        } else if (boardStage === "bestMove") {
-          setShowingIndex(showingIndex + 1);
-        }
-      },
+      clickHandler: goToNextMove,
       disabled: boardStage === "normal" ? atEnd : linesAtEnd,
       icon: icons.next,
     },
     {
       name: "Last Move",
-      clickHandler: () => dispatch(setIndex(n_moves - 1)),
+      clickHandler: goToLastMove,
       disabled: atEnd,
       icon: icons.last,
     },
@@ -157,3 +193,4 @@ const TTButton: FC<TTButtonProps> = ({ name, clickHandler, icon, disabled }) => 
     </Tooltip>
   );
 };
+
