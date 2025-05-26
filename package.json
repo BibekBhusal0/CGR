@@ -20,7 +20,7 @@
     "@heroui/card": "^2.2.19-beta.1",
     "@heroui/chip": "^2.2.16-beta.1",
     "@heroui/input": "^2.4.20-beta.1",
-    "@heroui/listbox": "^2.3.19-beta.1",
+    "@heroui/listbox": "^2.3.19-beta.3",
     "@heroui/modal": "^2.2.17-beta.1",
     "@heroui/pagination": "^2.2.18-beta.1",
     "@heroui/popover": "^2.3.20-beta.1",
