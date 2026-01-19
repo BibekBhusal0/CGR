@@ -2,7 +2,7 @@ import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { Select, SelectItem } from "@heroui/select";
 import { Textarea } from "@heroui/input";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SelectGame } from "./game_select";
 import { Chess } from "chess.js";
 import { CardBody } from "@heroui/card";
@@ -19,6 +19,17 @@ export function Input() {
   const [val, setVal] = useState("");
   const setInputMode = useSettingsState((state) => state.setInputMode);
 
+  useEffect(() => {
+    const currentUrl = new URL( window.location.href )
+    if (currentUrl.searchParams.get("pgn")) {
+      setInputMode("pgn");
+      setVal(currentUrl.searchParams.get("pgn") || "");
+    }
+    else if (currentUrl.searchParams.get("cdcUsername")) {
+      setInputMode("chess.com");
+      setVal(currentUrl.searchParams.get("cdcUsername") || "");
+    }
+  })
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const pgnRef = useRef<HTMLTextAreaElement>(null);
 
