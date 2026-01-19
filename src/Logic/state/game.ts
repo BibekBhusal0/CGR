@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { create } from "zustand";
 import { Chess, DEFAULT_POSITION } from "chess.js";
 import { evaluationType } from "@/Logic/stockfish";
 import { analysisType } from "@/Logic/analyze";
@@ -57,38 +57,26 @@ const initialState: GameType = {
   analysis: undefined,
 };
 
-const gameSlice = createSlice({
-  name: "game",
-  initialState: { ...initialState },
-  reducers: {
-    flipBoard(state) {
-      state.bottom = state.bottom === "white" ? "black" : "white";
-    },
-    setFen(state, action: PayloadAction<string>) {
-      state.fen = action.payload;
-    },
-    setIndex2(state, action: PayloadAction<number>) {
-      state.index2 = action.payload;
-    },
-    setAnalysis(state, action: PayloadAction<analysisType[]>) {
-      state.analysis = action.payload;
-    },
-    setTermination(state, action: PayloadAction<terminationType | undefined>) {
-      state.termination = action.payload;
-    },
+const useGameState = create<GameType, any>((set, get) => ({
+  ...initialState,
+  filpBoard: () => set((state) => ({ bottom: state.bottom === "white" ? "black" : "white" })),
+  setFen: (fen: string) => set({ fen }),
+  setIndex2: (index2: number) => set({ index2 }),
+  setAnalysis: (analysis: analysisType[]) => set({ analysis }),
+  setTermination: (termination: terminationType | undefined) => set({ termination }),
 
-    changeState(state, action: PayloadAction<stage>) {
-      if (action.payload === "first") Object.assign(state, initialState);
-      else if (action.payload === "second") state.moveIndex = -1;
-      state.stage = action.payload;
-    },
+  changeState: (stage: stage) => {
+    if (stage === "first") set({ ...initialState });
+    else if (stage === "second") set({ moveIndex: -1 });
+    set({ stage });
+  },
 
-    setIndex(state, action: PayloadAction<number>) {
-      if (!state.Game || !state.analysis) throw new Error("game not entered");
-      const moveIndex = action.payload;
+  setIndex: (index: number) =>
+    set((state) => {
+      if (!state.Game || !state.analysis) return state;
+      const moveIndex = index;
       let fen;
       let evaluation: evaluationType = { value: 0, type: "cp" };
-
       const full_history = state.Game.history({ verbose: true });
       if (moveIndex === -1) {
         fen = full_history[0].before;
@@ -101,67 +89,40 @@ const gameSlice = createSlice({
         }
         fen = full_history[moveIndex].after;
       }
+      return { moveIndex, fen, evaluation, index2: 0, boardStage: "normal" };
+    }),
 
-      state.moveIndex = moveIndex;
-      state.fen = fen;
-      state.evaluation = evaluation;
-      state.index2 = 0;
-      state.boardStage = "normal";
-    },
-
-    setBoardStage(state, action: PayloadAction<Boardstage>) {
-      if (action.payload === "normal") {
-        if (!state.Game) throw new Error("game not found");
-        const fen = state.Game.history({ verbose: true })[state.moveIndex].after;
-        state.fen = fen;
-      }
-      state.boardStage = action.payload;
-    },
-
-    setGame(state, action: PayloadAction<Chess>) {
-      const header = action.payload.header();
-      const formatPlayer = (player: string, elo: string, defaultName: string): string => {
-        if (player === "?" || player === "??") return defaultName;
-        player = player.trim();
-        return elo ? `${player} (${elo})` : player;
-      };
-      state.whitePlayer = formatPlayer(
-        header.White || state.whitePlayer,
-        header.WhiteElo || "",
-        state.whitePlayer
-      );
-      state.blackPlayer = formatPlayer(
-        header.Black || state.blackPlayer,
-        header.BlackElo || "",
-        state.blackPlayer
-      );
-      state.Game = action.payload;
-      state.moveIndex = -1;
-      state.stage = "second";
-    },
-
-    loadGame(state, action: PayloadAction<loadType>) {
-      for (const key in state) {
-        if (key in action.payload) {
-          // @ts-expect-error This is safe mr eslint stop shouting
-          state[key] = action.payload[key];
-        }
-      }
-    },
+  setBoardStage: (boardStage: Boardstage) => {
+    const state = get();
+    if (boardStage === "normal" && state.Game) {
+      const fen = state.Game.history({ verbose: true })[state.moveIndex].after;
+      set({ fen });
+    }
+    set({ boardStage });
   },
-});
 
-export const {
-  flipBoard,
-  setFen,
-  setIndex,
-  setIndex2,
-  setBoardStage,
-  changeState,
-  setGame,
-  setAnalysis,
-  setTermination,
-  loadGame,
-} = gameSlice.actions;
+  setGame: (Game: Chess) => {
+    const state = get();
+    const header = Game.getHeaders();
+    const formatPlayer = (player: string, elo: string, defaultName: string): string => {
+      if (player === "?" || player === "??") return defaultName;
+      player = player.trim();
+      return elo ? `${player} (${elo})` : player;
+    };
+    const whitePlayer = formatPlayer(
+      header.White || state.whitePlayer,
+      header.WhiteElo || "",
+      state.whitePlayer
+    );
+    const blackPlayer = formatPlayer(
+      header.Black || state.blackPlayer,
+      header.BlackElo || "",
+      state.blackPlayer
+    );
+    set({ whitePlayer, blackPlayer, Game, moveIndex: -1, stage: "second" });
+  },
 
-export default gameSlice.reducer;
+  loadGame: (load: loadType) => set((state) => ({ ...state, ...load })),
+}));
+
+export default useGameState;

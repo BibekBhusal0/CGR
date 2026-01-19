@@ -1,5 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
+import { create } from "zustand";
 const b = ["default", "ocean", "wood", "geometric", "cosmos", "dash", "nature"] as const;
 export type boardThemes = (typeof b)[number];
 export const allBoardThemes: boardThemes[] = [...b];
@@ -32,47 +31,20 @@ const initialState: settingType = {
   openAccordions: ["General Settings", "Stockfish Settings"],
 };
 
-const changeBoardTheme = (state: settingType, theme: boardThemes) => {
-  if (allBoardThemes.includes(theme)) state.btheme = theme;
-};
+const useSettingsState = create<settingType, any>((set) => ({
+  ...initialState,
 
-const settingSlice = createSlice({
-  name: "settings",
-  initialState,
-  reducers: {
-    toggleValues(state, action: PayloadAction<booleanSettings>) {
-      state[action.payload] = !state[action.payload];
-    },
+  toggleValues: (item: booleanSettings) => set((state) => ({ [item]: !state[item] })),
+  changeDepth: (depth: number) => set({ depth }),
+  setBoardTheme: (btheme: boardThemes) => set({ btheme }),
+  setOpenAccordtions: (openAccordions: string[]) => set({ openAccordions }),
+  setSettings: (newSettings: settingType) => set((state) => ({ ...state, ...newSettings })),
 
-    changeDepth(state, action: PayloadAction<number>) {
-      state.depth = action.payload;
-    },
+  setInputMode: (newMode: inputModes) =>
+    set((state) => {
+      if (allInputModes.includes(newMode)) return { inputMode: newMode };
+      return state;
+    }),
+}));
 
-    setBoardTheme(state, action: PayloadAction<boardThemes>) {
-      changeBoardTheme(state, action.payload);
-    },
-
-    setInputMode(state, action: PayloadAction<inputModes>) {
-      if (allInputModes.includes(action.payload)) state.inputMode = action.payload;
-    },
-
-    setOpenAccordtions(state, action: PayloadAction<string[]>) {
-      state.openAccordions = action.payload;
-    },
-
-    setSettings(state, action: PayloadAction<settingType>) {
-      for (const key in state) {
-        if (key in action.payload) {
-          if (key === "btheme") changeBoardTheme(state, action.payload[key]);
-          // @ts-expect-error This is safe mr eslint stop shouting
-          else state[key] = action.payload[key];
-        }
-      }
-    },
-  },
-});
-
-export const { changeDepth, setOpenAccordtions, toggleValues, setBoardTheme, setInputMode } =
-  settingSlice.actions;
-
-export default settingSlice.reducer;
+export default useSettingsState;
