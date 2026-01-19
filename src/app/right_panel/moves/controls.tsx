@@ -108,17 +108,19 @@ export function Controls() {
     }
   };
 
+  const keyFunctionMapping :Record<string,()=>any> = {
+    "ArrowLeft": goToPreviousMove,
+    "ArrowRight": goToNextMove,
+    "ArrowUp": goToFirstMove,
+    "ArrowDown": goToLastMove,
+    " ": togglePlayPause
+  }
+
   const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === "ArrowLeft") {
-      goToPreviousMove();
-    } else if (event.key === "ArrowRight") {
-      goToNextMove();
-    } else if (event.key === "ArrowUp") {
-      goToFirstMove();
-    } else if (event.key === "ArrowDown") {
-      goToLastMove();
-    } else if (event.key === " ") {
-      togglePlayPause();
+    const key = event.key;
+    if (key in keyFunctionMapping) {
+      event.preventDefault();
+      keyFunctionMapping[key]();
     }
   };
 
