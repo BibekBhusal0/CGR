@@ -24,13 +24,13 @@ export const GameOverTypes = ["win", "draw", "checkmated", "resigned", "timeout"
 export type GOT = (typeof GameOverTypes)[number];
 export type MT = (typeof allTypesOfMove)[number];
 export type AllIcons = GOT | MT;
-export type MoveCommentType = { [key in MT]: string };
+export type MoveCommentType = Record<MT, string>;
 
 export type MoveMappingType = { [key in MT]: MoveProperty };
 export type GameOverMappingType = { [key in GOT]: MoveProperty };
 export type MoveIconsType = MoveMappingType | GameOverMappingType;
 
-export const GameOverColors = {
+export const GameOverColors : Record<GOT, string>= {
   resigned: "#312E2B",
   draw: "#DBAC16",
   timeout: "#312E2B",
@@ -38,7 +38,7 @@ export const GameOverColors = {
   checkmated: "#312E2B",
 };
 
-export const MoveTypeColors = {
+export const MoveTypeColors : Record<MT, string> = {
   brilliant: "#26C2A3",
   great: "#749BBF",
   best: "#81B64C",
