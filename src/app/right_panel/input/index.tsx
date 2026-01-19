@@ -21,14 +21,21 @@ export function Input() {
 
   useEffect(() => {
     const currentUrl = new URL(window.location.href);
+    const clear = () => {
+      currentUrl.search = "";
+      window.history.replaceState({}, document.title, currentUrl.toString());
+    };
     if (currentUrl.searchParams.get("pgn")) {
       setInputMode("pgn");
       setVal(currentUrl.searchParams.get("pgn") || "");
+      clear();
     } else if (currentUrl.searchParams.get("cdcUsername")) {
       setInputMode("chess.com");
       setVal(currentUrl.searchParams.get("cdcUsername") || "");
+      clear();
     }
-  });
+    return clear;
+  }, []);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const pgnRef = useRef<HTMLTextAreaElement>(null);
 
