@@ -1,10 +1,14 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+
 const b = ["default", "ocean", "wood", "geometric", "cosmos", "dash", "nature"] as const;
 export type boardThemes = (typeof b)[number];
 export const allBoardThemes: boardThemes[] = [...b];
 export type booleanSettings = "highlight" | "bestMove" | "animation" | "localStockfish" | "devMode";
 const m = ["chess.com", "pgn"] as const;
+const n = ["none", "in-board", "in-square"] as const;
+export type notationStyle = (typeof n)[number];
+export const allNotationStyles: notationStyle[] = [...n];
 export type inputModes = (typeof m)[number];
 export const allInputModes: inputModes[] = [...m];
 
@@ -19,6 +23,7 @@ export interface settingType {
   btheme: boardThemes;
   inputMode: inputModes;
   openAccordions: string[];
+  notationStyle: notationStyle;
 }
 
 interface settingActions {
@@ -28,6 +33,7 @@ interface settingActions {
   setOpenAccordtions: (openAccordions: string[]) => void;
   setSettings: (newSettings: settingType) => void;
   setInputMode: (newMode: inputModes) => void;
+  setNotationStyle: (notationStyle: notationStyle) => void;
 }
 
 export type SettingsState = settingType & settingActions;
@@ -42,6 +48,7 @@ const initialState: settingType = {
   btheme: "default",
   inputMode: "chess.com",
   openAccordions: ["General Settings", "Stockfish Settings"],
+  notationStyle: "in-board",
 };
 
 export const useSettingsState = create<SettingsState>()(
@@ -54,6 +61,7 @@ export const useSettingsState = create<SettingsState>()(
       setBoardTheme: (btheme) => set({ btheme }),
       setOpenAccordtions: (openAccordions: string[]) => set({ openAccordions }),
       setSettings: (newSettings) => set((state) => ({ ...state, ...newSettings })),
+      setNotationStyle: (notationStyle) => set({ notationStyle }),
 
       setInputMode: (newMode) =>
         set((state) => {

@@ -35,7 +35,7 @@ const customPieces = (theme: string): { [key: string]: FC<PieceProps> } => {
       pieces[`${color}${piece}`] = () => {
         return (
           <img
-            className="p-0.5"
+            className="z-20 p-0.5 select-none"
             src={`${base_path}/${theme.toLowerCase()}/${color}${piece}.svg`}
             alt={`${color === "w" ? "White" : "Black"} ${piece}`}
           />
@@ -61,6 +61,7 @@ function JustBoard() {
   const bestMove = useSettingsState((state) => state.bestMove);
   const btheme = useSettingsState((state) => state.btheme);
   const highlight = useSettingsState((state) => state.highlight);
+  const notationStyle = useSettingsState((state) => state.notationStyle);
 
   const { light, dark } = colors[btheme];
 
@@ -109,6 +110,9 @@ function JustBoard() {
     const review = reviews[square as Square];
     return (
       <div className={cn(highlightThis && "bg-[rgba(255,0,0,0.2)]", "relative size-full")}>
+        {notationStyle === "in-square" && !children && (
+          <div className="absolute-center text-xs md:font-bold md:text-md text-white select-none">{square}</div>
+        )}
         {review && (
           <div className="absolute -top-3 -right-3 z-50 scale-90 text-xl">
             <MoveIcon type={review} />
@@ -128,6 +132,7 @@ function JustBoard() {
         allowDragging: allowMoves,
         boardOrientation: bottom,
         animationDurationInMs: animation ? 300 : 0,
+        showNotation: notationStyle === "in-board",
         //
         arrows: arrows,
         pieces: customPieces(btheme) as PieceRenderObject,

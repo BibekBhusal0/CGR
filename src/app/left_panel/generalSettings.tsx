@@ -1,7 +1,13 @@
 import { Select, SelectItem } from "@heroui/select";
 import { Switch } from "@heroui/switch";
 import { useTheme } from "@heroui/use-theme";
-import { allBoardThemes, boardThemes, useSettingsState } from "@/Logic/state/settings";
+import {
+  allBoardThemes,
+  allNotationStyles,
+  boardThemes,
+  notationStyle,
+  useSettingsState,
+} from "@/Logic/state/settings";
 import { base_path } from "../full_board/customBoard";
 import { ToggleSwitch } from "@/components/switch";
 import { switchClassNames } from "@/components/switch_types";
@@ -14,6 +20,8 @@ function GeneralSettings() {
   const { theme, setTheme } = useTheme();
   const btheme = useSettingsState((state) => state.btheme);
   const setBoardTheme = useSettingsState((state) => state.setBoardTheme);
+  const setNotationStyle = useSettingsState((state) => state.setNotationStyle);
+  const notationStyle = useSettingsState((state) => state.notationStyle);
 
   function changeTheme() {
     const not_theme = theme === "dark" ? "light" : "dark";
@@ -55,6 +63,32 @@ function GeneralSettings() {
             aria-label={board_theme}
             key={board_theme}>
             {board_theme}
+          </SelectItem>
+        ))}
+      </Select>
+      <Select
+        selectedKeys={[notationStyle]}
+        size="md"
+        classNames={{
+          label: "text-lg pl-2",
+          trigger: "capitalize",
+          listbox: "px-0",
+        }}
+        onChange={(e) => {
+          if (e.target.value.trim() !== "") {
+            const v = e.target.value.trim() as notationStyle;
+            setNotationStyle(v);
+          }
+        }}
+        labelPlacement="outside-left"
+        label="Notation">
+        {allNotationStyles.map((notation) => (
+          <SelectItem
+            className="capitalize"
+            classNames={{ base: "items-center", title: "text-sm" }}
+            aria-label={notation}
+            key={notation}>
+            {notation}
           </SelectItem>
         ))}
       </Select>
