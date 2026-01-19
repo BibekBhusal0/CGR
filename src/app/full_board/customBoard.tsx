@@ -1,11 +1,10 @@
 import { Arrow, Chessboard, PieceRenderObject, SquareHandlerArgs } from "react-chessboard";
 import { FC } from "react";
 import { Chess, Square } from "chess.js";
-import { boardThemes } from "@/Logic/state/settings";
-import { useSelector } from "react-redux";
-import { StateType } from "@/Logic/state/store";
+import { boardThemes, useSettingsState } from "@/Logic/state/settings";
 import { AllIcons } from "@/components/moveTypes/types";
 import { MoveIcon } from "@/components/moveTypes/MoveIcon";
+import { useGameState } from "@/Logic/state/game";
 
 interface PieceProps {
   isDragging: boolean;
@@ -65,11 +64,19 @@ const customPieces = (theme: string, reviews: Review[]): { [key: string]: FC<Pie
 };
 
 function JustBoard() {
-  const { allowMoves, fen, bottom, Game, moveIndex, termination, analysis, stage, boardStage } =
-    useSelector((state: StateType) => state.game);
-  const { animation, bestMove, btheme, highlight } = useSelector(
-    (state: StateType) => state.settings
-  );
+  const allowMoves = useGameState((state) => state.allowMoves);
+  const fen = useGameState((state) => state.fen);
+  const bottom = useGameState((state) => state.bottom);
+  const Game = useGameState((state) => state.Game);
+  const moveIndex = useGameState((state) => state.moveIndex);
+  const termination = useGameState((state) => state.termination);
+  const analysis = useGameState((state) => state.analysis);
+  const stage = useGameState((state) => state.stage);
+  const boardStage = useGameState((state) => state.boardStage);
+  const animation = useSettingsState((state) => state.animation);
+  const bestMove = useSettingsState((state) => state.bestMove);
+  const btheme = useSettingsState((state) => state.btheme);
+  const highlight = useSettingsState((state) => state.highlight);
 
   const { light, dark } = colors[btheme];
 

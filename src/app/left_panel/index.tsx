@@ -4,9 +4,7 @@ import GeneralSettings from "./generalSettings";
 import StockfishSettings from "./stockfishSettings";
 import Archive from "./archive";
 import { icons } from "@/components/icons";
-import { useDispatch, useSelector } from "react-redux";
-import { StateType } from "@/Logic/state/store";
-import { setOpenAccordtions } from "@/Logic/state/settings";
+import { useSettingsState } from "@/Logic/state/settings";
 
 const Items = {
   "General Settings": { content: <GeneralSettings />, icon: icons.left_panel.settings },
@@ -19,8 +17,10 @@ const devItems = {
 };
 
 function LeftPanel() {
-  const { openAccordions, devMode } = useSelector((state: StateType) => state.settings);
-  const dispatch = useDispatch();
+  const openAccordions = useSettingsState((state) => state.openAccordions);
+  const devMode = useSettingsState((state) => state.devMode);
+  const setOpenAccordtions = useSettingsState((state) => state.setOpenAccordtions);
+
   const accordionItems = devMode ? { ...Items, ...devItems } : Items;
 
   return (
@@ -31,7 +31,7 @@ function LeftPanel() {
           console.log(e);
           const opened: string[] = [];
           e.forEach((i) => opened.push(i as string));
-          dispatch(setOpenAccordtions(opened));
+          setOpenAccordtions(opened);
         }}
         itemClasses={{ title: "text-xl overflow-x-hidden", content: "mb-2" }}
         aria-label="left"

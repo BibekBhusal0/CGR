@@ -1,14 +1,12 @@
 import { Tooltip, ResponsiveContainer, ReferenceLine, Area, AreaChart, YAxis } from "recharts";
 import { rephraseEvaluation } from "./rephraseEvaluation";
-import { useDispatch, useSelector } from "react-redux";
-import { StateType } from "./state/store";
-import { changeState, setIndex } from "./state/game";
+import { useGameState } from "@/Logic/state/game";
 
 // const white = "#F1E4D2";
 // const black = "#454545";
 
 function EvalGraph() {
-  const { analysis } = useSelector((state: StateType) => state.game);
+  const analysis = useGameState().analysis
   const showGraph = analysis !== undefined;
   return (
     <div className="size-full">
@@ -18,8 +16,9 @@ function EvalGraph() {
 }
 
 const Graph = () => {
-  const { analysis } = useSelector((state: StateType) => state.game);
-  const dispatch = useDispatch();
+  const analysis = useGameState(state => state.analysis)
+  const changeState = useGameState(state => state.changeState)
+  const setIndex = useGameState(state => state.setIndex)
   if (!analysis) throw new Error("analysis not found");
 
   const maxEval = Math.max(
@@ -48,8 +47,8 @@ const Graph = () => {
           onClick={(a) => {
             if (!a) return;
             if (typeof a.activeLabel !== "number") return;
-            dispatch(changeState("third"));
-            dispatch(setIndex(a.activeLabel));
+            changeState("third");
+            setIndex(a.activeLabel);
           }}>
           <YAxis domain={[-threshold, threshold]} type="number" hide />
           <Tooltip

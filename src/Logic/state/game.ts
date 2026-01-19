@@ -35,11 +35,24 @@ export interface loadType {
   analysis: analysisType[];
   termination?: terminationType;
 }
+interface GameActions {
+  flipBoard: () => void;
+  setFen: (fen: string) => void;
+  setIndex2: (index2: number) => void;
+  setAnalysis: (analysis: analysisType[]) => void;
+  setTermination: (termination: terminationType | undefined) => void;
+  changeState: (stage: stage) => void;
+  setIndex: (index: number) => void;
+  setBoardStage: (boardStage: Boardstage) => void;
+  setGame: (Game: Chess) => void;
+  loadGame: (load: loadType) => void;
+}
 export type saveType = loadType & { pgn: string; name: string; id: string };
 
 const s = ["bottom", "whitePlayer", "blackPlayer", "analysis", "termination"] as const;
 export type saveKeys = (typeof s)[number];
 export const allSaveKeys: saveKeys[] = [...s];
+export type GameState = GameType & GameActions;
 
 const initialState: GameType = {
   bottom: "white",
@@ -57,21 +70,21 @@ const initialState: GameType = {
   analysis: undefined,
 };
 
-const useGameState = create<GameType, any>((set, get) => ({
+export const useGameState = create<GameState>((set, get) => ({
   ...initialState,
-  filpBoard: () => set((state) => ({ bottom: state.bottom === "white" ? "black" : "white" })),
-  setFen: (fen: string) => set({ fen }),
-  setIndex2: (index2: number) => set({ index2 }),
-  setAnalysis: (analysis: analysisType[]) => set({ analysis }),
-  setTermination: (termination: terminationType | undefined) => set({ termination }),
+  flipBoard: () => set((state) => ({ bottom: state.bottom === "white" ? "black" : "white" })),
+  setFen: (fen) => set({ fen }),
+  setIndex2: (index2) => set({ index2 }),
+  setAnalysis: (analysis) => set({ analysis }),
+  setTermination: (termination) => set({ termination }),
 
-  changeState: (stage: stage) => {
+  changeState: (stage) => {
     if (stage === "first") set({ ...initialState });
     else if (stage === "second") set({ moveIndex: -1 });
     set({ stage });
   },
 
-  setIndex: (index: number) =>
+  setIndex: (index) =>
     set((state) => {
       if (!state.Game || !state.analysis) return state;
       const moveIndex = index;
@@ -92,7 +105,7 @@ const useGameState = create<GameType, any>((set, get) => ({
       return { moveIndex, fen, evaluation, index2: 0, boardStage: "normal" };
     }),
 
-  setBoardStage: (boardStage: Boardstage) => {
+  setBoardStage: (boardStage) => {
     const state = get();
     if (boardStage === "normal" && state.Game) {
       const fen = state.Game.history({ verbose: true })[state.moveIndex].after;
@@ -101,7 +114,7 @@ const useGameState = create<GameType, any>((set, get) => ({
     set({ boardStage });
   },
 
-  setGame: (Game: Chess) => {
+  setGame: (Game) => {
     const state = get();
     const header = Game.getHeaders();
     const formatPlayer = (player: string, elo: string, defaultName: string): string => {
@@ -122,7 +135,5 @@ const useGameState = create<GameType, any>((set, get) => ({
     set({ whitePlayer, blackPlayer, Game, moveIndex: -1, stage: "second" });
   },
 
-  loadGame: (load: loadType) => set((state) => ({ ...state, ...load })),
+  loadGame: (load) => set((state) => ({ ...state, ...load })),
 }));
-
-export default useGameState;

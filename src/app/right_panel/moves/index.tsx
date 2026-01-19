@@ -4,15 +4,13 @@ import { Button } from "@heroui/button";
 import { Controls } from "./controls";
 import EvalGraph from "@/Logic/evalgraph";
 import { MoveComment } from "./moveComment";
-import { useDispatch, useSelector } from "react-redux";
-import { StateType } from "@/Logic/state/store";
-import { changeState, setIndex } from "@/Logic/state/game";
 import { cn } from "@heroui/theme";
 import { MoveIcon } from "@/components/moveTypes/MoveIcon";
+import { useGameState } from "@/Logic/state/game";
 
 function Moves() {
-  const { Game } = useSelector((state: StateType) => state.game);
-  const dispatch = useDispatch();
+  const Game = useGameState((state) => state.Game);
+  const changeState = useGameState((state) => state.changeState);
   if (!Game) {
     throw new Error();
   }
@@ -48,7 +46,7 @@ function Moves() {
         <div className="align-center flex w-full flex-col justify-center gap-3 align-middle">
           <MoveComment />
           <Controls />
-          <Button onPress={() => dispatch(changeState("second"))} variant="ghost" size="lg">
+          <Button onPress={() => changeState("second")} variant="ghost" size="lg">
             <div className="text-2xl">Back</div>
           </Button>
         </div>
@@ -58,8 +56,9 @@ function Moves() {
 }
 
 const SingleMove: FC<{ move: string; index: number }> = ({ move, index }) => {
-  const { moveIndex, analysis } = useSelector((state: StateType) => state.game);
-  const dispatch = useDispatch();
+  const moveIndex = useGameState((state) => state.moveIndex);
+  const setIndex = useGameState((state) => state.setIndex);
+  const analysis = useGameState((state) => state.analysis);
 
   let moveType;
   if (index !== -1 && analysis !== undefined) {
@@ -77,7 +76,7 @@ const SingleMove: FC<{ move: string; index: number }> = ({ move, index }) => {
     }
   }, [moveIndex, index]);
   const ClickHandler = () => {
-    dispatch(setIndex(index));
+    setIndex(index);
   };
 
   return (

@@ -1,12 +1,10 @@
 import { Slider } from "@heroui/slider";
-import { useDispatch, useSelector } from "react-redux";
-import { StateType } from "@/Logic/state/store";
-import { changeDepth } from "@/Logic/state/settings";
 import { ToggleSwitch } from "@/components/switch";
+import { useSettingsState } from "@/Logic/state/settings";
 
 function StockfishSettings() {
-  const { depth } = useSelector((state: StateType) => state.settings);
-  const dispatch = useDispatch();
+  const depth = useSettingsState((state) => state.depth);
+  const changeDepth = useSettingsState((state) => state.changeDepth);
 
   return (
     <>
@@ -18,7 +16,7 @@ function StockfishSettings() {
         classNames={{ label: "text-lg" }}
         value={depth}
         onChange={(e) => {
-          if (typeof e === "number") dispatch(changeDepth(e));
+          if (typeof e === "number") changeDepth(e);
         }}
         maxValue={30}
       />

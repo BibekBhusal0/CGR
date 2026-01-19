@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 const b = ["default", "ocean", "wood", "geometric", "cosmos", "dash", "nature"] as const;
 export type boardThemes = (typeof b)[number];
 export const allBoardThemes: boardThemes[] = [...b];
@@ -19,6 +20,17 @@ export interface settingType {
   openAccordions: string[];
 }
 
+interface settingActions {
+  toggleValues: (item: booleanSettings) => void;
+  changeDepth: (depth: number) => void;
+  setBoardTheme: (btheme: boardThemes) => void;
+  setOpenAccordtions: (openAccordions: string[]) => void;
+  setSettings: (newSettings: settingType) => void;
+  setInputMode: (newMode: inputModes) => void;
+}
+
+export type SettingsState = settingType & settingActions;
+
 const initialState: settingType = {
   depth: 12,
   highlight: true,
@@ -31,20 +43,23 @@ const initialState: settingType = {
   openAccordions: ["General Settings", "Stockfish Settings"],
 };
 
-const useSettingsState = create<settingType, any>((set) => ({
-  ...initialState,
+export const useSettingsState = create<SettingsState>()(
+  persist(
+    (set) => ({
+      ...initialState,
 
-  toggleValues: (item: booleanSettings) => set((state) => ({ [item]: !state[item] })),
-  changeDepth: (depth: number) => set({ depth }),
-  setBoardTheme: (btheme: boardThemes) => set({ btheme }),
-  setOpenAccordtions: (openAccordions: string[]) => set({ openAccordions }),
-  setSettings: (newSettings: settingType) => set((state) => ({ ...state, ...newSettings })),
+      toggleValues: (item) => set((state) => ({ [item]: !state[item] })),
+      changeDepth: (depth) => set({ depth }),
+      setBoardTheme: (btheme) => set({ btheme }),
+      setOpenAccordtions: (openAccordions: string[]) => set({ openAccordions }),
+      setSettings: (newSettings) => set((state) => ({ ...state, ...newSettings })),
 
-  setInputMode: (newMode: inputModes) =>
-    set((state) => {
-      if (allInputModes.includes(newMode)) return { inputMode: newMode };
-      return state;
+      setInputMode: (newMode) =>
+        set((state) => {
+          if (allInputModes.includes(newMode)) return { inputMode: newMode };
+          return state;
+        }),
     }),
-}));
-
-export default useSettingsState;
+    { name: "CHESS SETTINGS" }
+  )
+);

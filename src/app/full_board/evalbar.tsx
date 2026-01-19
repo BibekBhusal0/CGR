@@ -1,9 +1,11 @@
-import { useSelector } from "react-redux";
-import { StateType } from "@/Logic/state/store";
 import { cn } from "@heroui/theme";
+import { useGameState } from "@/Logic/state/game";
 
 function EvalBar() {
-  const { evaluation, moveIndex, bottom, stage } = useSelector((state: StateType) => state.game);
+  const evaluation =  useGameState(state => state.evaluation)
+  const moveIndex =useGameState(state => state.moveIndex)
+  const bottom = useGameState(state => state.bottom)
+  const stage = useGameState(state => state.stage)
 
   const { type, value } = evaluation;
   let showVal: number | string = value;

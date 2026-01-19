@@ -1,14 +1,12 @@
 import { Switch } from "@heroui/switch";
-import { useDispatch, useSelector } from "react-redux";
-import { StateType } from "@/Logic/state/store";
-import { toggleValues } from "@/Logic/state/settings";
 import { switchClassNames, ToggleSwitchProps } from "./switch_types";
+import { useSettingsState } from "@/Logic/state/settings";
 
 export function ToggleSwitch({ item, ...props }: ToggleSwitchProps) {
-  const value = useSelector((state: StateType) => state.settings[item]);
+  const value = useSettingsState((state) => state[item]);
+  const toggleValues = useSettingsState((state) => state.toggleValues);
 
-  const dispatch = useDispatch();
-  const toggle = () => dispatch(toggleValues(item));
+  const toggle = () => toggleValues(item);
 
   return (
     <Switch

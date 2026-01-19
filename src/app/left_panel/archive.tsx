@@ -13,16 +13,15 @@ import { icons } from "@/components/icons";
 import { cn } from "@heroui/theme";
 import { Fragment } from "react/jsx-runtime";
 import { addToast } from "@heroui/toast";
-import { saveType } from "@/Logic/state/game";
-import { useSelector } from "react-redux";
-import { StateType } from "@/Logic/state/store";
+import { saveType, useGameState } from "@/Logic/state/game";
 
 export default function Archive() {
   const [warningOpen, setWarningOpen] = useState(false);
   const [archiveOpen, setArchiveOpen] = useState(false);
   const [games, setGames] = useState<saveType[]>([]);
   const fileRef = useRef<HTMLInputElement | null>(null);
-  const { Game, analysis } = useSelector((state: StateType) => state.game);
+  const Game = useGameState((state) => state.Game);
+  const analysis = useGameState((state) => state.analysis);
 
   const loadGames = async () => {
     const all = await getAllGamesFromArchive();
