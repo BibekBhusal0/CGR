@@ -20,16 +20,15 @@ export function Input() {
   const setInputMode = useSettingsState((state) => state.setInputMode);
 
   useEffect(() => {
-    const currentUrl = new URL( window.location.href )
+    const currentUrl = new URL(window.location.href);
     if (currentUrl.searchParams.get("pgn")) {
       setInputMode("pgn");
       setVal(currentUrl.searchParams.get("pgn") || "");
-    }
-    else if (currentUrl.searchParams.get("cdcUsername")) {
+    } else if (currentUrl.searchParams.get("cdcUsername")) {
       setInputMode("chess.com");
       setVal(currentUrl.searchParams.get("cdcUsername") || "");
     }
-  })
+  });
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const pgnRef = useRef<HTMLTextAreaElement>(null);
 
