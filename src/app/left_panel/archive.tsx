@@ -4,8 +4,7 @@ import {
   getAllGamesFromArchive,
   importGamesToArchive,
 } from "@/utils/archive";
-import { getCurrentGameToSave, importGame } from "@/utils/import_export";
-import { saveToJson } from "@/utils/import_export";
+import { getCurrentGameToSave, importGame, saveToJson } from "@/utils/import_export";
 import { Button, ButtonGroup, ButtonProps } from "@heroui/button";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/modal";
 import { useState, useRef } from "react";

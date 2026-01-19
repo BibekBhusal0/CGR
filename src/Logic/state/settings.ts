@@ -8,6 +8,7 @@ const m = ["chess.com", "pgn"] as const;
 export type inputModes = (typeof m)[number];
 export const allInputModes: inputModes[] = [...m];
 
+const SETTINGS_KEY = "CHESS SETTINGS";
 export interface settingType {
   depth: number;
   highlight: boolean;
@@ -60,6 +61,6 @@ export const useSettingsState = create<SettingsState>()(
           return state;
         }),
     }),
-    { name: "CHESS SETTINGS" }
+    { name: SETTINGS_KEY}
   )
 );
