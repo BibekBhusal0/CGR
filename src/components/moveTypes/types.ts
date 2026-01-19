@@ -30,7 +30,7 @@ export type MoveMappingType = { [key in MT]: MoveProperty };
 export type GameOverMappingType = { [key in GOT]: MoveProperty };
 export type MoveIconsType = MoveMappingType | GameOverMappingType;
 
-export const GameOverColors : Record<GOT, string>= {
+export const GameOverColors: Record<GOT, string> = {
   resigned: "#312E2B",
   draw: "#DBAC16",
   timeout: "#312E2B",
@@ -38,7 +38,7 @@ export const GameOverColors : Record<GOT, string>= {
   checkmated: "#312E2B",
 };
 
-export const MoveTypeColors : Record<MT, string> = {
+export const MoveTypeColors: Record<MT, string> = {
   brilliant: "#26C2A3",
   great: "#749BBF",
   best: "#81B64C",

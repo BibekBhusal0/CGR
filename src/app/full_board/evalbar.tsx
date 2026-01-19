@@ -2,10 +2,10 @@ import { cn } from "@heroui/theme";
 import { useGameState } from "@/Logic/state/game";
 
 function EvalBar() {
-  const evaluation =  useGameState(state => state.evaluation)
-  const moveIndex =useGameState(state => state.moveIndex)
-  const bottom = useGameState(state => state.bottom)
-  const stage = useGameState(state => state.stage)
+  const evaluation = useGameState((state) => state.evaluation);
+  const moveIndex = useGameState((state) => state.moveIndex);
+  const bottom = useGameState((state) => state.bottom);
+  const stage = useGameState((state) => state.stage);
 
   const { type, value } = evaluation;
   let showVal: number | string = value;

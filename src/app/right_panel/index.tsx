@@ -5,7 +5,7 @@ import Moves from "./moves";
 import { useGameState } from "@/Logic/state/game";
 
 function RightPanel() {
-  const stage = useGameState(state => state.stage)
+  const stage = useGameState((state) => state.stage);
 
   return (
     <div className="relative basis-3/12 px-2 lg:basis-4/12">

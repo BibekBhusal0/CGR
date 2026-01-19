@@ -7,7 +7,7 @@ import StockfishManager, { evaluationType } from "@/Logic/stockfish";
 import EvalGraph from "@/Logic/evalgraph";
 import { analysisType, analyze } from "@/Logic/analyze";
 import { Move } from "chess.js";
-import { useGameState } from "@/Logic/state/game"
+import { useGameState } from "@/Logic/state/game";
 import { MoveClass } from "@/components/moveTypes";
 import { useSettingsState } from "@/Logic/state/settings";
 
@@ -31,14 +31,14 @@ function Summary() {
     black: initStats(),
     white: initStats(),
   });
-  const whitePlayer = useGameState((state)=> state.whitePlayer)
-  const blackPlayer = useGameState((state)=> state.blackPlayer)
-  const changeState = useGameState((state)=> state.changeState)
-  const setAnalysis = useGameState((state)=> state.setAnalysis)
-  const Game = useGameState((state)=> state.Game)
-  const analysis = useGameState((state)=> state.analysis)
-  const depth = useSettingsState((state)=> state.depth)
-  const localStockfish = useSettingsState((state)=> state.localStockfish)
+  const whitePlayer = useGameState((state) => state.whitePlayer);
+  const blackPlayer = useGameState((state) => state.blackPlayer);
+  const changeState = useGameState((state) => state.changeState);
+  const setAnalysis = useGameState((state) => state.setAnalysis);
+  const Game = useGameState((state) => state.Game);
+  const analysis = useGameState((state) => state.analysis);
+  const depth = useSettingsState((state) => state.depth);
+  const localStockfish = useSettingsState((state) => state.localStockfish);
 
   const handleClick = () => {
     changeState("third");
@@ -146,9 +146,9 @@ function Summary() {
                 loading
                   ? undefined
                   : {
-                    white: playerSummary.white.movesCount[m],
-                    black: playerSummary.black.movesCount[m],
-                  }
+                      white: playerSummary.white.movesCount[m],
+                      black: playerSummary.black.movesCount[m],
+                    }
               }></MoveClass>
           ))}
         </div>

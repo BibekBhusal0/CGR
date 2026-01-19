@@ -10,13 +10,13 @@ import { useGameState } from "@/Logic/state/game";
 import { useSettingsState } from "@/Logic/state/settings";
 
 export const MoveComment: FC = () => {
-  const Game = useGameState((state)=> state.Game)
-  const analysis = useGameState((state)=> state.analysis)
-  const moveIndex = useGameState((state)=> state.moveIndex)
-  const boardStage = useGameState((state)=> state.boardStage)
-  const setBoardStage = useGameState((state)=> state.setBoardStage)
-  const setIndex2 = useGameState((state)=> state.setIndex2)
-  const bestMove = useSettingsState((state)=> state.bestMove)
+  const Game = useGameState((state) => state.Game);
+  const analysis = useGameState((state) => state.analysis);
+  const moveIndex = useGameState((state) => state.moveIndex);
+  const boardStage = useGameState((state) => state.boardStage);
+  const setBoardStage = useGameState((state) => state.setBoardStage);
+  const setIndex2 = useGameState((state) => state.setIndex2);
+  const bestMove = useSettingsState((state) => state.bestMove);
 
   if (!analysis || !Game) {
     throw new Error("game not available or analysis not available");
@@ -96,7 +96,7 @@ export const MoveComment: FC = () => {
 };
 
 const ShowMoves: FC<{ ClickEvent: () => boolean }> = ({ ClickEvent }) => {
-  const boardStage = useGameState((state)=> state.boardStage)
+  const boardStage = useGameState((state) => state.boardStage);
 
   const [showing, setShowing] = useState(false);
   useEffect(() => {

@@ -6,7 +6,7 @@ import { useGameState } from "@/Logic/state/game";
 // const black = "#454545";
 
 function EvalGraph() {
-  const analysis = useGameState().analysis
+  const analysis = useGameState().analysis;
   const showGraph = analysis !== undefined;
   return (
     <div className="size-full">
@@ -16,9 +16,9 @@ function EvalGraph() {
 }
 
 const Graph = () => {
-  const analysis = useGameState(state => state.analysis)
-  const changeState = useGameState(state => state.changeState)
-  const setIndex = useGameState(state => state.setIndex)
+  const analysis = useGameState((state) => state.analysis);
+  const changeState = useGameState((state) => state.changeState);
+  const setIndex = useGameState((state) => state.setIndex);
   if (!analysis) throw new Error("analysis not found");
 
   const maxEval = Math.max(

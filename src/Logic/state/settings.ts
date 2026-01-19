@@ -61,6 +61,6 @@ export const useSettingsState = create<SettingsState>()(
           return state;
         }),
     }),
-    { name: SETTINGS_KEY}
+    { name: SETTINGS_KEY }
   )
 );
