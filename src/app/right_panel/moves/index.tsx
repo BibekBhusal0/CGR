@@ -69,9 +69,9 @@ const SingleMove: FC<{ move: string; index: number }> = ({ move, index }) => {
   useEffect(() => {
     if (elementRef.current) {
       if (moveIndex === index) {
-        elementRef.current.scrollIntoView();
+        elementRef.current.scrollIntoView(false);
       } else if (moveIndex === -1 && index === 0) {
-        elementRef.current.scrollIntoView();
+        elementRef.current.scrollIntoView(false);
       }
     }
   }, [moveIndex, index]);
