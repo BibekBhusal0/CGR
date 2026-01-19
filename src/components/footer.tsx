@@ -4,10 +4,9 @@ export default function Footer() {
     <footer className="mt-5 w-full px-3 text-center text-sm text-gray-400">
       <p>© 2025 Bibek Bhusal</p>
       <div>
-        {" "}
         Also visit
         <a className={cls} href="https://github.com/bibekbhusal0/cgr">
-          Source Code{" "}
+          Source Code
         </a>
         and
         <a className={cls} href="https://github.com/BibekBhusal0/CGR/blob/main/credit.md">
