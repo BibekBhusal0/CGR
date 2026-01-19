@@ -1,8 +1,8 @@
 import { Tooltip, ResponsiveContainer, ReferenceLine, Area, AreaChart, YAxis } from "recharts";
 import { rephraseEvaluation } from "./rephraseEvaluation";
 import { useDispatch, useSelector } from "react-redux";
-import { StateType } from "./reducers/store";
-import { changeState, setIndex } from "./reducers/game";
+import { StateType } from "./state/store";
+import { changeState, setIndex } from "./state/game";
 
 // const white = "#F1E4D2";
 // const black = "#454545";

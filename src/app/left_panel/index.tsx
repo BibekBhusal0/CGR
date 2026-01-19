@@ -5,8 +5,8 @@ import StockfishSettings from "./stockfishSettings";
 import Archive from "./archive";
 import { icons } from "@/components/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { StateType } from "@/Logic/reducers/store";
-import { setOpenAccordtions } from "@/Logic/reducers/settings";
+import { StateType } from "@/Logic/state/store";
+import { setOpenAccordtions } from "@/Logic/state/settings";
 
 const Items = {
   "General Settings": { content: <GeneralSettings />, icon: icons.left_panel.settings },

@@ -1,6 +1,6 @@
-import { allSaveKeys, saveType } from "@/Logic/reducers/game";
+import { allSaveKeys, saveType } from "@/Logic/state/game";
 import { addToast } from "@heroui/toast";
-import { store } from "@/Logic/reducers/store";
+import { store } from "@/Logic/state/store";
 import { Chess } from "chess.js";
 
 export const saveToJson = (data: unknown, fileName: string = "games") => {

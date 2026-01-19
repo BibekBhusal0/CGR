@@ -2,9 +2,9 @@ import { Chessboard } from "react-chessboard";
 import { FC } from "react";
 import { Chess } from "chess.js";
 import { Square } from "react-chessboard/dist/chessboard/types";
-import { boardThemes } from "@/Logic/reducers/settings";
+import { boardThemes } from "@/Logic/state/settings";
 import { useSelector } from "react-redux";
-import { StateType } from "@/Logic/reducers/store";
+import { StateType } from "@/Logic/state/store";
 import { AllIcons } from "@/components/moveTypes/types";
 import { MoveIcon } from "@/components/moveTypes/MoveIcon";
 

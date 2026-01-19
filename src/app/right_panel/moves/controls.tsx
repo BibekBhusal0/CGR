@@ -2,8 +2,8 @@ import { Button, ButtonGroup } from "@heroui/button";
 import { Tooltip } from "@heroui/tooltip";
 import { FC, JSX, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { StateType } from "@/Logic/reducers/store";
-import { changeState, flipBoard, setFen, setIndex } from "@/Logic/reducers/game";
+import { StateType } from "@/Logic/state/store"
+import { changeState, flipBoard, setFen, setIndex } from "@/Logic/state/game"
 import { icons as all_icons } from "@/components/icons";
 const icons = all_icons.controls;
 

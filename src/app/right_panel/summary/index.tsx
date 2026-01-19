@@ -7,9 +7,9 @@ import StockfishManager, { evaluationType } from "@/Logic/stockfish";
 import EvalGraph from "@/Logic/evalgraph";
 import { analysisType, analyze } from "@/Logic/analyze";
 import { useDispatch, useSelector } from "react-redux";
-import { StateType } from "@/Logic/reducers/store";
+import { StateType } from "@/Logic/state/store"
 import { Move } from "chess.js";
-import { changeState, setAnalysis } from "@/Logic/reducers/game";
+import { changeState, setAnalysis } from "@/Logic/state/game"
 import { MoveClass } from "@/components/moveTypes";
 
 export interface playerStats {
@@ -143,9 +143,9 @@ function Summary() {
                 loading
                   ? undefined
                   : {
-                      white: playerSummary.white.movesCount[m],
-                      black: playerSummary.black.movesCount[m],
-                    }
+                    white: playerSummary.white.movesCount[m],
+                    black: playerSummary.black.movesCount[m],
+                  }
               }></MoveClass>
           ))}
         </div>

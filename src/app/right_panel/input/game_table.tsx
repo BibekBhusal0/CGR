@@ -5,7 +5,7 @@ import { Pagination } from "@heroui/pagination";
 import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/table";
 import { Chess, DEFAULT_POSITION } from "chess.js";
 import TimeControl from "@/components/timeControls";
-import { flipBoard, setGame, setTermination, terminationType } from "@/Logic/reducers/game";
+import { flipBoard, setGame, setTermination, terminationType } from "@/Logic/state/game";
 import { GOT } from "@/components/moveTypes/types";
 import { useDispatch } from "react-redux";
 

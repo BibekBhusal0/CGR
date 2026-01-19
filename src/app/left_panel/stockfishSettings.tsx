@@ -1,7 +1,7 @@
 import { Slider } from "@heroui/slider";
 import { useDispatch, useSelector } from "react-redux";
-import { StateType } from "@/Logic/reducers/store";
-import { changeDepth } from "@/Logic/reducers/settings";
+import { StateType } from "@/Logic/state/store";
+import { changeDepth } from "@/Logic/state/settings";
 import { ToggleSwitch } from "@/components/switch";
 
 function StockfishSettings() {

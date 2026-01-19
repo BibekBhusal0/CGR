@@ -2,7 +2,7 @@ import { Card } from "@heroui/card";
 import { Input } from "./input";
 import Summary from "./summary";
 import { useSelector } from "react-redux";
-import { StateType } from "@/Logic/reducers/store";
+import { StateType } from "@/Logic/state/store";
 import Moves from "./moves";
 
 function RightPanel() {

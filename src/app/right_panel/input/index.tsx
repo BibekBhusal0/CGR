@@ -6,13 +6,13 @@ import { useRef, useState } from "react";
 import { SelectGame } from "./game_select";
 import { Chess } from "chess.js";
 import { useDispatch, useSelector } from "react-redux";
-import { setGame } from "@/Logic/reducers/game";
+import { setGame } from "@/Logic/state/game";
 import { CardBody } from "@heroui/card";
 import { icons } from "@/components/icons";
 import { addToast } from "@heroui/toast";
 import { useDisclosure } from "@heroui/modal";
-import { StateType } from "@/Logic/reducers/store";
-import { allInputModes, inputModes, setInputMode } from "@/Logic/reducers/settings";
+import { StateType } from "@/Logic/state/store";
+import { allInputModes, inputModes, setInputMode } from "@/Logic/state/settings";
 
 export function Input() {
   const [val, setVal] = useState("");

@@ -3,7 +3,7 @@ import { FC } from "react";
 import EvalBar from "./evalbar";
 import JustBoard from "./customBoard";
 import { useSelector } from "react-redux";
-import { StateType } from "@/Logic/reducers/store";
+import { StateType } from "@/Logic/state/store";
 
 function FullBoard() {
   const { whitePlayer, blackPlayer, bottom } = useSelector((state: StateType) => state.game);

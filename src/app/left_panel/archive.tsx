@@ -13,9 +13,9 @@ import { icons } from "@/components/icons";
 import { cn } from "@heroui/theme";
 import { Fragment } from "react/jsx-runtime";
 import { addToast } from "@heroui/toast";
-import { saveType } from "@/Logic/reducers/game";
+import { saveType } from "@/Logic/state/game";
 import { useSelector } from "react-redux";
-import { StateType } from "@/Logic/reducers/store";
+import { StateType } from "@/Logic/state/store";
 
 export default function Archive() {
   const [warningOpen, setWarningOpen] = useState(false);

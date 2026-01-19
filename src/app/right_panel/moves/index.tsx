@@ -5,8 +5,8 @@ import { Controls } from "./controls";
 import EvalGraph from "@/Logic/evalgraph";
 import { MoveComment } from "./moveComment";
 import { useDispatch, useSelector } from "react-redux";
-import { StateType } from "@/Logic/reducers/store";
-import { changeState, setIndex } from "@/Logic/reducers/game";
+import { StateType } from "@/Logic/state/store";
+import { changeState, setIndex } from "@/Logic/state/game";
 import { cn } from "@heroui/theme";
 import { MoveIcon } from "@/components/moveTypes/MoveIcon";
 

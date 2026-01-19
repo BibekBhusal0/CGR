@@ -1,6 +1,6 @@
 import { HeroUIProvider } from "@heroui/system";
 import { Provider } from "react-redux";
-import { store } from "@/Logic/reducers/store";
+import { store } from "@/Logic/state/store";
 import { loadSettings as load } from "@/utils/storage";
 import { ReactNode, useEffect } from "react";
 import { ToastProvider } from "@heroui/toast";

@@ -1,4 +1,4 @@
-import { store } from "@/Logic/reducers/store";
+import { store } from "@/Logic/state/store";
 
 export const SETTINGS_KEY = "CHESS SETTINGS";
 
