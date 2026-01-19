@@ -11,11 +11,11 @@ const timeControlColors = {
 };
 
 const TimeControl: FC<{ control: timeControls }> = ({ control }) => {
-  const color = timeControlColors[control] || timeControlColors["bullet"];
-  const icon = icons.time_control[control] || icons.time_control["bullet"];
+  const color = timeControlColors[control] || timeControlColors["rapid"];
+  const icon = icons.time_control[control] || icons.time_control["rapid"];
   return (
-    <div style={{ color: color }} className="flex justify-center gap-2 text-2xl capitalize">
-      <div> {icon} </div>
+    <div style={{ color: color }} className="flex-center gap-2 capitalize">
+      <div className = "text-xl"> {icon} </div>
       <div className="text-sm">{control}</div>
     </div>
   );

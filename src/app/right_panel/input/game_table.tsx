@@ -41,8 +41,12 @@ export const GameTable: FC<TableProps> = ({ tableData: { games }, userName }) =>
   return (
     <Table
       classNames={{
-        td: ["text-xl"],
-        th: ["text-lg"],
+        td: ["text-md flex-none first:hidden first:md:block first:md:py-2.5"],
+        tr: ["max-h-10 flex-none"],
+        th: [
+          "text-sm flex-none first:hidden first:md:block first:md:py-2.5 nth-[2]:rounded-l-lg nth-[2]:md:rounded-l-none text-center",
+        ],
+        table: ["min-h-[400px]"],
       }}
       aria-label="Game of selected month"
       selectionMode="single"
@@ -71,14 +75,14 @@ export const GameTable: FC<TableProps> = ({ tableData: { games }, userName }) =>
         emptyContent={`${userName} has not played any games this month you can try different month`}>
         {items.map((g) => (
           <TableRow key={g.uuid} className={getColors(g)} onClick={() => handleClick(g)}>
-            <TableCell className="text-lg">
+            <TableCell className="text-lg m-0 p-0 h-11">
               <TimeControl control={g.time_class} />
             </TableCell>
             <TableCell>
               <Player player_info={g.white} />
             </TableCell>
-            <TableCell className="font-mono text-2xl">VS</TableCell>
-            <TableCell>
+            <TableCell className="font-mono text-lg">VS</TableCell>
+            <TableCell className="m-0 p-0 h-8">
               <Player player_info={g.black} />
             </TableCell>
           </TableRow>
@@ -93,8 +97,8 @@ interface PlayerProps {
 }
 const Player: FC<PlayerProps> = ({ player_info: { username, rating } }) => {
   return (
-    <span className="px-3">
-      {username} ({rating})
+    <span className="flex ">
+      <div className="max-w-[60%] truncate">{username}</div> ({rating})
     </span>
   );
 };
