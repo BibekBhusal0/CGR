@@ -1,22 +1,12 @@
 import { FC, useMemo, useState } from "react";
-import { chessResults, drawResults, game, GameResponse, lostResults, player } from "@/api/CDC";
+import { drawResults, game, GameResponse, lostResults, player } from "@/api/CDC";
 import { Skeleton } from "@heroui/skeleton";
 import { Pagination } from "@heroui/pagination";
 import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/table";
-import { Chess, DEFAULT_POSITION } from "chess.js";
 import TimeControl from "@/components/timeControls";
-import { terminationType, useGameState } from "@/Logic/state/game";
-import { GOT } from "@/components/moveTypes/types";
+import { useGameState } from "@/Logic/state/game";
 
 const titles = ["Time Control", "White Player", "", "Black Player"];
-
-function reformatLostResult(result: chessResults): GOT {
-  if (result === "checkmated" || result === "timeout" || result === "resigned") {
-    return result;
-  }
-  if (result === "abandoned") return "resigned";
-  return "checkmated";
-}
 
 interface TableProps {
   tableData: GameResponse;
@@ -24,26 +14,8 @@ interface TableProps {
 }
 const rowsPerPage = 8;
 export const GameTable: FC<TableProps> = ({ tableData: { games }, userName }) => {
-  const flipBoard = useGameState((state) => state.flipBoard);
-  const setTermination = useGameState((state) => state.setTermination);
-  const setGame = useGameState((state) => state.setGame);
-
-  const handleClick = (game: game) => {
-    const { black, pgn, initial_setup, white } = game;
-    const chess = new Chess(initial_setup || DEFAULT_POSITION);
-    chess.loadPgn(pgn);
-    if (black.username === userName) flipBoard();
-    let termination: terminationType | undefined;
-    if (drawResults.includes(black.result)) {
-      termination = { overBy: "draw", winner: undefined };
-    } else if (black.result === "win") {
-      termination = { winner: "b", overBy: reformatLostResult(white.result) };
-    } else if (white.result === "win") {
-      termination = { winner: "w", overBy: reformatLostResult(black.result) };
-    }
-    setTermination(termination);
-    setGame(chess);
-  };
+  const loadFromCdc = useGameState((state) => state.loadFromCdc);
+  const handleClick = (game: game) => loadFromCdc(game, userName);
 
   const getColors: (game: game) => string = (game) => {
     const user = game.black.username === userName ? game.black : game.white;

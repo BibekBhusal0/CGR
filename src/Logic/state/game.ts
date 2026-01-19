@@ -3,6 +3,15 @@ import { Chess, DEFAULT_POSITION } from "chess.js";
 import { evaluationType } from "@/Logic/stockfish";
 import { analysisType } from "@/Logic/analyze";
 import { GOT } from "@/components/moveTypes/types";
+import { chessResults, drawResults, game } from "@/api/CDC";
+
+function reformatLostResult(result: chessResults): GOT {
+  if (result === "checkmated" || result === "timeout" || result === "resigned") {
+    return result;
+  }
+  if (result === "abandoned") return "resigned";
+  return "checkmated";
+}
 
 type stage = "first" | "second" | "third";
 type Boardstage = "normal" | "bestMove" | "interact" | "practice";
@@ -46,7 +55,9 @@ interface GameActions {
   setBoardStage: (boardStage: Boardstage) => void;
   setGame: (Game: Chess) => void;
   loadGame: (load: loadType) => void;
+  loadFromCdc: (game: game, userName?: string) => void;
 }
+
 export type saveType = loadType & { pgn: string; name: string; id: string };
 
 const s = ["bottom", "whitePlayer", "blackPlayer", "analysis", "termination"] as const;
@@ -133,6 +144,22 @@ export const useGameState = create<GameState>((set, get) => ({
       state.blackPlayer
     );
     set({ whitePlayer, blackPlayer, Game, moveIndex: -1, stage: "second" });
+  },
+
+  loadFromCdc: (game, userName) => {
+    const { setTermination, setGame } = get();
+    const { black, pgn, initial_setup, white } = game;
+    const chess = new Chess(initial_setup || DEFAULT_POSITION);
+    chess.loadPgn(pgn);
+    if (black.username === userName) set({ bottom: "black" });
+    if (drawResults.includes(black.result)) {
+      setTermination({ overBy: "draw", winner: undefined });
+    } else if (black.result === "win") {
+      setTermination({ winner: "b", overBy: reformatLostResult(white.result) });
+    } else if (white.result === "win") {
+      setTermination({ winner: "w", overBy: reformatLostResult(black.result) });
+    }
+    setGame(chess);
   },
 
   loadGame: (load) => set((state) => ({ ...state, ...load })),
