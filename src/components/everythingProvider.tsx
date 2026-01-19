@@ -11,7 +11,7 @@ const EverythingProvider = ({ children }: ep) => {
   const animation = useSettingsState((state) => state.animation);
   return (
     <HeroUIProvider disableAnimation={!animation}>
-      <ToastProvider />
+      <ToastProvider disableAnimation={!animation} />
       {children}
     </HeroUIProvider>
   );
