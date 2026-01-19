@@ -45,3 +45,7 @@
 @utility absolute-center {
   @apply horizontal-center vertical-center;
 }
+
+#board-board {
+  overflow:visible !important;
+}
