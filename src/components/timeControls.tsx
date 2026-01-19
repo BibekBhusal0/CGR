@@ -15,7 +15,7 @@ const TimeControl: FC<{ control: timeControls }> = ({ control }) => {
   const icon = icons.time_control[control] || icons.time_control["rapid"];
   return (
     <div style={{ color: color }} className="flex-center gap-2 capitalize">
-      <div className = "text-xl"> {icon} </div>
+      <div className="text-xl"> {icon} </div>
       <div className="text-sm">{control}</div>
     </div>
   );

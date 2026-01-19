@@ -75,14 +75,14 @@ export const GameTable: FC<TableProps> = ({ tableData: { games }, userName }) =>
         emptyContent={`${userName} has not played any games this month you can try different month`}>
         {items.map((g) => (
           <TableRow key={g.uuid} className={getColors(g)} onClick={() => handleClick(g)}>
-            <TableCell className="text-lg m-0 p-0 h-11">
+            <TableCell className="m-0 h-11 p-0 text-lg">
               <TimeControl control={g.time_class} />
             </TableCell>
             <TableCell>
               <Player player_info={g.white} />
             </TableCell>
             <TableCell className="font-mono text-lg">VS</TableCell>
-            <TableCell className="m-0 p-0 h-8">
+            <TableCell className="m-0 h-8 p-0">
               <Player player_info={g.black} />
             </TableCell>
           </TableRow>
@@ -97,7 +97,7 @@ interface PlayerProps {
 }
 const Player: FC<PlayerProps> = ({ player_info: { username, rating } }) => {
   return (
-    <span className="flex ">
+    <span className="flex">
       <div className="max-w-[60%] truncate">{username}</div> ({rating})
     </span>
   );
