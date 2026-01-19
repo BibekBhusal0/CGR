@@ -5,13 +5,14 @@ import { boardThemes, useSettingsState } from "@/Logic/state/settings";
 import { AllIcons } from "@/components/moveTypes/types";
 import { MoveIcon } from "@/components/moveTypes/MoveIcon";
 import { useGameState } from "@/Logic/state/game";
+import { cn } from "@heroui/theme";
 
 interface PieceProps {
   isDragging: boolean;
   squareWidth: number;
   square: Square;
 }
-type Review = { [key in Square]: AllIcons };
+type Review = Partial<Record<Square, AllIcons>>;
 
 const colors: Record<boardThemes, { light: string; dark: string }> = {
   default: { light: "#f0d2ad", dark: "#654e2f" },
@@ -25,36 +26,19 @@ const colors: Record<boardThemes, { light: string; dark: string }> = {
 export const base_path =
   "https://raw.githubusercontent.com/BibekBhusal0/CGR/e3bc436ef9d23fc37ad0d9364b3d7fd697963ee3/public/images/pieces/";
 
-const customPieces = (theme: string, reviews: Review[]): { [key: string]: FC<PieceProps> } => {
+const customPieces = (theme: string): { [key: string]: FC<PieceProps> } => {
   const pieceNames = ["K", "Q", "R", "B", "N", "P"];
   const pieces: { [key: string]: FC<PieceProps> } = {};
 
   ["w", "b"].forEach((color) => {
     pieceNames.forEach((piece) => {
-      pieces[`${color}${piece}`] = ({ isDragging, squareWidth, square }: PieceProps) => {
-        const index = reviews.findIndex((obj) => square in obj);
-        const review = index === -1 ? undefined : reviews[index][square];
-        // __AUTO_GENERATED_PRINT_VAR_START__
-        console.log("customPieces#(anon)#(anon)#(anon) review:", review); // __AUTO_GENERATED_PRINT_VAR_END__
-
+      pieces[`${color}${piece}`] = () => {
         return (
-          <div className="realtive aspect-square size-full overflow-visible">
-            <img
-              className="aspect-square p-0.5"
-              src={`${base_path}/${theme.toLowerCase()}/${color}${piece}.svg`}
-              alt={`${color === "w" ? "White" : "Black"} ${piece}`}
-              style={{
-                width: squareWidth,
-                height: squareWidth,
-                opacity: isDragging ? 0.5 : 1,
-              }}
-            />
-            {review && (
-              <div className="translate-x-[70%] translate-y-[-250%] bg-green-600">
-                <MoveIcon type={review} />
-              </div>
-            )}
-          </div>
+          <img
+            className="p-0.5"
+            src={`${base_path}/${theme.toLowerCase()}/${color}${piece}.svg`}
+            alt={`${color === "w" ? "White" : "Black"} ${piece}`}
+          />
         );
       };
     });
@@ -81,41 +65,32 @@ function JustBoard() {
   const { light, dark } = colors[btheme];
 
   const arrows: Arrow[] = [];
-  // const pieces: Record<string, () => React.JSX.Element> = {};
-  const highlights: { [square: string]: React.CSSProperties } = {};
-  const reviews: Review[] = [];
-  const squareRenderer = ({ children }: SquareHandlerArgs & { children?: React.ReactNode }) => {
-    return <div>{children}</div>;
-  };
+  const highlights: string[] = [];
+  const reviews: Review = {};
 
   if (stage === "third" && moveIndex !== -1 && boardStage === "normal") {
     if (Game !== undefined && analysis !== undefined) {
       const history = Game.history({ verbose: true });
       const type = analysis[moveIndex].moveType;
       const sq = history[moveIndex].to;
-      reviews.push({ [sq]: type } as Review);
+      reviews[sq] = type;
 
       if (moveIndex === history.length - 1 && termination !== undefined) {
         const whiteKingSq = Game.findPiece({ type: "k", color: "w" })[0];
         const blackKingSq = Game.findPiece({ type: "k", color: "b" })[0];
 
         if (!termination.winner) {
-          reviews.push({ [whiteKingSq]: "draw" } as Review);
-          reviews.push({ [blackKingSq]: "draw" } as Review);
+          reviews[whiteKingSq] = "draw";
+          reviews[blackKingSq] = "draw";
         } else {
-          reviews.push({
-            [blackKingSq]: termination.winner === "b" ? "win" : termination.overBy,
-          } as Review);
-          reviews.push({
-            [whiteKingSq]: termination.winner === "w" ? "win" : termination.overBy,
-          } as Review);
+          reviews[blackKingSq] = termination.winner === "b" ? "win" : termination.overBy;
+          reviews[whiteKingSq] = termination.winner === "w" ? "win" : termination.overBy;
         }
       }
 
       if (highlight) {
         const { from, to } = history[moveIndex];
-        highlights[from] = { background: "rgba(255, 255, 0, 0.3)" };
-        highlights[to] = { background: "rgba(255, 255, 0, 0.3)" };
+        highlights.push(from, to);
       }
       if (bestMove) {
         const chess = new Chess(history[moveIndex].before);
@@ -125,6 +100,24 @@ function JustBoard() {
       }
     }
   }
+
+  const squareRenderer = ({
+    children,
+    square,
+  }: SquareHandlerArgs & { children?: React.ReactNode }) => {
+    const highlightThis = highlights.includes(square);
+    const review = reviews[square as Square];
+    return (
+      <div className={cn(highlightThis && "bg-[rgba(255,0,0,0.2)]", "relative size-full")}>
+        {review && (
+          <div className="absolute scale-90 -right-3 -top-3 z-50 text-xl">
+            <MoveIcon type={review} />
+          </div>
+        )}
+        {children}
+      </div>
+    );
+  };
 
   return (
     <Chessboard
@@ -137,7 +130,7 @@ function JustBoard() {
         animationDurationInMs: animation ? 300 : 0,
         //
         arrows: arrows,
-        pieces: customPieces(btheme, reviews) as PieceRenderObject,
+        pieces: customPieces(btheme) as PieceRenderObject,
         squareRenderer: squareRenderer,
         //
         lightSquareStyle: { backgroundColor: light },
