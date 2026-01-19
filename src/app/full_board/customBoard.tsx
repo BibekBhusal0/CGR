@@ -110,7 +110,7 @@ function JustBoard() {
     return (
       <div className={cn(highlightThis && "bg-[rgba(255,0,0,0.2)]", "relative size-full")}>
         {review && (
-          <div className="absolute scale-90 -right-3 -top-3 z-50 text-xl">
+          <div className="absolute -top-3 -right-3 z-50 scale-90 text-xl">
             <MoveIcon type={review} />
           </div>
         )}

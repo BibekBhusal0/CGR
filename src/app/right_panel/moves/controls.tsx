@@ -108,13 +108,13 @@ export function Controls() {
     }
   };
 
-  const keyFunctionMapping :Record<string,()=>any> = {
-    "ArrowLeft": goToPreviousMove,
-    "ArrowRight": goToNextMove,
-    "ArrowUp": goToFirstMove,
-    "ArrowDown": goToLastMove,
-    " ": togglePlayPause
-  }
+  const keyFunctionMapping: Record<string, () => any> = {
+    ArrowLeft: goToPreviousMove,
+    ArrowRight: goToNextMove,
+    ArrowUp: goToFirstMove,
+    ArrowDown: goToLastMove,
+    " ": togglePlayPause,
+  };
 
   const handleKeyDown = (event: KeyboardEvent) => {
     const key = event.key;
