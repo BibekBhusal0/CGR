@@ -55,6 +55,7 @@ export function Controls() {
 
   useEffect(() => {
     if (boardStage === "bestMove") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPause(true);
       setShowingIndex(0);
     } else if (boardStage === "normal") setPause(false);
@@ -62,6 +63,7 @@ export function Controls() {
 
   useEffect(() => {
     if ((linesToShow && linesAtEnd) || atEnd) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPause(false);
     }
 

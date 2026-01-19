@@ -101,6 +101,7 @@ const ShowMoves: FC<{ ClickEvent: () => boolean }> = ({ ClickEvent }) => {
   const [showing, setShowing] = useState(false);
   useEffect(() => {
     if (boardStage !== "bestMove") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShowing(false);
     }
   }, [boardStage]);

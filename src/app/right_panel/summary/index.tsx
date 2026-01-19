@@ -100,6 +100,7 @@ function Summary() {
 
     if (!analysis) analysisLoop();
     else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (progress !== 1) setProgress(1);
       setPlayerSummary(countTypes(analysis));
     }

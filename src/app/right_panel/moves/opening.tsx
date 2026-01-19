@@ -7,6 +7,7 @@ const OpeningCard: FC<{ opening?: openingType }> = ({ opening }) => {
   const [name, setName] = useState("");
   useEffect(() => {
     if (opening) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setName(opening.name);
     }
   }, [opening]);
