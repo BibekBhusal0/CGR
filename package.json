@@ -11,7 +11,8 @@
     "format": "prettier --write .",
     "lint": "eslint .",
     "predeploy": "npm run build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc -b"
   },
   "dependencies": {
     "@heroui/accordion": "^2.2.26",
