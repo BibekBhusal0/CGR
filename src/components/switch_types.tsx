@@ -1,5 +1,5 @@
 import { SwitchProps } from "@heroui/switch";
-import { booleanSettings } from "@/Logic/reducers/settings";
+import { booleanSettings } from "@/Logic/state/settings";
 
 export const switchClassNames = {
   base: "flex-row-reverse justify-between w-full max-w-full",

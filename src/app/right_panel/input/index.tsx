@@ -5,19 +5,20 @@ import { Textarea } from "@heroui/input";
 import { useRef, useState } from "react";
 import { SelectGame } from "./game_select";
 import { Chess } from "chess.js";
-import { useDispatch, useSelector } from "react-redux";
-import { setGame } from "@/Logic/reducers/game";
 import { CardBody } from "@heroui/card";
 import { icons } from "@/components/icons";
 import { addToast } from "@heroui/toast";
 import { useDisclosure } from "@heroui/modal";
-import { StateType } from "@/Logic/reducers/store";
-import { allInputModes, inputModes, setInputMode } from "@/Logic/reducers/settings";
+import { useSettingsState } from "@/Logic/state/settings";
+import { useGameState } from "@/Logic/state/game";
+import { allInputModes, inputModes } from "@/Logic/state/settings";
 
 export function Input() {
+  const mode = useSettingsState((state) => state.inputMode);
+  const setGame = useGameState((state) => state.setGame);
   const [val, setVal] = useState("");
-  const mode = useSelector((state: StateType) => state.settings.inputMode);
-  const dispatch = useDispatch();
+  const setInputMode = useSettingsState((state) => state.setInputMode);
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const pgnRef = useRef<HTMLTextAreaElement>(null);
 
@@ -27,7 +28,7 @@ export function Input() {
         const chess = new Chess();
         try {
           chess.loadPgn(val);
-          dispatch(setGame(chess));
+          setGame(chess);
         } catch (error) {
           console.error(error);
           addToast({ title: "Please Enter Valid PGN", variant: "flat", color: "danger" });
@@ -76,7 +77,7 @@ export function Input() {
         value={mode}
         classNames={{ trigger: "uppercase" }}
         onChange={(item) => {
-          dispatch(setInputMode(item.target.value as inputModes));
+          setInputMode(item.target.value as inputModes);
           setVal("");
           pgnRef.current?.focus();
         }}>

@@ -8,7 +8,7 @@ export interface openingType {
   winRate?: { white: number; black: number; draws: number };
 }
 
-export const moveAcc: { [key in MT]: number } = {
+export const moveAcc: Record<MT, number> = {
   blunder: 0,
   miss: 0,
   mistake: 20,

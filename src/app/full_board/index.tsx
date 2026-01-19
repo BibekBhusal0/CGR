@@ -2,11 +2,12 @@ import { Card } from "@heroui/card";
 import { FC } from "react";
 import EvalBar from "./evalbar";
 import JustBoard from "./customBoard";
-import { useSelector } from "react-redux";
-import { StateType } from "@/Logic/reducers/store";
+import { useGameState } from "@/Logic/state/game";
 
 function FullBoard() {
-  const { whitePlayer, blackPlayer, bottom } = useSelector((state: StateType) => state.game);
+  const whitePlayer = useGameState((state) => state.whitePlayer);
+  const blackPlayer = useGameState((state) => state.blackPlayer);
+  const bottom = useGameState((state) => state.bottom);
 
   return (
     <Card className="basis-6/12 px-5 lg:basis-5/12">

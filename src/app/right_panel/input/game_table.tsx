@@ -5,9 +5,8 @@ import { Pagination } from "@heroui/pagination";
 import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/table";
 import { Chess, DEFAULT_POSITION } from "chess.js";
 import TimeControl from "@/components/timeControls";
-import { flipBoard, setGame, setTermination, terminationType } from "@/Logic/reducers/game";
+import { terminationType, useGameState } from "@/Logic/state/game";
 import { GOT } from "@/components/moveTypes/types";
-import { useDispatch } from "react-redux";
 
 const titles = ["Time Control", "White Player", "", "Black Player"];
 
@@ -25,12 +24,15 @@ interface TableProps {
 }
 const rowsPerPage = 8;
 export const GameTable: FC<TableProps> = ({ tableData: { games }, userName }) => {
-  const dispatch = useDispatch();
+  const flipBoard = useGameState((state) => state.flipBoard);
+  const setTermination = useGameState((state) => state.setTermination);
+  const setGame = useGameState((state) => state.setGame);
+
   const handleClick = (game: game) => {
     const { black, pgn, initial_setup, white } = game;
     const chess = new Chess(initial_setup || DEFAULT_POSITION);
     chess.loadPgn(pgn);
-    if (black.username === userName) dispatch(flipBoard());
+    if (black.username === userName) flipBoard();
     let termination: terminationType | undefined;
     if (drawResults.includes(black.result)) {
       termination = { overBy: "draw", winner: undefined };
@@ -39,8 +41,8 @@ export const GameTable: FC<TableProps> = ({ tableData: { games }, userName }) =>
     } else if (white.result === "win") {
       termination = { winner: "w", overBy: reformatLostResult(black.result) };
     }
-    dispatch(setTermination(termination));
-    dispatch(setGame(chess));
+    setTermination(termination);
+    setGame(chess);
   };
 
   const getColors: (game: game) => string = (game) => {

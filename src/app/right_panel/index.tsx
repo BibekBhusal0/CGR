@@ -1,12 +1,11 @@
 import { Card } from "@heroui/card";
 import { Input } from "./input";
 import Summary from "./summary";
-import { useSelector } from "react-redux";
-import { StateType } from "@/Logic/reducers/store";
 import Moves from "./moves";
+import { useGameState } from "@/Logic/state/game";
 
 function RightPanel() {
-  const { stage } = useSelector((state: StateType) => state.game);
+  const stage = useGameState(state => state.stage)
 
   return (
     <div className="relative basis-3/12 px-2 lg:basis-4/12">

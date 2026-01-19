@@ -1,6 +1,5 @@
-import { allSaveKeys, saveType } from "@/Logic/reducers/game";
+import { allSaveKeys, saveType, useGameState } from "@/Logic/state/game";
 import { addToast } from "@heroui/toast";
-import { store } from "@/Logic/reducers/store";
 import { Chess } from "chess.js";
 
 export const saveToJson = (data: unknown, fileName: string = "games") => {
@@ -14,16 +13,16 @@ export const saveToJson = (data: unknown, fileName: string = "games") => {
 };
 
 export const getCurrentGameToSave = () => {
-  const state = store.getState().game;
-  if (!state.Game || !state.analysis) return null;
+  const { Game, analysis, whitePlayer, blackPlayer } = useGameState.getState();
+  if (!Game || !analysis) return null;
   const to_save: Partial<saveType> = {};
   for (const i in allSaveKeys) {
     const key = allSaveKeys[i];
     // @ts-expect-error: safe key assignment
     to_save[key] = state[key];
   }
-  to_save.pgn = state.Game.pgn();
-  to_save.name = state.whitePlayer + " VS " + state.blackPlayer;
+  to_save.pgn = Game.pgn();
+  to_save.name = whitePlayer + " VS " + blackPlayer;
   return to_save;
 };
 
@@ -38,12 +37,12 @@ export const saveGameJson = () => {
 };
 
 export const importGame = (game: saveType) => {
+  const { loadGame, setGame } = useGameState.getState();
   try {
-    console.log(game);
-    store.dispatch({ type: "game/loadGame", payload: game });
+    loadGame(game);
     const chess = new Chess();
     chess.loadPgn(game.pgn);
-    store.dispatch({ type: "game/setGame", payload: chess });
+    setGame(chess);
     addToast({ title: "Game Imported", color: "success" });
   } catch (error) {
     console.error("Failed to import state", error);

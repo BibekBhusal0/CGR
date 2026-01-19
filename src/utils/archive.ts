@@ -1,6 +1,6 @@
 import { openDB } from "idb";
 import { v4 as uuidv4 } from "uuid";
-import { saveType } from "@/Logic/reducers/game";
+import { saveType } from "@/Logic/state/game";
 
 const DB_NAME = "chess_archive";
 const STORE_NAME = "games";

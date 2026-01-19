@@ -4,8 +4,7 @@ import {
   getAllGamesFromArchive,
   importGamesToArchive,
 } from "@/utils/archive";
-import { getCurrentGameToSave, importGame } from "@/utils/import_export";
-import { saveToJson } from "@/utils/import_export";
+import { getCurrentGameToSave, importGame, saveToJson } from "@/utils/import_export";
 import { Button, ButtonGroup, ButtonProps } from "@heroui/button";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/modal";
 import { useState, useRef } from "react";
@@ -13,16 +12,15 @@ import { icons } from "@/components/icons";
 import { cn } from "@heroui/theme";
 import { Fragment } from "react/jsx-runtime";
 import { addToast } from "@heroui/toast";
-import { saveType } from "@/Logic/reducers/game";
-import { useSelector } from "react-redux";
-import { StateType } from "@/Logic/reducers/store";
+import { saveType, useGameState } from "@/Logic/state/game";
 
 export default function Archive() {
   const [warningOpen, setWarningOpen] = useState(false);
   const [archiveOpen, setArchiveOpen] = useState(false);
   const [games, setGames] = useState<saveType[]>([]);
   const fileRef = useRef<HTMLInputElement | null>(null);
-  const { Game, analysis } = useSelector((state: StateType) => state.game);
+  const Game = useGameState((state) => state.Game);
+  const analysis = useGameState((state) => state.analysis);
 
   const loadGames = async () => {
     const all = await getAllGamesFromArchive();

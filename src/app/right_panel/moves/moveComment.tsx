@@ -3,19 +3,20 @@ import { FC, useEffect, useState } from "react";
 import { evaluationType } from "@/Logic/stockfish";
 import { Button } from "@heroui/button";
 import OpeningCard from "./opening";
-import { useDispatch, useSelector } from "react-redux";
-import { StateType } from "@/Logic/reducers/store";
-import { setBoardStage, setIndex2 } from "@/Logic/reducers/game";
 import { MoveIcon } from "@/components/moveTypes/MoveIcon";
 import { MoveExplained } from "@/components/moveTypes/types";
 import { icons } from "@/components/icons";
+import { useGameState } from "@/Logic/state/game";
+import { useSettingsState } from "@/Logic/state/settings";
 
 export const MoveComment: FC = () => {
-  const {
-    game: { moveIndex, analysis, Game, boardStage },
-    settings: { bestMove },
-  } = useSelector((state: StateType) => state);
-  const dispatch = useDispatch();
+  const Game = useGameState((state)=> state.Game)
+  const analysis = useGameState((state)=> state.analysis)
+  const moveIndex = useGameState((state)=> state.moveIndex)
+  const boardStage = useGameState((state)=> state.boardStage)
+  const setBoardStage = useGameState((state)=> state.setBoardStage)
+  const setIndex2 = useGameState((state)=> state.setIndex2)
+  const bestMove = useSettingsState((state)=> state.bestMove)
 
   if (!analysis || !Game) {
     throw new Error("game not available or analysis not available");
@@ -27,8 +28,8 @@ export const MoveComment: FC = () => {
     const execute = lines.length !== 0;
     return () => {
       if (execute) {
-        dispatch(setIndex2(index));
-        dispatch(setBoardStage(boardStage === "normal" ? "bestMove" : "normal"));
+        setIndex2(index);
+        setBoardStage(boardStage === "normal" ? "bestMove" : "normal");
       }
       return execute;
     };
@@ -95,7 +96,7 @@ export const MoveComment: FC = () => {
 };
 
 const ShowMoves: FC<{ ClickEvent: () => boolean }> = ({ ClickEvent }) => {
-  const { boardStage } = useSelector((state: StateType) => state.game);
+  const boardStage = useGameState((state)=> state.boardStage)
 
   const [showing, setShowing] = useState(false);
   useEffect(() => {

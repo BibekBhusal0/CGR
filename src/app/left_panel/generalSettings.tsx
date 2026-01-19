@@ -1,9 +1,7 @@
 import { Select, SelectItem } from "@heroui/select";
 import { Switch } from "@heroui/switch";
 import { useTheme } from "@heroui/use-theme";
-import { useDispatch, useSelector } from "react-redux";
-import { StateType } from "@/Logic/reducers/store";
-import { allBoardThemes, boardThemes, setBoardTheme } from "@/Logic/reducers/settings";
+import { allBoardThemes, boardThemes, useSettingsState } from "@/Logic/state/settings";
 import { base_path } from "../full_board/customBoard";
 import { ToggleSwitch } from "@/components/switch";
 import { switchClassNames } from "@/components/switch_types";
@@ -14,8 +12,8 @@ function getImageSource(theme: string, board_theme: string) {
 
 function GeneralSettings() {
   const { theme, setTheme } = useTheme();
-  const dispatch = useDispatch();
-  const { btheme } = useSelector((state: StateType) => state.settings);
+  const btheme = useSettingsState((state) => state.btheme);
+  const setBoardTheme = useSettingsState((state) => state.setBoardTheme);
 
   function changeTheme() {
     const not_theme = theme === "dark" ? "light" : "dark";
@@ -38,7 +36,7 @@ function GeneralSettings() {
         onChange={(e) => {
           if (e.target.value.trim() !== "") {
             const v = e.target.value.trim() as boardThemes;
-            dispatch(setBoardTheme(v));
+            setBoardTheme(v);
           }
         }}
         labelPlacement="outside-left"

@@ -1,10 +1,8 @@
 import { Button, ButtonGroup } from "@heroui/button";
 import { Tooltip } from "@heroui/tooltip";
 import { FC, JSX, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { StateType } from "@/Logic/reducers/store";
-import { changeState, flipBoard, setFen, setIndex } from "@/Logic/reducers/game";
 import { icons as all_icons } from "@/components/icons";
+import { useGameState } from "@/Logic/state/game";
 const icons = all_icons.controls;
 
 interface TTButtonProps {
@@ -15,11 +13,18 @@ interface TTButtonProps {
 }
 
 export function Controls() {
-  const { moveIndex, Game, analysis, boardStage, index2, fen } = useSelector(
-    (state: StateType) => state.game
-  );
+  const moveIndex = useGameState((state) => state.moveIndex);
+  const setIndex = useGameState((state) => state.setIndex);
+  const fen = useGameState((state) => state.fen);
+  const index2 = useGameState((state) => state.index2);
+  const boardStage = useGameState((state) => state.boardStage);
+  const Game = useGameState((state) => state.Game);
+  const flipBoard = useGameState((state) => state.flipBoard);
+  const changeState = useGameState((state) => state.changeState);
+  const analysis = useGameState((state) => state.analysis);
+  const setFen = useGameState((state) => state.setFen);
+
   const [pause, setPause] = useState(false);
-  const dispatch = useDispatch();
   const [showingIndex, setShowingIndex] = useState(0);
   if (!Game) throw new Error();
   const n_moves = Game.history().length;
@@ -39,7 +44,7 @@ export function Controls() {
 
       if (prevShowingIndexRef.current !== showingIndex && fen && fen !== currentFen) {
         try {
-          dispatch(setFen(currentFen));
+          setFen(currentFen);
           prevShowingIndexRef.current = showingIndex;
         } catch (error) {
           console.error(`Sorry, can't show moves: ${error}`);
@@ -65,7 +70,7 @@ export function Controls() {
         if (boardStage === "bestMove" && linesToShow && !linesAtEnd) {
           setShowingIndex((prevIndex) => prevIndex + 1);
         } else if (boardStage === "normal" && moveIndex < n_moves - 1) {
-          dispatch(setIndex(moveIndex + 1));
+          setIndex(moveIndex + 1);
         }
       }, 500);
 
@@ -76,17 +81,17 @@ export function Controls() {
   const togglePlayPause = () => setPause((prevPause) => !prevPause);
   const goToFirstMove = () => {
     setPause(false);
-    dispatch(setIndex(-1));
+    setIndex(-1);
   };
   const goToLastMove = () => {
     setPause(false);
-    dispatch(setIndex(n_moves - 1));
+    setIndex(n_moves - 1);
   };
 
   const goToPreviousMove = () => {
     setPause(false);
     if (boardStage === "normal") {
-      dispatch(setIndex(moveIndex - 1));
+      setIndex(moveIndex - 1);
     } else if (boardStage === "bestMove") {
       setShowingIndex(showingIndex - 1);
     }
@@ -95,7 +100,7 @@ export function Controls() {
   const goToNextMove = () => {
     setPause(false);
     if (boardStage === "normal") {
-      dispatch(setIndex(moveIndex + 1));
+      setIndex(moveIndex + 1);
     } else if (boardStage === "bestMove") {
       setShowingIndex(showingIndex + 1);
     }
@@ -125,7 +130,7 @@ export function Controls() {
   const controlButtons: TTButtonProps[] = [
     {
       name: "Flip Board",
-      clickHandler: () => dispatch(flipBoard()),
+      clickHandler: () => flipBoard(),
       disabled: false,
       icon: icons.flip,
     },
@@ -161,7 +166,7 @@ export function Controls() {
     },
     {
       name: "Reset",
-      clickHandler: () => dispatch(changeState("first")),
+      clickHandler: () => changeState("first"),
       disabled: false,
       icon: icons.reset,
     },

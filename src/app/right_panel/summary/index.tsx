@@ -6,11 +6,10 @@ import { Progress } from "@heroui/progress";
 import StockfishManager, { evaluationType } from "@/Logic/stockfish";
 import EvalGraph from "@/Logic/evalgraph";
 import { analysisType, analyze } from "@/Logic/analyze";
-import { useDispatch, useSelector } from "react-redux";
-import { StateType } from "@/Logic/reducers/store";
 import { Move } from "chess.js";
-import { changeState, setAnalysis } from "@/Logic/reducers/game";
+import { useGameState } from "@/Logic/state/game"
 import { MoveClass } from "@/components/moveTypes";
+import { useSettingsState } from "@/Logic/state/settings";
 
 export interface playerStats {
   accuracy: number;
@@ -32,14 +31,17 @@ function Summary() {
     black: initStats(),
     white: initStats(),
   });
-  const {
-    game: { whitePlayer, blackPlayer, Game, analysis },
-    settings: { depth, localStockfish },
-  } = useSelector((state: StateType) => state);
-  const dispatch = useDispatch();
+  const whitePlayer = useGameState((state)=> state.whitePlayer)
+  const blackPlayer = useGameState((state)=> state.blackPlayer)
+  const changeState = useGameState((state)=> state.changeState)
+  const setAnalysis = useGameState((state)=> state.setAnalysis)
+  const Game = useGameState((state)=> state.Game)
+  const analysis = useGameState((state)=> state.analysis)
+  const depth = useSettingsState((state)=> state.depth)
+  const localStockfish = useSettingsState((state)=> state.localStockfish)
 
   const handleClick = () => {
-    dispatch(changeState("third"));
+    changeState("third");
   };
 
   useEffect(() => {
@@ -92,7 +94,7 @@ function Summary() {
         setProgress(completed / history.length);
       }
 
-      dispatch(setAnalysis(analysisResult));
+      setAnalysis(analysisResult);
       setPlayerSummary(countTypes(analysisResult));
     };
 
@@ -143,9 +145,9 @@ function Summary() {
                 loading
                   ? undefined
                   : {
-                      white: playerSummary.white.movesCount[m],
-                      black: playerSummary.black.movesCount[m],
-                    }
+                    white: playerSummary.white.movesCount[m],
+                    black: playerSummary.black.movesCount[m],
+                  }
               }></MoveClass>
           ))}
         </div>

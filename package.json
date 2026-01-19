@@ -11,7 +11,8 @@
     "format": "prettier --write .",
     "lint": "eslint .",
     "predeploy": "npm run build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc -b"
   },
   "dependencies": {
     "@heroui/accordion": "^2.2.26",
@@ -36,7 +37,6 @@
     "@heroui/tooltip": "^2.2.26",
     "@heroui/use-theme": "^2.1.10",
     "@internationalized/date": "^3.10.1",
-    "@reduxjs/toolkit": "^2.11.2",
     "axios": "^1.13.2",
     "chess.js": "^1.4.0",
     "framer-motion": "^12.25.0",
@@ -44,9 +44,9 @@
     "react": "19.2.3",
     "react-chessboard": "^5.8.6",
     "react-dom": "19.2.3",
-    "react-redux": "^9.2.0",
     "recharts": "^3.6.0",
-    "uuid": "^13.0.0"
+    "uuid": "^13.0.0",
+    "zustand": "^5.0.10"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
