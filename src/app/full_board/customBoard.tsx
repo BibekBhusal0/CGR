@@ -111,7 +111,9 @@ function JustBoard() {
     return (
       <div className={cn(highlightThis && "bg-[rgba(255,0,0,0.2)]", "relative size-full")}>
         {notationStyle === "in-square" && !children && (
-          <div className="absolute-center text-xs md:font-bold md:text-md text-white select-none">{square}</div>
+          <div className="absolute-center md:text-md text-xs text-white select-none md:font-bold">
+            {square}
+          </div>
         )}
         {review && (
           <div className="absolute -top-3 -right-3 z-50 scale-90 text-xl">
