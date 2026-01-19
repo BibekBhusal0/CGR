@@ -1,7 +1,6 @@
-import { Chessboard } from "react-chessboard";
+import { Arrow, Chessboard, PieceRenderObject, SquareHandlerArgs } from "react-chessboard";
 import { FC } from "react";
-import { Chess } from "chess.js";
-import { Square } from "react-chessboard/dist/chessboard/types";
+import { Chess, Square } from "chess.js";
 import { boardThemes } from "@/Logic/state/settings";
 import { useSelector } from "react-redux";
 import { StateType } from "@/Logic/state/store";
@@ -36,6 +35,8 @@ const customPieces = (theme: string, reviews: Review[]): { [key: string]: FC<Pie
       pieces[`${color}${piece}`] = ({ isDragging, squareWidth, square }: PieceProps) => {
         const index = reviews.findIndex((obj) => square in obj);
         const review = index === -1 ? undefined : reviews[index][square];
+        // __AUTO_GENERATED_PRINT_VAR_START__
+        console.log("customPieces#(anon)#(anon)#(anon) review:", review); // __AUTO_GENERATED_PRINT_VAR_END__
 
         return (
           <div className="realtive aspect-square size-full overflow-visible">
@@ -50,7 +51,7 @@ const customPieces = (theme: string, reviews: Review[]): { [key: string]: FC<Pie
               }}
             />
             {review && (
-              <div className="translate-x-[70%] translate-y-[-250%]">
+              <div className="translate-x-[70%] translate-y-[-250%] bg-green-600">
                 <MoveIcon type={review} />
               </div>
             )}
@@ -72,9 +73,13 @@ function JustBoard() {
 
   const { light, dark } = colors[btheme];
 
-  const arrow: [Square, Square, string?][] = [];
+  const arrows: Arrow[] = [];
+  // const pieces: Record<string, () => React.JSX.Element> = {};
   const highlights: { [square: string]: React.CSSProperties } = {};
   const reviews: Review[] = [];
+  const squareRenderer = ({ children }: SquareHandlerArgs & { children?: React.ReactNode }) => {
+    return <div>{children}</div>;
+  };
 
   if (stage === "third" && moveIndex !== -1 && boardStage === "normal") {
     if (Game !== undefined && analysis !== undefined) {
@@ -109,26 +114,28 @@ function JustBoard() {
         const chess = new Chess(history[moveIndex].before);
         const moveOuptut = chess.move(analysis[moveIndex].bestMove);
         const { from, to } = moveOuptut;
-        arrow.push([from, to, "green"]);
+        arrows.push({ startSquare: from, endSquare: to, color: "green" });
       }
     }
   }
 
   return (
     <Chessboard
-      id="board"
-      position={fen}
-      //
-      animationDuration={animation ? 300 : 0}
-      arePiecesDraggable={allowMoves}
-      boardOrientation={bottom}
-      //
-      customPieces={customPieces(btheme, reviews)}
-      customArrows={arrow}
-      customSquareStyles={highlights}
-      //
-      customLightSquareStyle={{ backgroundColor: light }}
-      customDarkSquareStyle={{ backgroundColor: dark }}
+      options={{
+        id: "board",
+        position: fen,
+        //
+        allowDragging: allowMoves,
+        boardOrientation: bottom,
+        animationDurationInMs: animation ? 300 : 0,
+        //
+        arrows: arrows,
+        pieces: customPieces(btheme, reviews) as PieceRenderObject,
+        squareRenderer: squareRenderer,
+        //
+        lightSquareStyle: { backgroundColor: light },
+        darkSquareNotationStyle: { backgroundColor: dark },
+      }}
     />
   );
 }
