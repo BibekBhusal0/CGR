@@ -108,7 +108,7 @@ export function Controls() {
     }
   };
 
-  const keyFunctionMapping: Record<string, () => any> = {
+  const keyFunctionMapping: Record<string, () => void> = {
     ArrowLeft: goToPreviousMove,
     ArrowRight: goToNextMove,
     ArrowUp: goToFirstMove,

@@ -27,6 +27,7 @@ export function Input() {
     };
     if (currentUrl.searchParams.get("pgn")) {
       setInputMode("pgn");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVal(currentUrl.searchParams.get("pgn") || "");
       clear();
     } else if (currentUrl.searchParams.get("cdcUsername")) {
