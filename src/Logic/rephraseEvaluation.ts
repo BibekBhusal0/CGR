@@ -1,4 +1,4 @@
-import { evaluationType } from "./stockfish";
+import { evaluationType } from "@/Logic/stockfish";
 
 export function rephraseEvaluation(evaluation: evaluationType) {
   const { type, value } = evaluation;

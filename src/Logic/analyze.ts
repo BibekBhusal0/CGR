@@ -1,7 +1,7 @@
 import { Chess, Move } from "chess.js";
-import { getOpeningName, openingDatabase } from "../api/opening";
-import { MT } from "../components/moveTypes/types";
-import { evaluationType, StockfishOutput } from "./stockfish";
+import { getOpeningName, openingDatabase } from "@/api/opening";
+import { MT } from "@/components/moveTypes/types";
+import { evaluationType, StockfishOutput } from "@/Logic/stockfish";
 
 export interface openingType {
   name: string;

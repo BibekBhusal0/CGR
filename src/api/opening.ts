@@ -1,4 +1,4 @@
-import openings from "./openings.json";
+import openings from "@/api/openings.json";
 
 export interface LichessDatabaseResponse {
   opening: { eco: string; name: string };

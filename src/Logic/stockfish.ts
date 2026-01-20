@@ -1,4 +1,4 @@
-import { getStockfishAPI, postChessApi } from "../api/stockfishAPI";
+import { getStockfishAPI, postChessApi } from "@/api/stockfishAPI";
 
 export interface evaluationType {
   type: string;

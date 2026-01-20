@@ -1,6 +1,6 @@
-import { timeControls } from "../api/CDC";
+import { timeControls } from "@/api/CDC";
 import { FC } from "react";
-import { icons } from "./icons";
+import { icons } from "@/components/icons";
 
 const timeControlColors = {
   rapid: "#7EB144",

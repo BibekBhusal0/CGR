@@ -3,7 +3,7 @@ import { Chip } from "@heroui/chip";
 import { Select, SelectItem } from "@heroui/select";
 import { Textarea } from "@heroui/input";
 import { useEffect, useRef, useState } from "react";
-import { SelectGame } from "./game_select";
+import { SelectGame } from "@/app/right_panel/input/game_select";
 import { Chess } from "chess.js";
 import { CardBody } from "@heroui/card";
 import { icons } from "@/components/icons";

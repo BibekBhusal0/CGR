@@ -1,7 +1,7 @@
 import { Card } from "@heroui/card";
 import { FC } from "react";
-import EvalBar from "./evalbar";
-import JustBoard from "./customBoard";
+import EvalBar from "@/app/full_board/evalbar";
+import JustBoard from "@/app/full_board/customBoard";
 import { useGameState } from "@/Logic/state/game";
 
 function FullBoard() {

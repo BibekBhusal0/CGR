@@ -2,7 +2,7 @@ import { rephraseEvaluation } from "@/Logic/rephraseEvaluation";
 import { FC, useEffect, useState } from "react";
 import { evaluationType } from "@/Logic/stockfish";
 import { Button } from "@heroui/button";
-import OpeningCard from "./opening";
+import OpeningCard from "@/app/right_panel/moves/opening";
 import { MoveIcon } from "@/components/moveTypes/MoveIcon";
 import { MoveExplained } from "@/components/moveTypes/types";
 import { icons } from "@/components/icons";

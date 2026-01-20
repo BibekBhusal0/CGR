@@ -1,7 +1,7 @@
 import { Card } from "@heroui/card";
-import { Input } from "./input";
-import Summary from "./summary";
-import Moves from "./moves";
+import { Input } from "@/app/right_panel/input";
+import Summary from "@/app/right_panel/summary";
+import Moves from "@/app/right_panel/moves";
 import { useGameState } from "@/Logic/state/game";
 
 function RightPanel() {

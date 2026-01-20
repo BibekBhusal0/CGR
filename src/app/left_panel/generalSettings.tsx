@@ -8,7 +8,7 @@ import {
   notationStyle,
   useSettingsState,
 } from "@/Logic/state/settings";
-import { base_path } from "../full_board/customBoard";
+import { base_path } from "@/app/full_board/customBoard";
 import { ToggleSwitch } from "@/components/switch";
 import { switchClassNames } from "@/components/switch_types";
 

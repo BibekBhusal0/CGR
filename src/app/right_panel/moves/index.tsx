@@ -1,9 +1,9 @@
 import { FC, useEffect, useRef } from "react";
 import { CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { Button } from "@heroui/button";
-import { Controls } from "./controls";
+import { Controls } from "@/app/right_panel/moves/controls";
 import EvalGraph from "@/Logic/evalgraph";
-import { MoveComment } from "./moveComment";
+import { MoveComment } from "@/app/right_panel/moves/moveComment";
 import { cn } from "@heroui/theme";
 import { MoveIcon } from "@/components/moveTypes/MoveIcon";
 import { useGameState } from "@/Logic/state/game";

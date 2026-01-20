@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { MT, MoveTypeColors } from "./types";
-import { MoveIcon } from "./MoveIcon";
+import { MT, MoveTypeColors } from "@/components/moveTypes/types";
+import { MoveIcon } from "@/components/moveTypes/MoveIcon";
 
 export const MoveClass: FC<{
   type: MT;

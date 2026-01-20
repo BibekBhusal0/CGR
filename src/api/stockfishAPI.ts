@@ -1,4 +1,4 @@
-import { StockfishOutput } from "../Logic/stockfish";
+import { StockfishOutput } from "@/Logic/stockfish";
 
 export interface ChessApiResponse {
   text: string;

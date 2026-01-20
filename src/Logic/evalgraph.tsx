@@ -1,5 +1,5 @@
 import { Tooltip, ResponsiveContainer, ReferenceLine, Area, AreaChart, YAxis } from "recharts";
-import { rephraseEvaluation } from "./rephraseEvaluation";
+import { rephraseEvaluation } from "@/Logic/rephraseEvaluation";
 import { useGameState } from "@/Logic/state/game";
 
 // const white = "#F1E4D2";

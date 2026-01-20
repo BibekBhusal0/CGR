@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { CDCresponse, gamesOnChessDotCom, isGameResponse } from "@/api/CDC";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
 import { CalendarDate } from "@heroui/calendar";
-import { GameTable, LoadingTable } from "./game_table";
+import { GameTable, LoadingTable } from "@/app/right_panel/input/game_table";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import ChooseMonth from "@/components/chooseMonth";
 

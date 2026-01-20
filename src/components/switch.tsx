@@ -1,5 +1,5 @@
 import { Switch } from "@heroui/switch";
-import { switchClassNames, ToggleSwitchProps } from "./switch_types";
+import { switchClassNames, ToggleSwitchProps } from "@/components/switch_types";
 import { useSettingsState } from "@/Logic/state/settings";
 
 export function ToggleSwitch({ item, ...props }: ToggleSwitchProps) {

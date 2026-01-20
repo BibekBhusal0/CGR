@@ -1,7 +1,7 @@
 import { useSettingsState } from "@/Logic/state/settings";
-import FullBoard from "./full_board";
-import Left from "./left_panel";
-import RightPanel from "./right_panel";
+import FullBoard from "@/app/full_board";
+import Left from "@/app/left_panel";
+import RightPanel from "@/app/right_panel";
 import { cn } from "@heroui/theme";
 
 function App() {

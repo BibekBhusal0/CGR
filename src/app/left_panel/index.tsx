@@ -1,8 +1,8 @@
 import { Accordion, AccordionItem } from "@heroui/accordion";
 import IconPreview from "@/components/icons_preview";
-import GeneralSettings from "./generalSettings";
-import StockfishSettings from "./stockfishSettings";
-import Archive from "./archive";
+import GeneralSettings from "@/app/left_panel/generalSettings";
+import StockfishSettings from "@/app/left_panel/stockfishSettings";
+import Archive from "@/app/left_panel/archive";
 import { icons } from "@/components/icons";
 import { useSettingsState } from "@/Logic/state/settings";
 import { Tab, Tabs } from "@heroui/tabs";

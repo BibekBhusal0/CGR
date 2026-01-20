@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { AllColors, AllIcons } from "./types";
-import { icons } from "../icons";
+import { AllColors, AllIcons } from "@/components/moveTypes/types";
+import { icons } from "@/components/icons";
 const moveIcons = { ...icons.move, ...icons.game_over };
 
 export const MoveIcon: FC<{ type: AllIcons }> = ({ type }) => {
