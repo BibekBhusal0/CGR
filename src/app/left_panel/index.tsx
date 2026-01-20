@@ -11,13 +11,13 @@ import { Button } from "@heroui/button";
 import { Modal, ModalContent, ModalHeader, ModalBody } from "@heroui/modal";
 import { cn } from "@heroui/theme";
 
-export const Items = {
+const Items = {
   "General Settings": { content: <GeneralSettings />, icon: icons.left_panel.settings },
   "Stockfish Settings": { content: <StockfishSettings />, icon: icons.left_panel.engine },
   Archive: { content: <Archive />, icon: icons.left_panel.archive },
 };
 
-export const devItems = {
+const devItems = {
   "Icons D": { content: <IconPreview />, icon: icons.left_panel.code },
 };
 
@@ -55,7 +55,7 @@ function LeftPanel() {
   );
 }
 
-export function SettingsTabs() {
+function SettingsTabs() {
   const devMode = useSettingsState((state) => state.devMode);
   const modalItems = devMode ? { ...Items, ...devItems } : Items;
   return (
@@ -126,4 +126,5 @@ function Left() {
     </>
   );
 }
+
 export default Left;

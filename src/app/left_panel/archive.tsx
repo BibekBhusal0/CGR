@@ -107,6 +107,7 @@ export default function Archive() {
 
   return (
     <div className="flex-center flex-col gap-3">
+      {/* eslint-disable-next-line react-hooks/refs */}
       {allButtons.map((button, i) => (
         <Fragment key={i}>
           {!button.disabled && (
