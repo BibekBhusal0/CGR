@@ -3,6 +3,7 @@ import {
   clearArchive,
   getAllGamesFromArchive,
   importGamesToArchive,
+  getDb,
 } from "@/utils/archive";
 import { getCurrentGameToSave, importGame, saveToJson } from "@/utils/import_export";
 import { Button, ButtonGroup, ButtonProps } from "@heroui/button";
@@ -64,7 +65,7 @@ export default function Archive() {
   };
 
   const handleDeleteGame = async (id: string) => {
-    const db = await (await import("@/utils/archive")).getDb();
+    const db = await getDb();
     await db.delete("games", id);
     loadGames();
     addToast({ title: "Game deleted", color: "danger" });
@@ -152,7 +153,7 @@ export default function Archive() {
               </div>
             ) : (
               games.map((game, i) => (
-                <>
+                <Fragment key={i}>
                   <ButtonGroup key={game.id} className="mb-2 w-full">
                     <Button
                       className="w-full justify-start"
@@ -172,7 +173,7 @@ export default function Archive() {
                       {icons.others.trash}
                     </Button>
                   </ButtonGroup>
-                </>
+                </Fragment>
               ))
             )}
           </ModalBody>
