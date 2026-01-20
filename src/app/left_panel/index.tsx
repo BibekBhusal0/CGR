@@ -59,7 +59,7 @@ export function SettingsTabs() {
   const devMode = useSettingsState((state) => state.devMode);
   const modalItems = devMode ? { ...Items, ...devItems } : Items;
   return (
-    <Tabs aria-label="Settings tabs" variant="light" size = "sm" classNames={{tabList:"gap-0"}}>
+    <Tabs aria-label="Settings tabs" variant="light" size="sm" classNames={{ tabList: "gap-0" }}>
       {Object.entries(modalItems).map(([key, value]) => (
         <Tab
           aria-label={key}
@@ -68,7 +68,7 @@ export function SettingsTabs() {
               {value.icon} <span>{key}</span>
             </div>
           }
-          className = "p-1 text-sm md:text-md md:px-2"
+          className="md:text-md p-1 text-sm md:px-2"
           key={key}>
           <div className="h-80 w-full space-y-4 overflow-auto">{value.content}</div>
         </Tab>
@@ -102,7 +102,7 @@ function Left() {
           {icons.others.sidebar}
         </Button>
         {!sidebarCollapsed && (
-          <div className="bg-content1 rounded-large shadow-medium max-h-[calc(100vh-120px)] w-full overflow-y-auto hidden lg:block">
+          <div className="bg-content1 rounded-large shadow-medium hidden max-h-[calc(100vh-120px)] w-full overflow-y-auto lg:block">
             <LeftPanel />
           </div>
         )}
