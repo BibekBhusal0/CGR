@@ -19,39 +19,24 @@ export function Input() {
   const [val, setVal] = useState("");
   const setInputMode = useSettingsState((state) => state.setInputMode);
 
-  useEffect(() => {
-    const currentUrl = new URL(window.location.href);
-    const clear = () => {
-      currentUrl.search = "";
-      window.history.replaceState({}, document.title, currentUrl.toString());
-    };
-    if (currentUrl.searchParams.get("pgn")) {
-      setInputMode("pgn");
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setVal(currentUrl.searchParams.get("pgn") || "");
-      clear();
-    } else if (currentUrl.searchParams.get("cdcUsername")) {
-      setInputMode("chess.com");
-      setVal(currentUrl.searchParams.get("cdcUsername") || "");
-      clear();
-    }
-    return clear;
-  }, []);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const pgnRef = useRef<HTMLTextAreaElement>(null);
 
+  function analyzePgn(pgn: string) {
+    const chess = new Chess();
+    try {
+      chess.loadPgn(pgn);
+      setGame(chess);
+    } catch (error) {
+      console.error(error);
+      addToast({ title: "Please Enter Valid PGN", variant: "flat", color: "danger" });
+    }
+  }
+
   function handleClick() {
     if (val.trim() !== "") {
-      if (mode === "pgn") {
-        const chess = new Chess();
-        try {
-          chess.loadPgn(val);
-          setGame(chess);
-        } catch (error) {
-          console.error(error);
-          addToast({ title: "Please Enter Valid PGN", variant: "flat", color: "danger" });
-        }
-      } else onOpen();
+      if (mode === "pgn") analyzePgn(val.trim());
+      else onOpen();
     } else {
       addToast({
         title: mode === "pgn" ? "Please Enter Your  PGN" : "Please Enter username",
@@ -60,6 +45,32 @@ export function Input() {
       });
     }
   }
+
+  useEffect(() => {
+    const currentUrl = new URL(window.location.href);
+    const clear = () => {
+      currentUrl.search = "";
+      window.history.replaceState({}, document.title, currentUrl.toString());
+    };
+    const pgn = currentUrl.searchParams.get("pgn");
+    if (pgn) {
+      setInputMode("pgn");
+      if (currentUrl.searchParams.get("analyze") === "true") {
+        analyzePgn(pgn || "");
+      } else
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setVal(pgn || "");
+      clear();
+    } else if (currentUrl.searchParams.get("cdcUsername")) {
+      setInputMode("chess.com");
+      setVal(currentUrl.searchParams.get("cdcUsername") || "");
+      if (currentUrl.searchParams.get("search") === "true") {
+        onOpen();
+      }
+      clear();
+    }
+    return clear;
+  }, []);
 
   return (
     <CardBody className="flex-center flex-col gap-7 px-3 py-5">

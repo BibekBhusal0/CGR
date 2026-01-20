@@ -80,7 +80,7 @@ export function isGameResponse(
   return (response.data as GameResponse).games !== undefined;
 }
 
-export async function gamesOnChessDotCom(
+export async function getGamesOfPlayer(
   userName: string,
   month: number,
   year: number

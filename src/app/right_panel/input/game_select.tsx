@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { CDCresponse, gamesOnChessDotCom, isGameResponse } from "@/api/CDC";
+import { CDCresponse, getGamesOfPlayer, isGameResponse } from "@/api/CDC";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
 import { CalendarDate } from "@heroui/calendar";
 import { GameTable, LoadingTable } from "@/app/right_panel/input/game_table";
@@ -19,7 +19,7 @@ export const SelectGame: FC<SelectGameProps> = ({ input, onOpenChange, isOpen })
   const fetchData = async (date: CalendarDate) => {
     setLoaded(false);
     try {
-      const response = await gamesOnChessDotCom(input, date.month, date.year);
+      const response = await getGamesOfPlayer(input, date.month, date.year);
       setData(response);
     } catch (error) {
       console.log(error);
