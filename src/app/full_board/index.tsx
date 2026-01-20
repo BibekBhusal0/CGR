@@ -6,8 +6,8 @@ import { useGameState } from "@/Logic/state/game";
 
 function FullBoard() {
   return (
-    <Card className="px-5">
-      <div className="relative flex h-full w-full gap-1">
+    <Card className="px-4">
+      <div className="relative flex size-full gap-1">
         <EvalBar />
         <div className="size-full">
           <Player position="top" />

@@ -12,17 +12,41 @@ function App() {
   const toggleSidebar = () => toggle("sidebarCollapsed");
 
   return (
-    <div className="flex h-full flex-col items-start gap-3 pt-6 md:flex-row">
-      <div className="bg-content1 rounded-large shadow-medium mx-2 w-full basis-3/12 overflow-y-auto pl-2 lg:mr-0">
-        <Button isIconOnly onPress={toggleSidebar}>
+    <div className="flex h-full flex-col items-start gap-3 pt-4 md:flex-row">
+      <div
+        className={cn(
+          "pl-2 lg:mr-0",
+          sidebarCollapsed ? "-mt-1.5" : "relative w-full basis-3/12 overflow-visible"
+        )}>
+        <Button
+          onPress={toggleSidebar}
+          variant={sidebarCollapsed ? "light" : "ghost"}
+          size="sm"
+          className={cn(
+            "text-xl",
+            sidebarCollapsed ? "rotate-180" : "absolute top-2 -right-15 z-50"
+          )}
+          isIconOnly>
           {icons.others.sidebar}
         </Button>
-        {!sidebarCollapsed && <LeftPanel />}
+        {!sidebarCollapsed && (
+          <div className="bg-content1 rounded-large shadow-medium max-h-[calc(100vh-120px)] w-full overflow-y-auto">
+            <LeftPanel />
+          </div>
+        )}
       </div>
-      <div className={cn("px-2 lg:px-0", sidebarCollapsed ? "" : "basis-6/12 lg:basis-5/12")}>
+      <div
+        className={cn(
+          "px-2 lg:px-0",
+          sidebarCollapsed ? "basis-7/12" : "basis-6/12 lg:basis-5/12"
+        )}>
         <FullBoard />
       </div>
-      <div className="relative w-full basis-3/12 px-2 lg:basis-4/12">
+      <div
+        className={cn(
+          "relative w-full px-2",
+          sidebarCollapsed ? "basis-5/12" : "basis-3/12 lg:basis-4/12"
+        )}>
         <RightPanel />
       </div>
     </div>
