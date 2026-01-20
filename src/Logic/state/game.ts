@@ -4,6 +4,8 @@ import { evaluationType } from "@/Logic/stockfish";
 import { analysisType } from "@/Logic/analyze";
 import { GOT } from "@/components/moveTypes/types";
 import { chessResults, drawResults, game } from "@/api/CDC";
+import { ToastProps } from "@heroui/toast";
+import { addGameToArchive, getAllGamesFromArchive } from "@/utils/archive";
 
 function reformatLostResult(result: chessResults): GOT {
   if (result === "checkmated" || result === "timeout" || result === "resigned") {
@@ -54,8 +56,10 @@ interface GameActions {
   setIndex: (index: number) => void;
   setBoardStage: (boardStage: Boardstage) => void;
   setGame: (Game: Chess) => void;
-  loadGame: (load: loadType) => void;
+  loadGame: (load: saveType) => void;
   loadFromCdc: (game: game, userName?: string) => void;
+  getGameToSave: () => saveType | undefined;
+  saveGameToArchive: () => Promise<ToastProps>;
 }
 
 export type saveType = loadType & { pgn: string; name: string; id: string };
@@ -162,5 +166,42 @@ export const useGameState = create<GameState>((set, get) => ({
     setGame(chess);
   },
 
-  loadGame: (load) => set((state) => ({ ...state, ...load })),
+  loadGame: (load) => {
+    const chess = new Chess();
+    chess.loadPgn(load.pgn);
+    set({ ...load });
+    const { setGame } = get();
+    setGame(chess);
+  },
+
+  getGameToSave: () => {
+    const state = get();
+    const { Game, analysis, whitePlayer, blackPlayer } = state;
+    if (!Game || !analysis) return;
+    const to_save: Partial<saveType> = {
+      pgn: Game.pgn(),
+      name: whitePlayer + " VS " + blackPlayer,
+    };
+    for (const i in allSaveKeys) {
+      const key = allSaveKeys[i];
+      // @ts-expect-error: safe key assignment
+      to_save[key] = state[key];
+    }
+    return to_save as saveType;
+  },
+
+  saveGameToArchive: async () => {
+    const { getGameToSave } = get();
+    const g = getGameToSave();
+    if (!g) {
+      return { title: "No game to save", color: "danger" } as ToastProps;
+    }
+    const all = await getAllGamesFromArchive();
+    const alreadySaved = all.some((game) => game.pgn === g.pgn);
+    if (alreadySaved) {
+      return { title: "Game already archived", color: "warning" } as ToastProps;
+    }
+    await addGameToArchive(g as saveType);
+    return { title: "Game archived", color: "success" } as ToastProps;
+  },
 }));

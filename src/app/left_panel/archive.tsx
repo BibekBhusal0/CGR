@@ -1,11 +1,5 @@
-import {
-  addGameToArchive,
-  clearArchive,
-  getAllGamesFromArchive,
-  importGamesToArchive,
-  getDb,
-} from "@/utils/archive";
-import { getCurrentGameToSave, importGame, saveToJson } from "@/utils/import_export";
+import { clearArchive, getAllGamesFromArchive, importGamesToArchive, getDb } from "@/utils/archive";
+import { saveToJson } from "@/utils/import_export";
 import { Button, ButtonGroup, ButtonProps } from "@heroui/button";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/modal";
 import { useState, useRef } from "react";
@@ -22,6 +16,17 @@ export default function Archive() {
   const fileRef = useRef<HTMLInputElement | null>(null);
   const Game = useGameState((state) => state.Game);
   const analysis = useGameState((state) => state.analysis);
+  const saveGameToArchive = useGameState((state) => state.saveGameToArchive);
+  const loadGame = useGameState((state) => state.loadGame);
+  const onLoad = (game: saveType) => {
+    loadGame(game);
+    try {
+      setArchiveOpen(false);
+      addToast({ title: "Game Imported", color: "success" });
+    } catch {
+      addToast({ title: "Game can not be imported", color: "danger" });
+    }
+  };
 
   const loadGames = async () => {
     const all = await getAllGamesFromArchive();
@@ -30,19 +35,8 @@ export default function Archive() {
   };
 
   const handleAddGame = async () => {
-    const g = getCurrentGameToSave();
-    if (!g) {
-      addToast({ title: "No game to save", color: "danger" });
-      return;
-    }
-    const all = await getAllGamesFromArchive();
-    const alreadySaved = all.some((game) => game.pgn === g.pgn);
-    if (alreadySaved) {
-      addToast({ title: "Game already archived", color: "warning" });
-      return;
-    }
-    await addGameToArchive(g as saveType);
-    addToast({ title: "Game archived", color: "success" });
+    const toast = await saveGameToArchive();
+    addToast(toast);
   };
 
   const handleImportArchive = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,10 +152,7 @@ export default function Archive() {
                     <Button
                       className="w-full justify-start"
                       variant="solid"
-                      onPress={() => {
-                        importGame(game);
-                        setArchiveOpen(false);
-                      }}>
+                      onPress={() => onLoad(game)}>
                       {game.name || `Game ${i + 1}`}
                     </Button>
                     <Button
