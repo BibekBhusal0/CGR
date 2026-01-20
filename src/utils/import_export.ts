@@ -13,7 +13,8 @@ export const saveToJson = (data: unknown, fileName: string = "games") => {
 };
 
 export const getCurrentGameToSave = () => {
-  const { Game, analysis, whitePlayer, blackPlayer } = useGameState.getState();
+  const state = useGameState.getState();
+  const { Game, analysis, whitePlayer, blackPlayer } = state
   if (!Game || !analysis) return null;
   const to_save: Partial<saveType> = {};
   for (const i in allSaveKeys) {
