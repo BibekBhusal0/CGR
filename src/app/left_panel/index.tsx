@@ -5,6 +5,7 @@ import StockfishSettings from "./stockfishSettings";
 import Archive from "./archive";
 import { icons } from "@/components/icons";
 import { useSettingsState } from "@/Logic/state/settings";
+import { Tab, Tabs } from "@heroui/tabs";
 
 export const Items = {
   "General Settings": { content: <GeneralSettings />, icon: icons.left_panel.settings },
@@ -47,6 +48,28 @@ function LeftPanel() {
         </AccordionItem>
       ))}
     </Accordion>
+  );
+}
+
+export function SettingsModal() {
+  const devMode = useSettingsState((state) => state.devMode);
+  const modalItems = devMode ? { ...Items, ...devItems } : Items;
+  return (
+    <Tabs aria-label="Settings tabs" variant="light" size = "sm" classNames={{tabList:"gap-0"}}>
+      {Object.entries(modalItems).map(([key, value]) => (
+        <Tab
+          aria-label={key}
+          title={
+            <div className="flex-center gap-1">
+              {value.icon} <span>{key}</span>
+            </div>
+          }
+          className = "p-1 text-sm md:text-md md:px-2"
+          key={key}>
+          <div className="h-80 w-full space-y-4 overflow-auto">{value.content}</div>
+        </Tab>
+      ))}
+    </Tabs>
   );
 }
 
