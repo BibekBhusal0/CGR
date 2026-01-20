@@ -5,7 +5,7 @@ import RightPanel from "./right_panel";
 import { icons } from "@/components/icons";
 import { Button } from "@heroui/button";
 import { cn } from "@heroui/theme";
-import { Modal, ModalBody, ModalContent,  ModalHeader } from "@heroui/modal";
+import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
 import { useState } from "react";
 
 function App() {
@@ -15,7 +15,7 @@ function App() {
   const toggleSidebar = () => toggle("sidebarCollapsed");
 
   return (
-    <div className="flex h-full flex-col items-start gap-3 pt-4 md:flex-row">
+    <div className="flex h-full flex-col items-start gap-3 pt-4 lg:flex-row">
       <div
         className={cn(
           "pl-2 lg:mr-0",
@@ -32,20 +32,19 @@ function App() {
           isIconOnly>
           {icons.others.sidebar}
         </Button>
-        {!sidebarCollapsed ? (
-          <div className="bg-content1 rounded-large shadow-medium max-h-[calc(100vh-120px)] w-full overflow-y-auto">
+        {!sidebarCollapsed && (
+          <div className="bg-content1 rounded-large shadow-medium max-h-[calc(100vh-120px)] w-full overflow-y-auto hidden lg:block">
             <LeftPanel />
           </div>
-        ) : (
-          <Button
-            variant={"light"}
-            onPress={() => setModalOpen(true)}
-            size="sm"
-            className={cn("text-xl")}
-            isIconOnly>
-            {icons.left_panel.settings}
-          </Button>
         )}
+        <Button
+          variant={"light"}
+          onPress={() => setModalOpen(true)}
+          size="sm"
+          className={cn("text-xl", !sidebarCollapsed && "lg:hidden")}
+          isIconOnly>
+          {icons.left_panel.settings}
+        </Button>
       </div>
       <div
         className={cn(
@@ -64,7 +63,9 @@ function App() {
       <Modal isOpen={modalOpen} onOpenChange={setModalOpen} size="lg">
         <ModalContent>
           <ModalHeader>Settings</ModalHeader>
-          <ModalBody className = "p-2"><SettingsModal /></ModalBody>
+          <ModalBody className="p-2">
+            <SettingsModal />
+          </ModalBody>
         </ModalContent>
       </Modal>
     </div>
