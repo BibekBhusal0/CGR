@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { allTypesOfMove, MT } from "@/components/moveTypes/types";
 import { CardBody, CardFooter } from "@heroui/card";
-import { Button } from "@heroui/button";
+import { Button, ButtonGroup, ButtonProps } from "@heroui/button";
 import { Progress } from "@heroui/progress";
 import StockfishManager, { evaluationType } from "@/Logic/stockfish";
 import EvalGraph from "@/Logic/evalgraph";
@@ -10,6 +10,9 @@ import { Move } from "chess.js";
 import { useGameState } from "@/Logic/state/game";
 import { MoveClass } from "@/components/moveTypes";
 import { useSettingsState } from "@/Logic/state/settings";
+import { icons } from "@/components/icons";
+import { addToast } from "@heroui/toast";
+import { cn } from "@heroui/theme";
 
 export interface playerStats {
   accuracy: number;
@@ -39,9 +42,37 @@ function Summary() {
   const analysis = useGameState((state) => state.analysis);
   const depth = useSettingsState((state) => state.depth);
   const localStockfish = useSettingsState((state) => state.localStockfish);
+  const saveGameToArchive = useGameState((state) => state.saveGameToArchive);
 
-  const handleClick = () => {
-    changeState("third");
+  const addGameToArchive = async () => {
+    const toast = await saveGameToArchive();
+    addToast(toast);
+  };
+
+  const allButtons: Partial<ButtonProps>[] = [
+    {
+      children: "Start Analyzing",
+      startContent: icons.others.rocket,
+      onPress: () => changeState("third"),
+      disabled: loading,
+    },
+    {
+      children: "Archive",
+      startContent: icons.left_panel.archive,
+      onPress: addGameToArchive,
+      disabled: loading,
+    },
+    {
+      children: "Back",
+      startContent: icons.controls.previous,
+      onPress: () => changeState("first"),
+      color: "danger",
+      variant: "flat",
+    },
+  ];
+  const defaultProps: ButtonProps = {
+    size: "md",
+    color: "primary",
   };
 
   useEffect(() => {
@@ -146,22 +177,27 @@ function Summary() {
                 loading
                   ? undefined
                   : {
-                      white: playerSummary.white.movesCount[m],
-                      black: playerSummary.black.movesCount[m],
-                    }
+                    white: playerSummary.white.movesCount[m],
+                    black: playerSummary.black.movesCount[m],
+                  }
               }></MoveClass>
           ))}
         </div>
       </CardBody>
       <CardFooter className="flex justify-center">
-        <Button
-          className="px-6 py-4 text-2xl"
-          onPress={handleClick}
-          variant="ghost"
-          isDisabled={loading}
-          color="primary">
-          Start analyzing
-        </Button>
+        <ButtonGroup>
+          {allButtons.map((button, i) => (
+            <Fragment key={i}>
+              {!button.disabled && (
+                <Button
+                  {...defaultProps}
+                  {...button}
+                  className={cn(button?.className, defaultProps.className)}
+                />
+              )}
+            </Fragment>
+          ))}
+        </ButtonGroup>
       </CardFooter>
     </>
   );
