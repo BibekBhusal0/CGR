@@ -6,13 +6,13 @@ import Archive from "./archive";
 import { icons } from "@/components/icons";
 import { useSettingsState } from "@/Logic/state/settings";
 
-const Items = {
+export const Items = {
   "General Settings": { content: <GeneralSettings />, icon: icons.left_panel.settings },
   "Stockfish Settings": { content: <StockfishSettings />, icon: icons.left_panel.engine },
   Archive: { content: <Archive />, icon: icons.left_panel.archive },
 };
 
-const devItems = {
+export const devItems = {
   "Icons D": { content: <IconPreview />, icon: icons.left_panel.code },
 };
 
@@ -34,7 +34,7 @@ function LeftPanel() {
       itemClasses={{ title: "text-xl overflow-x-hidden", content: "mb-2" }}
       aria-label="left"
       selectedKeys={new Set(openAccordions)}
-      variant="splitted"
+      variant="light"
       selectionMode="multiple">
       {Object.entries(accordionItems).map(([key, value]) => (
         <AccordionItem

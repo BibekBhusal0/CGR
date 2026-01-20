@@ -4,7 +4,13 @@ import { persist } from "zustand/middleware";
 const b = ["default", "ocean", "wood", "geometric", "cosmos", "dash", "nature"] as const;
 export type boardThemes = (typeof b)[number];
 export const allBoardThemes: boardThemes[] = [...b];
-export type booleanSettings = "highlight" | "bestMove" | "animation" | "localStockfish" | "devMode";
+export type booleanSettings =
+  | "highlight"
+  | "bestMove"
+  | "animation"
+  | "localStockfish"
+  | "devMode"
+  | "sidebarCollapsed";
 const m = ["chess.com", "pgn"] as const;
 const n = ["none", "in-board", "in-square"] as const;
 export type notationStyle = (typeof n)[number];
@@ -20,6 +26,7 @@ export interface settingType {
   localStockfish: boolean;
   devMode: boolean;
   animation: boolean;
+  sidebarCollapsed: boolean;
   btheme: boardThemes;
   inputMode: inputModes;
   openAccordions: string[];
@@ -45,6 +52,7 @@ const initialState: settingType = {
   localStockfish: false,
   bestMove: true,
   animation: true,
+  sidebarCollapsed: false,
   btheme: "default",
   inputMode: "chess.com",
   openAccordions: ["General Settings", "Stockfish Settings"],
