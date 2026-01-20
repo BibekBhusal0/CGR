@@ -21,7 +21,7 @@ export const MoveClass: FC<{
       <div className="col-span-2">{white}</div>
       <div className="col-span-4">
         <div className="w-full">
-          <div className="flex items-center justify-around gap-3 text-left align-middle capitalize">
+          <div className="flex items-center justify-around gap-2 text-left align-middle capitalize">
             {!counts ? (
               <>
                 <div
@@ -29,12 +29,12 @@ export const MoveClass: FC<{
                   className="size-7 animate-pulse rounded-full"></div>
                 <div
                   style={{ backgroundColor: MoveTypeColors[type] }}
-                  className="my-1 h-5 w-20 animate-pulse rounded-md"></div>
+                  className="my-1 h-5 w-24 animate-pulse rounded-md"></div>
               </>
             ) : (
               <>
                 <MoveIcon type={type} />
-                <div>{type}</div>
+                <div className="w-24">{type}</div>
               </>
             )}
           </div>
