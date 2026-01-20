@@ -8,7 +8,7 @@ function App() {
   const sidebarCollapsed = useSettingsState((state) => state.sidebarCollapsed);
 
   return (
-    <div className="flex h-full flex-col items-start gap-1 pt-1 lg:pt-4 lg:gap-3 lg:flex-row">
+    <div className="flex h-full flex-col items-start gap-1 pt-1 lg:flex-row lg:gap-3 lg:pt-4">
       <Left />
       <div
         className={cn(
