@@ -10,7 +10,7 @@ function FullBoard() {
   const bottom = useGameState((state) => state.bottom);
 
   return (
-    <Card className="basis-6/12 px-5 lg:basis-5/12">
+    <Card className="px-5 ">
       <div className="relative flex h-full w-full gap-1">
         <EvalBar />
         <div className="h-full max-h-screen w-full">

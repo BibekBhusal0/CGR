@@ -24,32 +24,30 @@ function LeftPanel() {
   const accordionItems = devMode ? { ...Items, ...devItems } : Items;
 
   return (
-    <div className="basis-3/12">
-      <Accordion
-        onSelectionChange={(e) => {
-          if (typeof e === "string") return;
-          console.log(e);
-          const opened: string[] = [];
-          e.forEach((i) => opened.push(i as string));
-          setOpenAccordtions(opened);
-        }}
-        itemClasses={{ title: "text-xl overflow-x-hidden", content: "mb-2" }}
-        aria-label="left"
-        selectedKeys={new Set(openAccordions)}
-        variant="splitted"
-        selectionMode="multiple">
-        {Object.entries(accordionItems).map(([key, value]) => (
-          <AccordionItem
-            startContent={value.icon}
-            classNames={{ content: "space-y-4", startContent: "text-2xl" }}
-            aria-label={key}
-            title={key}
-            key={key}>
-            {value.content}
-          </AccordionItem>
-        ))}
-      </Accordion>
-    </div>
+    <Accordion
+      onSelectionChange={(e) => {
+        if (typeof e === "string") return;
+        console.log(e);
+        const opened: string[] = [];
+        e.forEach((i) => opened.push(i as string));
+        setOpenAccordtions(opened);
+      }}
+      itemClasses={{ title: "text-xl overflow-x-hidden", content: "mb-2" }}
+      aria-label="left"
+      selectedKeys={new Set(openAccordions)}
+      variant="splitted"
+      selectionMode="multiple">
+      {Object.entries(accordionItems).map(([key, value]) => (
+        <AccordionItem
+          startContent={value.icon}
+          classNames={{ content: "space-y-4", startContent: "text-2xl" }}
+          aria-label={key}
+          title={key}
+          key={key}>
+          {value.content}
+        </AccordionItem>
+      ))}
+    </Accordion>
   );
 }
 
