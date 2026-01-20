@@ -11,7 +11,7 @@ export const saveToJson = (data: unknown, fileName: string = "games") => {
 };
 
 export const importGameFromJson = async (file: File) => {
-  const importGame = useGameState(state => state.loadGame)
+  const importGame = useGameState((state) => state.loadGame);
   const text = await file.text();
   const importedState = JSON.parse(text);
   importGame(importedState);
