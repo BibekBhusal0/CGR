@@ -95,7 +95,7 @@ function Left() {
           variant={sidebarCollapsed ? "light" : "ghost"}
           size="sm"
           className={cn(
-            "text-xl",
+            "hidden text-xl lg:flex",
             sidebarCollapsed ? "rotate-180" : "absolute top-2 -right-15 z-50"
           )}
           isIconOnly>
@@ -110,7 +110,10 @@ function Left() {
           variant={"light"}
           onPress={() => setModalOpen(true)}
           size="sm"
-          className={cn("text-xl", !sidebarCollapsed && "lg:hidden")}
+          className={cn(
+            "absolute top-3.5 right-5 z-10 text-2xl lg:text-xl lg:relative lg:top-[unset] lg:right-[unset]",
+            !sidebarCollapsed && "lg:hidden"
+          )}
           isIconOnly>
           {icons.left_panel.settings}
         </Button>
