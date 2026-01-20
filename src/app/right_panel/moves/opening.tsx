@@ -26,8 +26,8 @@ const WinRateGraph: FC<{
 }> = ({ data }) => {
   const { white, draws, black } = data;
   const total = white + draws + black;
-  if (total === 0) return null;
   const animationEnabled = useSettingsState((state) => state.animation);
+  if (total === 0) return null;
 
   const entries = [
     {
