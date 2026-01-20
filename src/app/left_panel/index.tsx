@@ -27,7 +27,6 @@ function LeftPanel() {
     <Accordion
       onSelectionChange={(e) => {
         if (typeof e === "string") return;
-        console.log(e);
         const opened: string[] = [];
         e.forEach((i) => opened.push(i as string));
         setOpenAccordtions(opened);
