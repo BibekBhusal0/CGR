@@ -18,7 +18,9 @@ function FullBoard() {
 
     const observer = new ResizeObserver(() => {
       if (!boardParentRef.current) return;
-      const { width, height } = boardParentRef.current.getBoundingClientRect();
+      let { width } = boardParentRef.current.getBoundingClientRect();
+      width -= 10;
+      const height = window.innerHeight - 60;
       const size = Math.min(width, height);
       setCardSize(size);
     });
@@ -31,15 +33,17 @@ function FullBoard() {
     <div
       ref={boardParentRef}
       className={cn(
-        "flex size-full items-center justify-center bg-red-400 px-2 lg:px-0", // Centering the card
+        "flex size-full justify-center px-2 lg:justify-end lg:px-0",
         sidebarCollapsed ? "basis-7/12" : "basis-6/12 lg:basis-5/12"
       )}>
-      <Card className="flex flex-col p-1 md:p-4" style={{ width: cardSize, height: cardSize }}>
+      <Card className="flex px-1 md:px-4" style={{ width: cardSize, height: (cardSize || 0) + 30 }}>
         <div className="relative flex size-full gap-1">
           <EvalBar />
-          <div className="size-full">
+          <div className="flex size-full flex-col">
             <Player position="top" />
-            <JustBoard />
+            <div className="shrink">
+              <JustBoard />
+            </div>
             <Player position="bottom" />
           </div>
         </div>
@@ -58,7 +62,7 @@ const Player: FC<playerProps> = ({ position }) => {
       ? whitePlayer
       : blackPlayer;
 
-  return <div className="py-2 pl-6 text-2xl">{name || ""}</div>;
+  return <div className="shrink py-2 pl-6 lg:text-2xl ">{name || ""}</div>;
 };
 
 export default FullBoard;
