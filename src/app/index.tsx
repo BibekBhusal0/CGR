@@ -10,13 +10,7 @@ function App() {
   return (
     <div className="flex h-full flex-col items-start gap-1 pt-1 lg:flex-row lg:gap-3 lg:pt-4">
       <Left />
-      <div
-        className={cn(
-          "px-2 lg:px-0",
-          sidebarCollapsed ? "basis-7/12" : "basis-6/12 lg:basis-5/12"
-        )}>
-        <FullBoard />
-      </div>
+      <FullBoard />
       <div
         className={cn(
           "relative w-full px-2",
