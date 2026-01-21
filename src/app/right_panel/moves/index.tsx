@@ -1,5 +1,5 @@
-import { FC, useEffect, useRef } from "react";
-import { CardBody, CardFooter, CardHeader } from "@heroui/card";
+import { FC, useEffect, useRef, useState } from "react";
+import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { Controls } from "@/app/right_panel/moves/controls";
 import EvalGraph from "@/Logic/evalgraph";
@@ -7,8 +7,45 @@ import { MoveComment } from "@/app/right_panel/moves/moveComment";
 import { cn } from "@heroui/theme";
 import { MoveIcon } from "@/components/moveTypes/MoveIcon";
 import { useGameState } from "@/Logic/state/game";
+import { icons } from "@/components/icons";
+import { Modal, ModalContent } from "@heroui/modal";
 
 function Moves() {
+  const [modalOpen, setModalOpen] = useState(false);
+  return (
+    <>
+      <Analysis />
+      <div className="mx-auto py-3 lg:hidden">
+        <Controls />
+        {!modalOpen && (
+          <Button
+            isIconOnly
+            className="absolute right-2 bottom-2 p-2 text-4xl"
+            radius="full"
+            onPress={() => setModalOpen(true)}>
+            {icons.others.graph}
+          </Button>
+        )}
+      </div>
+      <Modal isOpen={modalOpen} onOpenChange={setModalOpen} hideCloseButton>
+        <ModalContent>
+          <Card
+            style={{ position: "unset" }}
+            classNames={{
+              base: "max-h-[80vh]",
+              footer: "overflow-visible",
+              body: "overflow-auto",
+              header: "overflow-visible",
+            }}>
+            <Analysis modal={true} />
+          </Card>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}
+
+const Analysis: FC<{ modal?: boolean }> = ({ modal }) => {
   const Game = useGameState((state) => state.Game);
   const changeState = useGameState((state) => state.changeState);
   if (!Game) {
@@ -26,10 +63,14 @@ function Moves() {
 
   return (
     <>
-      <CardHeader className="bg-default-100 flex h-20 w-full flex-col justify-center px-3">
+      <CardHeader
+        className={cn(
+          "bg-default-100 flex h-20 w-full flex-col justify-center px-3",
+          !modal && "hidden lg:flex"
+        )}>
         <EvalGraph />
       </CardHeader>
-      <CardBody>
+      <CardBody className={cn(!modal && "hidden lg:flex")}>
         <div className="max-h-96 min-h-20 overflow-auto">
           {Pears.map((p, rowIndex) => (
             <div className="flex" key={rowIndex}>
@@ -42,7 +83,7 @@ function Moves() {
           ))}
         </div>
       </CardBody>
-      <CardFooter>
+      <CardFooter className={cn(!modal && "hidden lg:flex")}>
         <div className="align-center flex w-full flex-col justify-center gap-3 align-middle">
           <MoveComment />
           <Controls />
@@ -53,7 +94,7 @@ function Moves() {
       </CardFooter>
     </>
   );
-}
+};
 
 const SingleMove: FC<{ move: string; index: number }> = ({ move, index }) => {
   const moveIndex = useGameState((state) => state.moveIndex);

@@ -13,7 +13,7 @@ function App() {
       <FullBoard />
       <div
         className={cn(
-          "relative w-full px-2",
+          "w-full px-2",
           sidebarCollapsed ? "basis-5/12" : "basis-3/12 lg:basis-4/12"
         )}>
         <RightPanel />

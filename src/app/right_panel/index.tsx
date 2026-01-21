@@ -9,6 +9,7 @@ function RightPanel() {
 
   return (
     <Card
+      style={{ position: "unset" }}
       classNames={{
         base: "max-h-[650px]",
         footer: "overflow-visible",
