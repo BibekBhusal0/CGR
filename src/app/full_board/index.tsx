@@ -62,7 +62,7 @@ const Player: FC<playerProps> = ({ position }) => {
       ? whitePlayer
       : blackPlayer;
 
-  return <div className="shrink py-2 pl-6 lg:text-2xl ">{name || ""}</div>;
+  return <div className="shrink py-2 pl-6 lg:text-2xl">{name || ""}</div>;
 };
 
 export default FullBoard;
