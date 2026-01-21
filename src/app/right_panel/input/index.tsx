@@ -18,7 +18,7 @@ export function Input() {
   const setGame = useGameState((state) => state.setGame);
   const [val, setVal] = useState("");
   const setInputMode = useSettingsState((state) => state.setInputMode);
-  const setBottom = useGameState(state => state.setBottom)
+  const setBottom = useGameState((state) => state.setBottom);
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const pgnRef = useRef<HTMLTextAreaElement>(null);
@@ -56,7 +56,7 @@ export function Input() {
     const pgn = currentUrl.searchParams.get("pgn");
     const orientation = currentUrl.searchParams.get("orientation");
     if (orientation && (orientation === "black" || orientation === "white")) {
-      setBottom(orientation)
+      setBottom(orientation);
     }
 
     if (pgn) {

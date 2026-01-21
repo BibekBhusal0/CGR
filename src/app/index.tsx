@@ -12,10 +12,7 @@ function App() {
       <Left />
       <FullBoard />
       <div
-        className={cn(
-          "w-full px-2",
-          sidebarCollapsed ? "basis-5/12" : "basis-3/12 lg:basis-4/12"
-        )}>
+        className={cn("w-full px-2", sidebarCollapsed ? "basis-5/12" : "basis-3/12 lg:basis-4/12")}>
         <RightPanel />
       </div>
     </div>
