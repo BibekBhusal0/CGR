@@ -52,6 +52,7 @@ interface GameActions {
   setIndex2: (index2: number) => void;
   setAnalysis: (analysis: analysisType[]) => void;
   setTermination: (termination: terminationType | undefined) => void;
+  setBottom: (bottom: "black" | "white") => void;
   changeState: (stage: stage) => void;
   setIndex: (index: number) => void;
   setBoardStage: (boardStage: Boardstage) => void;
@@ -92,6 +93,7 @@ export const useGameState = create<GameState>((set, get) => ({
   setIndex2: (index2) => set({ index2 }),
   setAnalysis: (analysis) => set({ analysis }),
   setTermination: (termination) => set({ termination }),
+  setBottom: (bottom) => set({ bottom }),
 
   changeState: (stage) => {
     if (stage === "first") set({ ...initialState });
