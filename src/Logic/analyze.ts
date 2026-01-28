@@ -1,7 +1,9 @@
+import { useSettingsState } from "@/Logic/state/settings";
 import { Chess, Move } from "chess.js";
 import { getOpeningName, openingDatabase } from "@/api/opening";
 import { MT } from "@/components/moveTypes/types";
 import { evaluationType, StockfishOutput } from "@/Logic/stockfish";
+import StockfishManager from "@/Logic/stockfish";
 
 export interface openingType {
   name: string;
@@ -74,7 +76,7 @@ export interface analyzePropsType {
   moveIndex?: number;
 }
 
-export async function analyze({
+export async function analyzeMove({
   stockfishAnalysis,
   prevEval,
   positionDetails,
@@ -205,4 +207,54 @@ export async function analyze({
     moveComment,
     bestMoveComment,
   };
+}
+
+export async function analyzeGame(Game: Chess, setProgress: (progress: number) => void) {
+  const { localStockfish, depth } = useSettingsState.getState();
+  const stockfish = new StockfishManager();
+  const analyzePosition = async (
+    fen: string,
+    prevEval: evaluationType,
+    moveIndex: number,
+    move: Move
+  ) => {
+    const SFresult = await stockfish.analyzePosition(fen, depth, localStockfish);
+    const analysis = await analyzeMove({
+      stockfishAnalysis: SFresult,
+      prevEval,
+      positionDetails: move,
+      moveIndex,
+    });
+    return analysis;
+  };
+
+  const history = Game.history({ verbose: true });
+  const CM = Game.isCheckmate();
+  const SM = Game.isStalemate();
+  const gameOver = CM || SM;
+  let completed = 0;
+  const analysisResult = [];
+  let prevEval = { type: "cp", value: 0 };
+
+  const initialMove = await analyzePosition(history[0].before, prevEval, -1, history[0]);
+  analysisResult.push(initialMove);
+  prevEval = initialMove.eval;
+
+  for (let i = 0; i < history.length; i++) {
+    const fen = history[i].after;
+
+    if (gameOver && i === history.length - 1) {
+      const turn = Game.turn();
+      if (SM) prevEval = { type: "cp", value: 0 };
+      else prevEval = { type: "mate", value: turn === "w" ? -1 : 1 };
+    } else {
+      const a = await analyzePosition(fen, prevEval, i, history[i]);
+      analysisResult.push(a);
+      prevEval = a.eval;
+    }
+
+    completed++;
+    setProgress(completed / history.length);
+  }
+  return analysisResult;
 }
