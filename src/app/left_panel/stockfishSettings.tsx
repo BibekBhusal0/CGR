@@ -1,10 +1,13 @@
 import { Slider } from "@heroui/slider";
 import { ToggleSwitch } from "@/components/switch";
-import { useSettingsState } from "@/Logic/state/settings";
+import { allStockfishAvailable, availableStockfish, useSettingsState } from "@/Logic/state/settings";
+import { Select, SelectItem } from "@heroui/select";
 
 function StockfishSettings() {
   const depth = useSettingsState((state) => state.depth);
   const changeDepth = useSettingsState((state) => state.changeDepth);
+  const setStockfish = useSettingsState((state) => state.setStockfish);
+  const stockfish = useSettingsState((state) => state.stockfish);
 
   return (
     <>
@@ -22,6 +25,33 @@ function StockfishSettings() {
       />
       <ToggleSwitch item="bestMove" children="Best Move" />
       <ToggleSwitch item="localStockfish" children="Always use local Stockfish" />
+      <Select
+        selectedKeys={[stockfish]}
+        size="md"
+        classNames={{
+          label: "text-lg pl-2",
+          trigger: "capitalize",
+          listbox: "px-0",
+        }}
+        onChange={(e) => {
+          if (e.target.value.trim() !== "") {
+            const v = e.target.value.trim() as availableStockfish;
+            if (!allStockfishAvailable.includes(v)) return
+            setStockfish(v);
+          }
+        }}
+        labelPlacement="outside-left"
+        label="Stockfish">
+        {allStockfishAvailable.map((sf) => (
+          <SelectItem
+            className="capitalize"
+            classNames={{ base: "items-center", title: "text-sm" }}
+            aria-label={sf}
+            key={sf}>
+            {sf.replace( /-/g, " ")}
+          </SelectItem>
+        ))}
+      </Select>
     </>
   );
 }

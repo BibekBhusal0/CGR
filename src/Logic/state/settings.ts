@@ -13,6 +13,9 @@ export type booleanSettings =
   | "sidebarCollapsed";
 const m = ["chess.com", "pgn"] as const;
 const n = ["none", "in-board", "in-square"] as const;
+const s = ["stockfish-17-lite", "stockfish-17"] as const;
+export type availableStockfish = (typeof s)[number]
+export const allStockfishAvailable : availableStockfish[] = [...s]
 export type notationStyle = (typeof n)[number];
 export const allNotationStyles: notationStyle[] = [...n];
 export type inputModes = (typeof m)[number];
@@ -31,6 +34,7 @@ export interface settingType {
   inputMode: inputModes;
   openAccordions: string[];
   notationStyle: notationStyle;
+  stockfish: availableStockfish;
 }
 
 interface settingActions {
@@ -41,6 +45,7 @@ interface settingActions {
   setSettings: (newSettings: settingType) => void;
   setInputMode: (newMode: inputModes) => void;
   setNotationStyle: (notationStyle: notationStyle) => void;
+  setStockfish: (stockfish: availableStockfish) => void
 }
 
 export type SettingsState = settingType & settingActions;
@@ -57,6 +62,7 @@ const initialState: settingType = {
   inputMode: "chess.com",
   openAccordions: ["General Settings", "Stockfish Settings"],
   notationStyle: "in-board",
+  stockfish: "stockfish-17"
 };
 
 export const useSettingsState = create<SettingsState>()(
@@ -70,6 +76,7 @@ export const useSettingsState = create<SettingsState>()(
       setOpenAccordtions: (openAccordions: string[]) => set({ openAccordions }),
       setSettings: (newSettings) => set((state) => ({ ...state, ...newSettings })),
       setNotationStyle: (notationStyle) => set({ notationStyle }),
+      setStockfish: (stockfish) => set({ stockfish }),
 
       setInputMode: (newMode) =>
         set((state) => {

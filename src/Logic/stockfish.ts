@@ -1,4 +1,6 @@
 import { getStockfishAPI, postChessApi } from "@/api/stockfishAPI";
+import { availableStockfish, useSettingsState } from "./state/settings";
+import { isMultiThreadSupported } from "@/utils/sf";
 
 export interface evaluationType {
   type: string;
@@ -15,6 +17,17 @@ const EmptyValue: StockfishOutput = {
   lines: [],
 };
 
+const enginePath: Record<availableStockfish, { multi: string; single: string }> = {
+  "stockfish-17": {
+    multi: "engines/stockfish-17/stockfish-17.js",
+    single: "engines/stockfish-17/stockfish-17-single.js",
+  },
+  "stockfish-17-lite": {
+    multi: "engines/stockfish-17/stockfish-17-light.js",
+    single: "engines/stockfish-17/stockfish-17-light-single.js",
+  },
+};
+
 class StockfishManager {
   private stockfish: Worker | null = null;
   private output: StockfishOutput = { ...EmptyValue };
@@ -26,10 +39,10 @@ class StockfishManager {
   }
 
   private initializeStockfish() {
-    const wasmSupported =
-      typeof WebAssembly === "object" &&
-      WebAssembly.validate(Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00));
-    this.stockfish = new Worker(wasmSupported ? "stockfish.wasm.js" : "stockfish.js");
+    const stockfish = useSettingsState.getState().stockfish;
+    const multi = isMultiThreadSupported();
+    const stockfish_path = multi ? enginePath[stockfish].multi : enginePath[stockfish].single;
+    this.stockfish = new Worker("CGR/" + stockfish_path);
 
     this.stockfish.addEventListener("message", (e) => {
       const data = e.data;

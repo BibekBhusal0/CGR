@@ -44,6 +44,7 @@ function GeneralSettings() {
         onChange={(e) => {
           if (e.target.value.trim() !== "") {
             const v = e.target.value.trim() as boardThemes;
+            if (!allBoardThemes.includes(v)) return;
             setBoardTheme(v);
           }
         }}
@@ -77,6 +78,7 @@ function GeneralSettings() {
         onChange={(e) => {
           if (e.target.value.trim() !== "") {
             const v = e.target.value.trim() as notationStyle;
+            if (!allNotationStyles.includes(v)) return;
             setNotationStyle(v);
           }
         }}
