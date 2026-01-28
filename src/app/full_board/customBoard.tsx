@@ -141,7 +141,7 @@ function JustBoard() {
         squareRenderer: squareRenderer,
         //
         lightSquareStyle: { backgroundColor: light },
-        darkSquareNotationStyle: { backgroundColor: dark },
+        darkSquareStyle: { backgroundColor: dark },
       }}
     />
   );
