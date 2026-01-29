@@ -8,7 +8,6 @@ export type booleanSettings =
   | "highlight"
   | "bestMove"
   | "animation"
-  | "localStockfish"
   | "devMode"
   | "sidebarCollapsed";
 const m = ["chess.com", "pgn"] as const;
@@ -26,7 +25,6 @@ export interface settingType {
   depth: number;
   highlight: boolean;
   bestMove: boolean;
-  localStockfish: boolean;
   devMode: boolean;
   animation: boolean;
   sidebarCollapsed: boolean;
@@ -54,7 +52,6 @@ const initialState: settingType = {
   depth: 12,
   highlight: true,
   devMode: false,
-  localStockfish: false,
   bestMove: true,
   animation: true,
   sidebarCollapsed: false,

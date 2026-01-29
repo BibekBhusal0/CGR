@@ -210,7 +210,7 @@ export async function analyzeMove({
 }
 
 export async function analyzeGame(Game: Chess, setProgress: (progress: number) => void) {
-  const { localStockfish, depth } = useSettingsState.getState();
+  const {  depth } = useSettingsState.getState();
   const stockfish = new StockfishManager();
   const analyzePosition = async (
     fen: string,
@@ -218,7 +218,7 @@ export async function analyzeGame(Game: Chess, setProgress: (progress: number) =
     moveIndex: number,
     move: Move
   ) => {
-    const SFresult = await stockfish.analyzePosition(fen, depth, localStockfish);
+    const SFresult = await stockfish.analyzePosition(fen, depth);
     const analysis = await analyzeMove({
       stockfishAnalysis: SFresult,
       prevEval,

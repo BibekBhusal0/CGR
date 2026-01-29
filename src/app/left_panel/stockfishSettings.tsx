@@ -24,7 +24,6 @@ function StockfishSettings() {
         maxValue={30}
       />
       <ToggleSwitch item="bestMove" children="Best Move" />
-      <ToggleSwitch item="localStockfish" children="Always use local Stockfish" />
       <Select
         selectedKeys={[stockfish]}
         size="md"
