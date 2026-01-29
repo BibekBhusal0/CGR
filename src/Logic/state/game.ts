@@ -101,15 +101,20 @@ export const useGameState = create<GameState>((set, get) => ({
     set({ stage });
   },
 
-  setIndex: (index) =>
-    set((state) => {
-      if (!state.Game || !state.analysis) return state;
+  setIndex: (index) => {
+    const state = get();
+    if (!state.Game || !state.analysis) return;
+    const full_history = state.Game.history({ verbose: true });
+    if (index < -1 || index >= full_history.length) return;
+    set(() => {
+      if (!state.Game || !state.analysis) return {};
       const moveIndex = index;
       let fen;
       let evaluation: evaluationType = { value: 0, type: "cp" };
-      const full_history = state.Game.history({ verbose: true });
       if (moveIndex === -1) {
         fen = full_history[0].before;
+      } else if (moveIndex < -1 || moveIndex >= full_history.length) {
+        return {};
       } else {
         try {
           evaluation = state.analysis[moveIndex].eval;
@@ -120,7 +125,8 @@ export const useGameState = create<GameState>((set, get) => ({
         fen = full_history[moveIndex].after;
       }
       return { moveIndex, fen, evaluation, index2: 0, boardStage: "normal" };
-    }),
+    });
+  },
 
   setBoardStage: (boardStage) => {
     const state = get();
