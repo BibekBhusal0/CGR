@@ -6,7 +6,7 @@ import { useGameState } from "@/Logic/state/game";
 // const black = "#454545";
 
 function EvalGraph() {
-  const analysis = useGameState().analysis;
+  const analysis = useGameState(state=>state.analysis)
   const showGraph = analysis !== undefined;
   return (
     <div className="size-full">
