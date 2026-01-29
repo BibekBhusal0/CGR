@@ -219,6 +219,8 @@ export async function analyzeGame(Game: Chess, setProgress: (progress: number) =
     move: Move
   ) => {
     const SFresult = await stockfish.analyzePosition(fen, depth);
+    // __AUTO_GENERATED_PRINT_VAR_START__
+    console.log("analyzeGame#analyzePosition SFresult:", SFresult); // __AUTO_GENERATED_PRINT_VAR_END__
     const analysis = await analyzeMove({
       stockfishAnalysis: SFresult,
       prevEval,
@@ -256,5 +258,6 @@ export async function analyzeGame(Game: Chess, setProgress: (progress: number) =
     completed++;
     setProgress(completed / history.length);
   }
+  stockfish.terminate()
   return analysisResult;
 }

@@ -5,15 +5,21 @@ export interface evaluationType {
   type: string;
   value: number;
 }
-export interface StockfishOutput {
+export interface stockfishPvOutput {
+  lines: string[];
+  eval: evaluationType;
+}
+export interface StockfishOutput extends stockfishPvOutput {
   bestMove: string;
   eval: evaluationType;
   lines: string[];
+  secondBest?: stockfishPvOutput;
 }
+const initialPvVal: stockfishPvOutput = { lines: [], eval: { type: "cp", value: 0 } };
 const EmptyValue: StockfishOutput = {
   bestMove: "",
-  eval: { type: "cp", value: 0 },
-  lines: [],
+  ...initialPvVal,
+  secondBest: { ...initialPvVal },
 };
 
 const enginePath: Record<availableStockfish, { multi: string; single: string }> = {
@@ -57,17 +63,24 @@ class StockfishManager {
           const parts = data.split(" ");
           const evalIndex = parts.indexOf("score") + 2;
           const evalType = parts[evalIndex - 1];
+          const idIndex = parts.indexOf("multipv") + 1;
+          const index = parts[idIndex];
           let evalValue: number = parseInt(parts[evalIndex]);
           const pvIndex = parts.indexOf("pv") + 1;
           const lines = parts.slice(pvIndex);
           evalValue = this.blackToMove ? evalValue * -1 : evalValue;
-          this.output.eval = { type: evalType, value: evalValue };
-          this.output.lines = lines;
+          const pvOutput: stockfishPvOutput = {
+            lines,
+            eval: { type: evalType, value: evalValue },
+          };
+
+          if (index === "2") this.output.secondBest = pvOutput;
+          else this.output = { ...this.output, ...pvOutput };
         }
       }
     });
 
-    this.stockfish.postMessage("uci");
+    this.sendCommand("uci");
   }
 
   sendCommand(command: string) {
@@ -87,15 +100,13 @@ class StockfishManager {
     }
   }
 
-  async analyzePosition(
-    fen: string,
-    depth: number,
-  ): Promise<StockfishOutput> {
+  async analyzePosition(fen: string, depth: number): Promise<StockfishOutput> {
     this.blackToMove = fen.includes(" b ");
     return new Promise((resolve) => {
       this.resolveCallback = resolve;
       this.output = { ...EmptyValue };
       this.sendCommand(`position fen ${fen}`);
+      this.sendCommand("setoption name MultiPV value 2");
       this.sendCommand(`go depth ${depth}`);
     });
   }
