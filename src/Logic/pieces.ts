@@ -188,7 +188,22 @@ export function isPinned(fen: string, square: Square): isPinnedReturn | undefine
 }
 
 // Calculating if piece is hanging.
-export function isPieceHanging() { }
+
+export function isPieceHanging(fen: string, square: Square): boolean {
+  let game;
+  try {
+    game = new Chess(fen, { skipValidation: true });
+  } catch {
+    return false;
+  }
+  const piece = game.get(square);
+  if (!piece) return false;
+  const opp = getOpp(piece.color);
+  const defenders = game.attackers(square, piece.color);
+  const attackers = game.attackers(square, opp);
+  if (attackers.length < defenders.length) return true;
+  return false;
+}
 
 export function getMaterial(fen: string, color: Color) {
   const pieces = fen.split(" ")[1];
