@@ -49,6 +49,7 @@ export const pieceNames: Record<PieceSymbol, string> = {
 export type isPinnedReturn = {
   type: "relative" | "absolute";
   targetPiece: PieceAndSquare;
+  by: PieceAndSquare;
 };
 
 type directions =
@@ -176,7 +177,11 @@ export function isPinned(fen: string, square: Square): isPinnedReturn | undefine
       if (pieceValues[behind.type] > pieceValues[piece.type]) {
         let type: "relative" | "absolute" = "relative";
         if (behind.type === KING) type = "absolute";
-        return { type, targetPiece: behind };
+        return {
+          type,
+          targetPiece: behind,
+          by: { color: opp, square: oppPiece, type: pieceSymbol },
+        };
       }
     }
   }

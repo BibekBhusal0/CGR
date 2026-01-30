@@ -7,6 +7,7 @@ describe("Absolute Pins", () => {
     expect(result).toEqual({
       type: "absolute",
       targetPiece: { type: "k", color: "b", square: "f8" },
+      by: { type: "b", color: "w", square: "h6" },
     });
   });
   test("Rook Pinned By Queen", () => {
@@ -14,6 +15,7 @@ describe("Absolute Pins", () => {
     expect(result).toEqual({
       type: "absolute",
       targetPiece: { type: "k", color: "b", square: "h8" },
+      by: { type: "q", color: "w", square: "f6" },
     });
   });
   test("Knight Pinned By Queen", () => {
@@ -21,6 +23,7 @@ describe("Absolute Pins", () => {
     expect(result).toEqual({
       type: "absolute",
       targetPiece: { type: "k", color: "w", square: "g2" },
+      by: { type: "q", color: "b", square: "c6" },
     });
   });
   test("Queen Pinned By Bishp", () => {
@@ -28,6 +31,7 @@ describe("Absolute Pins", () => {
     expect(result).toEqual({
       type: "absolute",
       targetPiece: { type: "k", color: "b", square: "g8" },
+      by: { type: "b", color: "w", square: "d5" },
     });
   });
   test("Pawn Pinned By Queen", () => {
@@ -35,6 +39,7 @@ describe("Absolute Pins", () => {
     expect(result).toEqual({
       type: "absolute",
       targetPiece: { type: "k", color: "w", square: "h1" },
+      by: { type: "q", color: "b", square: "h4" },
     });
   });
   test("Queen Pinned By Rook", () => {
@@ -42,6 +47,7 @@ describe("Absolute Pins", () => {
     expect(result).toEqual({
       type: "absolute",
       targetPiece: { type: "k", color: "w", square: "g1" },
+      by: { type: "r", color: "b", square: "g6" },
     });
   });
 });
@@ -55,6 +61,7 @@ describe("Relative Pins", () => {
     expect(result).toEqual({
       type: "relative",
       targetPiece: { type: "q", color: "b", square: "d8" },
+      by: { type: "b", color: "w", square: "g5" },
     });
   });
   test("Pawn pinned by Rook to Rook", () => {
@@ -65,6 +72,7 @@ describe("Relative Pins", () => {
     expect(result).toEqual({
       type: "relative",
       targetPiece: { type: "r", color: "b", square: "f8" },
+      by: { type: "r", color: "w", square: "f1" },
     });
   });
 });
