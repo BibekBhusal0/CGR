@@ -43,10 +43,13 @@ describe("Equal exchange", () => {
     const result = isPieceHanging("6rr/p4p2/1ppbpk2/8/2PPpP2/2P3P1/P5K1/1R5R w - - 0 1", "h8");
     expect(result).toBe(false);
   });
-  test("2", () =>{
-    const result =isPieceHanging("r3kb1r/pppbpp1p/6p1/1B2n2n/8/5N1P/PPP2PP1/RNBKR3 w kq - 0 1", "d7")
-    expect(result).toBe(false)
-  })
+  test("2", () => {
+    const result = isPieceHanging(
+      "r3kb1r/pppbpp1p/6p1/1B2n2n/8/5N1P/PPP2PP1/RNBKR3 w kq - 0 1",
+      "d7"
+    );
+    expect(result).toBe(false);
+  });
 });
 
 describe("Getting Material Advantate", () => {
@@ -68,10 +71,10 @@ describe("Getting Material Advantate", () => {
     );
     expect(result).toBe(true);
   });
-  test("4", () =>{
-    const result =isPieceHanging("8/4R1b1/1P3rp1/7k/3p2NP/8/4p1K1/8 w - - 0 1", "f6")
+  test("4", () => {
+    const result = isPieceHanging("8/4R1b1/1P3rp1/7k/3p2NP/8/4p1K1/8 w - - 0 1", "f6");
     expect(result).toBe(true);
-  })
+  });
 });
 
 describe("Losing material", () => {
