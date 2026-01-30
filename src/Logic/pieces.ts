@@ -26,10 +26,10 @@ function coorsToNotation(coors: coors): Square {
 }
 
 function getOpp(color: Color): Color {
-  return color === "w" ? "b" : "w";
+  return color === WHITE ? BLACK : WHITE;
 }
 
-export const pieceValues: { [key in PieceSymbol]: number } = {
+export const pieceValues: Record<PieceSymbol, number> = {
   [PAWN]: 1,
   [KNIGHT]: 3,
   [BISHOP]: 3,
@@ -37,7 +37,7 @@ export const pieceValues: { [key in PieceSymbol]: number } = {
   [QUEEN]: 9,
   [KING]: Infinity,
 };
-export const pieceNames: { [key in PieceSymbol]: string } = {
+export const pieceNames: Record<PieceSymbol, string> = {
   [PAWN]: "pawn",
   [KNIGHT]: "knight",
   [BISHOP]: "bishop",
@@ -47,23 +47,9 @@ export const pieceNames: { [key in PieceSymbol]: string } = {
 };
 
 export type isPinnedReturn = {
-  pinned: boolean;
-  type?: "relative" | "absolute" | "both";
+  type: "relative" | "absolute";
+  targetPiece: PieceAndSquare;
 };
-
-function getPinType(absolutely_pinned: boolean, relatively_pinned: boolean): isPinnedReturn {
-  return {
-    pinned: absolutely_pinned && relatively_pinned,
-    type:
-      relatively_pinned && absolutely_pinned
-        ? "both"
-        : relatively_pinned || absolutely_pinned
-          ? relatively_pinned
-            ? "relative"
-            : "absolute"
-          : undefined,
-  };
-}
 
 type directions =
   | "up"
@@ -77,7 +63,7 @@ type directions =
 
 const rookMoves: directions[] = ["up", "down", "left", "right"];
 const bishopMoves: directions[] = ["up-left", "down-left", "up-right", "down-right"];
-const pieceDirections: Partial<Record<PieceSymbol, directions[]>> = {
+export const pieceDirections: Partial<Record<PieceSymbol, directions[]>> = {
   [ROOK]: rookMoves,
   [BISHOP]: bishopMoves,
   [QUEEN]: [...rookMoves, ...bishopMoves],
@@ -135,33 +121,37 @@ export function getDirection(from: Square, to: Square): directions | undefined {
   return undefined;
 }
 
-export const notPinned: isPinnedReturn = { pinned: false, type: undefined };
-
-export function isPinned(fen: string, square: Square): isPinnedReturn {
+export function isPinned(fen: string, square: Square): isPinnedReturn | undefined {
   let game;
   try {
     game = new Chess(fen, { skipValidation: true });
   } catch {
-    return notPinned;
+    return;
   }
-  let relatively_pinned = false;
-  let absolutely_pinned = false;
   const piece = game.get(square);
-  if (!piece) return notPinned;
+  if (!piece) return;
   const opp = getOpp(piece.color);
   const piecesThatCanPin: PieceSymbol[] = [QUEEN, BISHOP, ROOK];
+
   for (let pieceSymbol of piecesThatCanPin) {
     const oppPieces = game.findPiece({ type: pieceSymbol, color: opp });
     if (!oppPieces) continue;
     for (let oppPiece of oppPieces) {
       const direction = getDirection(oppPiece, square);
       if (!direction) continue;
+      // Check if piece can move in that direction.
+      if (!pieceDirections[pieceSymbol]?.includes(direction)) continue
       const behind = seeBehindPiece(square, direction, game);
+      // It should be our piece and piece with higher value
+      if (!behind) continue;
+      if (behind.color !== piece.color) continue;
+      if (pieceValues[behind.type] > pieceValues[piece.type]) {
+        let type: "relative" | "absolute" = "relative";
+        if (behind.type === KING) type = "absolute";
+        return { type, targetPiece: behind };
+      }
     }
   }
-
-  // return isPinnedByRook(fen, square)
-  // return getPinType(absolutely_pinned, relatively_pinned);
 }
 
 // Calculating if piece is hanging.
