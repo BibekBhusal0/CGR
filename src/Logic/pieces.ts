@@ -201,6 +201,8 @@ export function isPieceHanging(fen: string, square: Square): boolean {
   const opp = getOpp(piece.color);
   const defenders = game.attackers(square, piece.color);
   const attackers = game.attackers(square, opp);
+  // If piece(not pawn) can be taken by pawn it's hanging
+  // Will calculate based on capture sequence (first taking with low value piece. and not taking with pinned piece.)
   if (attackers.length < defenders.length) return true;
   return false;
 }
@@ -223,3 +225,13 @@ export function getMaterial(fen: string, color: Color) {
 }
 
 export const promotions = [undefined, "b", "n", "r", "q"];
+
+export function isMoveLegal(fen: string, move: string): boolean {
+  try {
+    const game = new Chess(fen);
+    game.move(move);
+    return true;
+  } catch {
+    return false;
+  }
+}
