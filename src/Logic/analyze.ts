@@ -210,7 +210,7 @@ export async function analyzeMove({
 }
 
 export async function analyzeGame(Game: Chess, setProgress: (progress: number) => void) {
-  const {  depth } = useSettingsState.getState();
+  const { depth } = useSettingsState.getState();
   const stockfish = new StockfishManager();
   const analyzePosition = async (
     fen: string,
@@ -258,6 +258,6 @@ export async function analyzeGame(Game: Chess, setProgress: (progress: number) =
     completed++;
     setProgress(completed / history.length);
   }
-  stockfish.terminate()
+  stockfish.terminate();
   return analysisResult;
 }

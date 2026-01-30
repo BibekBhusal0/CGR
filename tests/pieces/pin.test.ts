@@ -65,10 +65,7 @@ describe("Relative Pins", () => {
     });
   });
   test("Pawn pinned by Rook to Rook", () => {
-    const result = isPinned(
-      "3r1r1k/ppp3pp/3bP3/5p2/3q4/1QN5/PP2B1PP/R4R1K b - - 0 1",
-      "f5"
-    );
+    const result = isPinned("3r1r1k/ppp3pp/3bP3/5p2/3q4/1QN5/PP2B1PP/R4R1K b - - 0 1", "f5");
     expect(result).toEqual({
       type: "relative",
       targetPiece: { type: "r", color: "b", square: "f8" },
@@ -77,41 +74,40 @@ describe("Relative Pins", () => {
   });
 });
 
-
 describe("Not Pinned", () => {
   test("Pin Blocked by own piece", () => {
-    const result = isPinned( "2rr2k1/p5b1/2q1P1Q1/1p5p/4B11P/1Pp2NP1/PB4K1/4R3 b - - 0 1", "f3");
+    const result = isPinned("2rr2k1/p5b1/2q1P1Q1/1p5p/4B11P/1Pp2NP1/PB4K1/4R3 b - - 0 1", "f3");
     expect(result).toBeUndefined();
   });
 
   test("Lower Value Piece", () => {
-    const result = isPinned( "3p4/8/3r4/8/8/8/8/3R4 w - - 0 1", "d6");
+    const result = isPinned("3p4/8/3r4/8/8/8/8/3R4 w - - 0 1", "d6");
     expect(result).toBeUndefined();
   });
 
   test("Equal value piece", () => {
-    const result = isPinned( "4r3/8/8/8/4N3/8/8/4N3 w - - 0 1", "e4");
+    const result = isPinned("4r3/8/8/8/4N3/8/8/4N3 w - - 0 1", "e4");
     expect(result).toBeUndefined();
   });
 
   test("Same Color Piece Pin", () => {
-    const result = isPinned( "5k2/8/8/8/8/8/5P2/5R2 w - - 0 1", "f2");
+    const result = isPinned("5k2/8/8/8/8/8/5P2/5R2 w - - 0 1", "f2");
     expect(result).toBeUndefined();
   });
 
   test("Piece not lined up", () => {
-    const result = isPinned( "r7/8/8/8/8/2N5/8/1Q6 w - - 0 1", "c3");
+    const result = isPinned("r7/8/8/8/8/2N5/8/1Q6 w - - 0 1", "c3");
     expect(result).toBeUndefined();
   });
 
   test("Just Check", () => {
-    const result = isPinned( "r3k3/8/8/8/8/8/8/4R3 w - - 0 1", "e8");
+    const result = isPinned("r3k3/8/8/8/8/8/8/4R3 w - - 0 1", "e8");
     expect(result).toBeUndefined();
   });
 
   test("Just fork", () => {
     // A Knight is 'forking' a Pawn the King.
-    const result = isPinned( "4k3/8/3n4/8/4P3/8/8/8 w - - 0 1", "e4");
+    const result = isPinned("4k3/8/3n4/8/4P3/8/8/8 w - - 0 1", "e4");
     expect(result).toBeUndefined();
   });
 });

@@ -1,6 +1,10 @@
 import { Slider } from "@heroui/slider";
 import { ToggleSwitch } from "@/components/switch";
-import { allStockfishAvailable, availableStockfish, useSettingsState } from "@/Logic/state/settings";
+import {
+  allStockfishAvailable,
+  availableStockfish,
+  useSettingsState,
+} from "@/Logic/state/settings";
 import { Select, SelectItem } from "@heroui/select";
 
 function StockfishSettings() {
@@ -35,7 +39,7 @@ function StockfishSettings() {
         onChange={(e) => {
           if (e.target.value.trim() !== "") {
             const v = e.target.value.trim() as availableStockfish;
-            if (!allStockfishAvailable.includes(v)) return
+            if (!allStockfishAvailable.includes(v)) return;
             setStockfish(v);
           }
         }}
@@ -47,7 +51,7 @@ function StockfishSettings() {
             classNames={{ base: "items-center", title: "text-sm" }}
             aria-label={sf}
             key={sf}>
-            {sf.replace( /-/g, " ")}
+            {sf.replace(/-/g, " ")}
           </SelectItem>
         ))}
       </Select>

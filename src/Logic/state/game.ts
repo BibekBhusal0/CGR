@@ -97,7 +97,7 @@ export const useGameState = create<GameState>((set, get) => ({
 
   changeState: (stage) => {
     const state = get();
-    if (stage === state.stage) return
+    if (stage === state.stage) return;
     if (stage === "first") set({ ...initialState });
     else if (stage === "second") set({ moveIndex: -1 });
     set({ stage });
