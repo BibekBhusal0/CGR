@@ -48,7 +48,7 @@ export const pieceNames: { [key in PieceSymbol]: string } = {
 
 export type isPinnedReturn = {
   pinned: boolean;
-  type: undefined | "relative" | "absolute" | "both";
+  type?: "relative" | "absolute" | "both";
 };
 
 function getPinType(absolutely_pinned: boolean, relatively_pinned: boolean): isPinnedReturn {
@@ -83,33 +83,33 @@ const pieceDirections: Partial<Record<PieceSymbol, directions[]>> = {
   [QUEEN]: [...rookMoves, ...bishopMoves],
 };
 
+export interface PieceAndSquare extends Piece {
+  square: Square;
+}
 // See what's behind a piece useful function to check pin/skewer
 export function seeBehindPiece(
-  from: coors,
+  from: Square,
   direction: directions,
   game: Chess
-): PieceSymbol | undefined {
-  const fromPiece = game.get(coorsToNotation(from));
-  if (!fromPiece) return;
+): PieceAndSquare | undefined {
+  const fromCoor = notationToCoors(from);
 
   const delta: coors = {
     y: direction.includes("up") ? 1 : direction.includes("down") ? -1 : 0,
-    x: direction.includes("right") ? 1 : direction.includes("right") ? -1 : 0,
+    x: direction.includes("right") ? 1 : direction.includes("left") ? -1 : 0,
   };
 
   // this case will not happen just to be extra safe to avoid infinite loop
   if (delta.x === 0 && delta.y === 0) return;
   const crr = {
-    x: from.x + delta.x,
-    y: from.y + delta.y,
+    x: fromCoor.x + delta.x,
+    y: fromCoor.y + delta.y,
   };
 
-  while (crr.x <= 9 && crr.y >= 1 && crr.y >= 1 && crr.y <= 9) {
+  while (crr.x <= 7 && crr.x >= 0 && crr.y >= 0 && crr.y <= 7) {
     const notation = coorsToNotation(crr);
     const sq = game.get(notation);
-    if (sq) {
-      return sq.type;
-    }
+    if (sq) return { ...sq, square: notation };
     crr.x += delta.x;
     crr.y += delta.y;
   }
@@ -117,7 +117,7 @@ export function seeBehindPiece(
 }
 
 // if piece are in line it returns direction.
-export function getDirection(from: Square, to: Square): directions | void {
+export function getDirection(from: Square, to: Square): directions | undefined {
   const toCoor = notationToCoors(to);
   const fromCoor = notationToCoors(from);
   if (toCoor.x === fromCoor.x) return toCoor.y < fromCoor.y ? "down" : "up";
@@ -132,32 +132,11 @@ export function getDirection(from: Square, to: Square): directions | void {
     if (deltaX < 0 && deltaY > 0) return "down-right";
     if (deltaX > 0 && deltaY < 0) return "up-left";
   }
+  return undefined;
 }
-
 
 export const notPinned: isPinnedReturn = { pinned: false, type: undefined };
 
-// function isPinnedByRook(fen: string, square: Square): isPinnedReturn {
-//   const game = new Chess(fen, { skipValidation: true });
-//   let relatively_pinned = false;
-//   let absolutely_pinned = false;
-//   const piece = game.get(square);
-//   if (!piece) return notPinned;
-//   const opp = getOpp(piece.color);
-//   // Find Opponent's rook
-//   const rooks = game.findPiece({ type: ROOK, color: opp });
-//   if (!rooks) return notPinned
-//   const pieceCoor = notationToCoors(square);
-//
-//   for (let rookNotation of rooks) {
-//     const rookCoor = notationToCoors(rookNotation);
-//     // If not in same file/rank as rook it can't be pinned.
-//     if (rookCoor.x !== pieceCoor.x && rookCoor.y !== pieceCoor.y) continue;
-//   }
-//   return getPinType(absolutely_pinned, relatively_pinned);
-// }
-
-// function isPinnedByBishop(fen: string, square: Square): isPinnedReturn { }
 export function isPinned(fen: string, square: Square): isPinnedReturn {
   let game;
   try {
@@ -173,8 +152,11 @@ export function isPinned(fen: string, square: Square): isPinnedReturn {
   const piecesThatCanPin: PieceSymbol[] = [QUEEN, BISHOP, ROOK];
   for (let pieceSymbol of piecesThatCanPin) {
     const oppPieces = game.findPiece({ type: pieceSymbol, color: opp });
+    if (!oppPieces) continue;
     for (let oppPiece of oppPieces) {
-      // const behind = seeBehindPiece(square, rookMoves);
+      const direction = getDirection(oppPiece, square);
+      if (!direction) continue;
+      const behind = seeBehindPiece(square, direction, game);
     }
   }
 
@@ -183,7 +165,7 @@ export function isPinned(fen: string, square: Square): isPinnedReturn {
 }
 
 // Calculating if piece is hanging.
-export function isPieceHanging() {}
+export function isPieceHanging() { }
 
 export function getMaterial(fen: string, color: Color) {
   const pieces = fen.split(" ")[1];

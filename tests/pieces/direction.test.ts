@@ -140,16 +140,16 @@ describe("down-right", () => {
 describe("None", () => {
   test("case 0", () => {
     const result = getDirection("a8", "h4");
-    expect(result).toBe();
+    expect(result).toBeUndefined();
   });
 
   test("case 1", () => {
     const result = getDirection("b8", "f7");
-    expect(result).toBe();
+    expect(result).toBeUndefined();
   });
 
   test("case 2", () => {
     const result = getDirection("b5", "g1");
-    expect(result).toBe();
+    expect(result).toBeUndefined();
   });
 });
