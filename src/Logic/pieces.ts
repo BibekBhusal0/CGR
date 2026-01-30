@@ -121,6 +121,32 @@ export function getDirection(from: Square, to: Square): directions | undefined {
   return undefined;
 }
 
+export function isEmpty(game: Chess, from: Square, to: Square, direction: directions): boolean {
+  const fromCoor = notationToCoors(from);
+
+  const delta: coors = {
+    y: direction.includes("up") ? 1 : direction.includes("down") ? -1 : 0,
+    x: direction.includes("right") ? 1 : direction.includes("left") ? -1 : 0,
+  };
+
+  // this case will not happen just to be extra safe to avoid infinite loop
+  if (delta.x === 0 && delta.y === 0) return false;
+  const crr = {
+    x: fromCoor.x + delta.x,
+    y: fromCoor.y + delta.y,
+  };
+
+  while (crr.x <= 7 && crr.x >= 0 && crr.y >= 0 && crr.y <= 7) {
+    const notation = coorsToNotation(crr);
+    if (notation === to) return true;
+    const piece = game.get(notation);
+    if (piece) return false;
+    crr.x += delta.x;
+    crr.y += delta.y;
+  }
+  return true;
+}
+
 export function isPinned(fen: string, square: Square): isPinnedReturn | undefined {
   let game;
   try {
@@ -140,7 +166,9 @@ export function isPinned(fen: string, square: Square): isPinnedReturn | undefine
       const direction = getDirection(oppPiece, square);
       if (!direction) continue;
       // Check if piece can move in that direction.
-      if (!pieceDirections[pieceSymbol]?.includes(direction)) continue
+      if (!pieceDirections[pieceSymbol]?.includes(direction)) continue;
+      // Path need to be clear for piece to be attacked
+      if (!isEmpty(game, oppPiece, square, direction)) continue;
       const behind = seeBehindPiece(square, direction, game);
       // It should be our piece and piece with higher value
       if (!behind) continue;
