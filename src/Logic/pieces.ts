@@ -88,25 +88,43 @@ export function getXrayAttackers(game: Chess, square: Square, color: Color): Squ
   for (const direction of allDirections) {
     let striked = false; // Can only strike one time
     const delta = getDelta(direction);
-
     const crr = {
       x: coor.x + delta.x,
       y: coor.y + delta.y,
     };
-    while (crr.x <= 7 && crr.x >= 0 && crr.y >= 0 && crr.y <= 7) {
-      const crrNotation = coorsToNotation(crr);
+    function increment() {
       crr.x += delta.x;
       crr.y += delta.y;
+    }
+    while (crr.x <= 7 && crr.x >= 0 && crr.y >= 0 && crr.y <= 7) {
+      const crrNotation = coorsToNotation(crr);
       const p = game.get(crrNotation);
-      if (!p) continue;
+      if (!p) {
+        increment();
+        continue;
+      }
       const piece = p.type as laserPieces;
-      if (!allLaserPieces.includes(piece)) break; // Must be laser piece ( pawn not handled currently )
+      if (p.type === PAWN) {
+        // Pawn can only capture diagonally
+        if (!bishopMoves.includes(direction)) break;
+        // Pawn an only capture 1 square
+        if (Math.abs(coor.y - crr.y) !== 1) break;
+        // Pawn can only capture forward
+        const canPawnCapture = p.color === WHITE ? crr.y < coor.y : crr.y > coor.y;
+        // p.color === WHITE ? direction.includes("down") : direction.includes("up");
+        if (canPawnCapture) {
+          striked = true;
+          increment();
+          continue;
+        } else break;
+      } else if (!allLaserPieces.includes(piece)) break;
       if (!pieceDirections[piece].includes(direction)) break;
-        if (striked){
-          if (p.color === opp) break
-          xrayAttackers.push(crrNotation);
-        }
-        striked = true; //  Can't strike twice
+      if (striked) {
+        if (p.color === opp) break;
+        xrayAttackers.push(crrNotation);
+      }
+      striked = true; //  Can't strike twice
+      increment();
     }
   }
   return xrayAttackers;
@@ -252,24 +270,24 @@ export function isPieceHanging(fen: string, square: Square): boolean {
   let defenderCount = 0;
   // attacker
   for (const attacker_sq of attackers) {
-    const attacker_piece = game.get(attacker_sq)
-    if (!attacker_piece) continue
+    const attacker_piece = game.get(attacker_sq);
+    if (!attacker_piece) continue;
     // Check if piece is pinned
-    const pinned = isPinned(game.fen(), attacker_sq)
+    const pinned = isPinned(game.fen(), attacker_sq);
     // Somethimes it can take the attacking piece even though pinned.
-    if (pinned && pinned.by.square !== attacker_sq) continue
+    if (pinned && pinned.by.square !== attacker_sq) continue;
     // If pawn can take piece it's hanging
-    if (attacker_piece.type === PAWN && piece.type !== PAWN) return true
+    if (attacker_piece.type === PAWN && piece.type !== PAWN) return true;
     attackerCount++;
   }
 
   for (const defender_sq of defenders) {
-    const defender_piece = game.get(defender_sq)
-    if (!defender_piece) continue
+    const defender_piece = game.get(defender_sq);
+    if (!defender_piece) continue;
     // Check if piece is pinned
-    const pinned = isPinned(game.fen(), defender_sq)
+    const pinned = isPinned(game.fen(), defender_sq);
     // Somethimes it can take the attacking piece even though pinned.
-    if (pinned && pinned.by.square !== defender_sq) continue
+    if (pinned && pinned.by.square !== defender_sq) continue;
     defenderCount++;
   }
 

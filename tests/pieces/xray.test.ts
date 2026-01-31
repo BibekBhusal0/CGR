@@ -2,7 +2,7 @@ import { test, expect, describe } from "bun:test";
 import { getXrayAttackers } from "../../src/Logic/pieces";
 import { Chess } from "chess.js";
 
-describe("X-ray Attacks from Real Games", () => {
+describe("X-ray Attacks Simple", () => {
   test("Queen attacking through Bishop", () => {
     const attackers = getXrayAttackers(
       new Chess("1br2rk1/pp2np1p/2n1pBp1/3p4/3P1q1Q/2PB1N1P/PP3PP1/R4RK1 w - - 0 1", {
@@ -52,6 +52,109 @@ describe("X-ray Attacks from Real Games", () => {
       "b"
     );
     expect(attackers).toEqual(["h3"]);
+  });
+  test("Queen attacking through Opponent's Knight", () => {
+    const attackers = getXrayAttackers(
+      new Chess("5rk1/pp2Q2p/2p3p1/8/2P5/2N4b/PP5P/2q1RNKR b - - 0 1", {
+        skipValidation: true,
+      }),
+      "f1",
+      "b"
+    );
+    expect(attackers).toEqual(["c1"]);
+  });
+  test("Queen attacking through Opponent's Queen", () => {
+    const attackers = getXrayAttackers(
+      new Chess("5r1k/1p3p2/pP1R3p/6q1/6P1/4Q2P/1Pr5/3R2K1 w - - 0 1", {
+        skipValidation: true,
+      }),
+      "h6",
+      "w"
+    );
+    expect(attackers).toEqual(["e3"]);
+  });
+});
+
+describe("X-ray Through Pawn", () => {
+  test("Queen Attacking through pawn", () => {
+    const attackers = getXrayAttackers(
+      new Chess("1k2r2Q/1pp3P1/8/5N2/8/8/5PK1/q7 w - - 0 1", { skipValidation: true }),
+      "h8",
+      "b"
+    );
+    expect(attackers).toEqual(["a1"]);
+  });
+  test("Bishop Attacking through pawn", () => {
+    const attackers = getXrayAttackers(
+      new Chess("8/8/8/4P3/3R4/6B1/8/8 w - - 0 1", { skipValidation: true }),
+      "d6",
+      "w"
+    );
+    expect(attackers).toEqual(["g3"]);
+  });
+  test("Bishop Attacking through pawn", () => {
+    const attackers = getXrayAttackers(
+      new Chess("8/8/8/4P3/3B4/6B1/4R3/8 w - - 0 1", { skipValidation: true }),
+      "d6",
+      "w"
+    );
+    expect(attackers).toEqual(["g3"]);
+  });
+  test("Bishop and Queen Attacking through pawn", () => {
+    const attackers = getXrayAttackers(
+      new Chess("8/8/8/4P3/5B2/6B1/7Q/8 w - - 0 1", { skipValidation: true }),
+      "d6",
+      "w"
+    );
+    expect(attackers).toEqual(["f4", "g3", "h2"]);
+  });
+  test("Bishop and Queen Attacking through Opponent's pawn", () => {
+    const attackers = getXrayAttackers(
+      new Chess("8/8/8/4p3/5B2/6B1/7Q/8 w - - 0 1", { skipValidation: true }),
+      "d6",
+      "w"
+    );
+    expect(attackers).toEqual([]);
+  });
+  test("Bishop and Queen Attacking through pawn - Interrupted", () => {
+    const attackers = getXrayAttackers(
+      new Chess("8/8/8/4P3/5R2/6B1/7Q/8 w - - 0 1", { skipValidation: true }),
+      "d6",
+      "w"
+    );
+    expect(attackers).toEqual([]);
+  });
+  test("Bishop and Attacking through pawn - 1", () => {
+    const attackers = getXrayAttackers(
+      new Chess("8/1P6/2b5/4P3/4p3/2B5/1p6/8 w - - 0 1", { skipValidation: true }),
+      "f6",
+      "w"
+    );
+    expect(attackers).toEqual(["c3"]);
+  });
+  test("Bishop and Attacking through pawn - 2", () => {
+    const attackers = getXrayAttackers(
+      new Chess("8/1P6/2b5/4P3/4p3/2B5/1p6/8 w - - 0 1", { skipValidation: true }),
+      "f3",
+      "b"
+    );
+    expect(attackers).toEqual(["c6"]);
+  });
+  test("Bishop and Attacking through pawn - 3", () => {
+    const attackers = getXrayAttackers(
+      new Chess("8/1P6/2b5/4P3/4p3/2B5/1p6/8 w - - 0 1", { skipValidation: true }),
+      "a8",
+      "b"
+    );
+    expect(attackers).toEqual(["c6"]);
+  });
+  test("Bishop and Attacking through pawn - 4", () => {
+    const attackers = getXrayAttackers(
+      new Chess("8/1P6/2b5/4P3/4p3/2B5/1p6/8 w - - 0 1", { skipValidation: true }),
+      "a1",
+      "w"
+    );
+    expect(attackers).toEqual(["c3"]);
   });
 });
 
@@ -109,7 +212,9 @@ describe("Not Xray Attack", () => {
   });
   test("Attacking through Opponent's Pawn", () => {
     const attackers = getXrayAttackers(
-      new Chess("r1bqkbnr/ppp2ppp/2n5/3pp3/2Q1P3/1B6/PPPP1PPP/RNB1K1NR w KQkq - 0 1", { skipValidation: true }),
+      new Chess("r1bqkbnr/ppp2ppp/2n5/3pp3/2Q1P3/1B6/PPPP1PPP/RNB1K1NR w KQkq - 0 1", {
+        skipValidation: true,
+      }),
       "f7",
       "w"
     );
@@ -117,7 +222,9 @@ describe("Not Xray Attack", () => {
   });
   test("Attacking through Own Pawn", () => {
     const attackers = getXrayAttackers(
-      new Chess("r1bqkbnr/ppp2ppp/2n5/3Pp3/2Q5/1B6/PPPP1PPP/RNB1K1NR b KQkq - 0 1", { skipValidation: true }),
+      new Chess("r1bqkbnr/ppp2ppp/2n5/3Pp3/2Q5/1B6/PPPP1PPP/RNB1K1NR b KQkq - 0 1", {
+        skipValidation: true,
+      }),
       "f7",
       "w"
     );
