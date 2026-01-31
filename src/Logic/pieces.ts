@@ -29,6 +29,13 @@ function getOpp(color: Color): Color {
   return color === WHITE ? BLACK : WHITE;
 }
 
+// Laser pieces are pieces which can move straight
+// And can't jumb between pieces.
+// Those pieces can pin
+const lp = [ROOK, QUEEN, BISHOP] as const;
+type laserPieces = (typeof lp)[number];
+export const allLaserPieces: laserPieces[] = [...lp];
+
 export const pieceValues: Record<PieceSymbol, number> = {
   [PAWN]: 1,
   [KNIGHT]: 3,
@@ -52,23 +59,72 @@ export type isPinnedReturn = {
   by: PieceAndSquare;
 };
 
-type directions =
-  | "up"
-  | "down"
-  | "left"
-  | "right"
-  | "up-left"
-  | "down-left"
-  | "down-right"
-  | "up-right";
+const t = [
+  "up",
+  "down",
+  "left",
+  "right",
+  "up-left",
+  "down-left",
+  "down-right",
+  "up-right",
+] as const;
+
+type directions = (typeof t)[number];
+const allDirections: directions[] = [...t];
 
 const rookMoves: directions[] = ["up", "down", "left", "right"];
 const bishopMoves: directions[] = ["up-left", "down-left", "up-right", "down-right"];
-export const pieceDirections: Partial<Record<PieceSymbol, directions[]>> = {
+export const pieceDirections: Record<laserPieces, directions[]> = {
   [ROOK]: rookMoves,
   [BISHOP]: bishopMoves,
   [QUEEN]: [...rookMoves, ...bishopMoves],
 };
+
+export function getXrayAttackers(game: Chess, square: Square, color: Color): Square[] {
+  const coor = notationToCoors(square);
+  const xrayAttackers: Square[] = [];
+  const opp = getOpp(color);
+  for (const direction of allDirections) {
+    let striked = false; // Can only strike opponent one time
+    const delta = getDelta(direction);
+
+    const crr = {
+      x: coor.x + delta.x,
+      y: coor.y + delta.y,
+    };
+    while (crr.x <= 7 && crr.x >= 0 && crr.y >= 0 && crr.y <= 7) {
+      const crrNotation = coorsToNotation(crr);
+      crr.x += delta.x;
+      crr.y += delta.y;
+      const p = game.get(crrNotation);
+      if (!p) continue;
+      const piece = p.type as laserPieces;
+      if (!allLaserPieces.includes(piece)) break; // Must be laser piece pawn not handled currently
+      if (!pieceDirections[piece].includes(direction)) break;
+      if (p.color === opp) {
+        if (striked) break;
+        striked = true; //  Can't strike opponent twice
+      } else {
+        xrayAttackers.push(crrNotation);
+      }
+    }
+  }
+  return xrayAttackers;
+}
+
+function getAllAttackers(game: Chess, square: Square, color: Color): Square[] {
+  const directAttackers = game.attackers(square, color);
+  const xrayAttackers = getXrayAttackers(game, square, color);
+  return [...directAttackers, ...xrayAttackers];
+}
+
+function getDelta(direction: directions) {
+  return {
+    y: direction.includes("up") ? 1 : direction.includes("down") ? -1 : 0,
+    x: direction.includes("right") ? 1 : direction.includes("left") ? -1 : 0,
+  };
+}
 
 export interface PieceAndSquare extends Piece {
   square: Square;
@@ -81,10 +137,7 @@ export function seeBehindPiece(
 ): PieceAndSquare | undefined {
   const fromCoor = notationToCoors(from);
 
-  const delta: coors = {
-    y: direction.includes("up") ? 1 : direction.includes("down") ? -1 : 0,
-    x: direction.includes("right") ? 1 : direction.includes("left") ? -1 : 0,
-  };
+  const delta = getDelta(direction);
 
   // this case will not happen just to be extra safe to avoid infinite loop
   if (delta.x === 0 && delta.y === 0) return;
@@ -124,11 +177,7 @@ export function getDirection(from: Square, to: Square): directions | undefined {
 
 export function isEmpty(game: Chess, from: Square, to: Square, direction: directions): boolean {
   const fromCoor = notationToCoors(from);
-
-  const delta: coors = {
-    y: direction.includes("up") ? 1 : direction.includes("down") ? -1 : 0,
-    x: direction.includes("right") ? 1 : direction.includes("left") ? -1 : 0,
-  };
+  const delta = getDelta(direction);
 
   // this case will not happen just to be extra safe to avoid infinite loop
   if (delta.x === 0 && delta.y === 0) return false;
@@ -158,9 +207,8 @@ export function isPinned(fen: string, square: Square): isPinnedReturn | undefine
   const piece = game.get(square);
   if (!piece) return;
   const opp = getOpp(piece.color);
-  const piecesThatCanPin: PieceSymbol[] = [QUEEN, BISHOP, ROOK];
 
-  for (const pieceSymbol of piecesThatCanPin) {
+  for (const pieceSymbol of allLaserPieces) {
     const oppPieces = game.findPiece({ type: pieceSymbol, color: opp });
     if (!oppPieces) continue;
     for (const oppPiece of oppPieces) {
@@ -199,8 +247,8 @@ export function isPieceHanging(fen: string, square: Square): boolean {
   const piece = game.get(square);
   if (!piece) return false;
   const opp = getOpp(piece.color);
-  const defenders = game.attackers(square, piece.color);
-  const attackers = game.attackers(square, opp);
+  const defenders = getAllAttackers(game, square, piece.color);
+  const attackers = getAllAttackers(game, square, opp);
   let attackerCount = 0;
   let defenderCount = 0;
   // attacker

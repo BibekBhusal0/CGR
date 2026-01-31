@@ -11,7 +11,7 @@ describe("X-ray Attacks from Real Games", () => {
       "e7",
       "w"
     );
-    expect(attackers).toBe(["h4"]);
+    expect(attackers).toEqual(["h4"]);
   });
   test("Rook Attacking through Rook", () => {
     const attackers = getXrayAttackers(
@@ -21,7 +21,7 @@ describe("X-ray Attacks from Real Games", () => {
       "f1",
       "b"
     );
-    expect(attackers).toBe(["f8"]);
+    expect(attackers).toEqual(["f8"]);
   });
   test("Rook Attacking through Rook, 2", () => {
     const attackers = getXrayAttackers(
@@ -31,7 +31,7 @@ describe("X-ray Attacks from Real Games", () => {
       "d1",
       "b"
     );
-    expect(attackers).toBe(["d8"]);
+    expect(attackers).toEqual(["d8"]);
   });
   test("Rook Attacking through Rook, 3", () => {
     const attackers = getXrayAttackers(
@@ -41,7 +41,7 @@ describe("X-ray Attacks from Real Games", () => {
       "c1",
       "b"
     );
-    expect(attackers).toBe(["e1"]);
+    expect(attackers).toEqual(["e1"]);
   });
   test("Bishop attacked by Queen through Opponent's Queen", () => {
     const attackers = getXrayAttackers(
@@ -51,7 +51,7 @@ describe("X-ray Attacks from Real Games", () => {
       "e3",
       "b"
     );
-    expect(attackers).toBe(["h3"]);
+    expect(attackers).toEqual(["h3"]);
   });
 });
 
@@ -64,7 +64,7 @@ describe("Custom position (X-ray)", () => {
       "h1",
       "b"
     );
-    expect(attackers).toBe(["c6", "b7", "a8"]);
+    expect(attackers).toEqual(["c6", "b7", "a8"]);
   });
   test("Many rooks attacking through queen", () => {
     const attackers = getXrayAttackers(
@@ -74,7 +74,7 @@ describe("Custom position (X-ray)", () => {
       "d1",
       "b"
     );
-    expect(attackers).toBe(["d6", "d7", "d8"]);
+    expect(attackers).toEqual(["d6", "d7", "d8"]);
   });
   test("Many rooks attacking through opponent's rook", () => {
     const attackers = getXrayAttackers(
@@ -84,7 +84,7 @@ describe("Custom position (X-ray)", () => {
       "d1",
       "b"
     );
-    expect(attackers).toBe(["d5", "d6", "d7", "d8"]);
+    expect(attackers).toEqual(["d5", "d6", "d7", "d8"]);
   });
   test("Rooks attacking through opponent's rook (2 Opponent's rook in between)", () => {
     const attackers = getXrayAttackers(
@@ -94,7 +94,7 @@ describe("Custom position (X-ray)", () => {
       "d1",
       "b"
     );
-    expect(attackers).toBe([]);
+    expect(attackers).toEqual([]);
   });
 });
 
@@ -105,7 +105,7 @@ describe("Not Xray Attack", () => {
       "f5",
       "b"
     );
-    expect(attackers).toBe([]);
+    expect(attackers).toEqual([]);
   });
   test("Attacking through Opponent's Pawn", () => {
     const attackers = getXrayAttackers(
@@ -113,7 +113,7 @@ describe("Not Xray Attack", () => {
       "f7",
       "w"
     );
-    expect(attackers).toBe([]);
+    expect(attackers).toEqual([]);
   });
   test("Attacking through Own Pawn", () => {
     const attackers = getXrayAttackers(
@@ -121,6 +121,6 @@ describe("Not Xray Attack", () => {
       "f7",
       "w"
     );
-    expect(attackers).toBe([]);
+    expect(attackers).toEqual([]);
   });
 });
