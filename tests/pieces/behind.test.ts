@@ -71,7 +71,7 @@ describe("seeBehindPiece - PieceAndSquare Tests", () => {
   describe("up-right", () => {
     test("case 1: find immediate piece", () => {
       const game = new Chess("8/8/8/8/4K3/5p2/8/8 w - - 0 1", { skipValidation: true });
-       seeBehindPiece("e4", "up-right", game);
+      seeBehindPiece("e4", "up-right", game);
     });
     // Let's re-verify the squares for these diagonals
     test("case 1 (Fixed): find immediate", () => {
