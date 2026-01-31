@@ -201,9 +201,32 @@ export function isPieceHanging(fen: string, square: Square): boolean {
   const opp = getOpp(piece.color);
   const defenders = game.attackers(square, piece.color);
   const attackers = game.attackers(square, opp);
-  // If piece(not pawn) can be taken by pawn it's hanging
-  // Will calculate based on capture sequence (first taking with low value piece. and not taking with pinned piece.)
-  if (attackers.length > defenders.length) return true;
+  let attackerCount = 0;
+  let defenderCount = 0;
+  // attacker
+  for (const attacker_sq of attackers) {
+    const attacker_piece = game.get(attacker_sq)
+    if (!attacker_piece) continue
+    // Check if piece is pinned
+    const pinned = isPinned(game.fen(), attacker_sq)
+    // Somethimes it can take the attacking piece even though pinned.
+    if (pinned && pinned.by.square !== attacker_sq) continue
+    // If pawn can take piece it's hanging
+    if (attacker_piece.type === PAWN && piece.type !== PAWN) return true
+    attackerCount++;
+  }
+
+  for (const defender_sq of defenders) {
+    const defender_piece = game.get(defender_sq)
+    if (!defender_piece) continue
+    // Check if piece is pinned
+    const pinned = isPinned(game.fen(), defender_sq)
+    // Somethimes it can take the attacking piece even though pinned.
+    if (pinned && pinned.by.square !== defender_sq) continue
+    defenderCount++;
+  }
+
+  if (attackerCount > defenderCount) return true;
   return false;
 }
 
