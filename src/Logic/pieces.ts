@@ -203,7 +203,7 @@ export function isPieceHanging(fen: string, square: Square): boolean {
   const attackers = game.attackers(square, opp);
   // If piece(not pawn) can be taken by pawn it's hanging
   // Will calculate based on capture sequence (first taking with low value piece. and not taking with pinned piece.)
-  if (attackers.length < defenders.length) return true;
+  if (attackers.length > defenders.length) return true;
   return false;
 }
 
