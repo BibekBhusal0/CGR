@@ -2,7 +2,6 @@ import { expect, test, describe } from "bun:test";
 import { seeBehindPiece } from "../../src/Logic/pieces";
 import { Chess } from "chess.js";
 
-describe("seeBehindPiece - PieceAndSquare Tests", () => {
   describe("up", () => {
     test("case 1: find immediate piece", () => {
       const game = new Chess("8/4r3/4P3/8/8/8/8/8 w - - 0 1", { skipValidation: true });
@@ -126,4 +125,3 @@ describe("seeBehindPiece - PieceAndSquare Tests", () => {
       expect(result).toBeUndefined();
     });
   });
-});
