@@ -86,7 +86,7 @@ export function getXrayAttackers(game: Chess, square: Square, color: Color): Squ
   const xrayAttackers: Square[] = [];
   const opp = getOpp(color);
   for (const direction of allDirections) {
-    let striked = false; // Can only strike opponent one time
+    let striked = false; // Can only strike one time
     const delta = getDelta(direction);
 
     const crr = {
@@ -100,14 +100,13 @@ export function getXrayAttackers(game: Chess, square: Square, color: Color): Squ
       const p = game.get(crrNotation);
       if (!p) continue;
       const piece = p.type as laserPieces;
-      if (!allLaserPieces.includes(piece)) break; // Must be laser piece pawn not handled currently
+      if (!allLaserPieces.includes(piece)) break; // Must be laser piece ( pawn not handled currently )
       if (!pieceDirections[piece].includes(direction)) break;
-      if (p.color === opp) {
-        if (striked) break;
-        striked = true; //  Can't strike opponent twice
-      } else {
-        xrayAttackers.push(crrNotation);
-      }
+        if (striked){
+          if (p.color === opp) break
+          xrayAttackers.push(crrNotation);
+        }
+        striked = true; //  Can't strike twice
     }
   }
   return xrayAttackers;
