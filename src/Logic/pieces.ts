@@ -160,10 +160,10 @@ export function isPinned(fen: string, square: Square): isPinnedReturn | undefine
   const opp = getOpp(piece.color);
   const piecesThatCanPin: PieceSymbol[] = [QUEEN, BISHOP, ROOK];
 
-  for (let pieceSymbol of piecesThatCanPin) {
+  for (const pieceSymbol of piecesThatCanPin) {
     const oppPieces = game.findPiece({ type: pieceSymbol, color: opp });
     if (!oppPieces) continue;
-    for (let oppPiece of oppPieces) {
+    for (const oppPiece of oppPieces) {
       const direction = getDirection(oppPiece, square);
       if (!direction) continue;
       // Check if piece can move in that direction.
