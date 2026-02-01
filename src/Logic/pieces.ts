@@ -347,6 +347,37 @@ export function getMaterial(fen: string, color: Color) {
   return material;
 }
 
+export type allPinnedPiecesType = Partial<Record<Square, isPinnedReturn>>;
+export function getAllPinnedPieces(game: Chess): allPinnedPiecesType {
+  const piecesToCheck: PieceSymbol[] = [KNIGHT, ROOK, QUEEN, PAWN];
+  const allPinnedPieces: allPinnedPiecesType = {};
+  for (const pieceName of piecesToCheck) {
+    const allWhitePieces = game.findPiece({ type: pieceName, color: WHITE });
+    const allBlackPieces = game.findPiece({ type: pieceName, color: BLACK });
+    const allPiece = [...allWhitePieces, ...allBlackPieces];
+    for (const piece of allPiece) {
+      const p = isPinned(game.fen(), piece);
+      if (p) allPinnedPieces[piece] = p;
+    }
+  }
+  return allPinnedPieces;
+}
+
+export function getAllHangingPieces(game: Chess): Square[] {
+  const piecesToCheck: PieceSymbol[] = [KNIGHT, ROOK, QUEEN, PAWN];
+  const allPinnedPieces: Square[] = [];
+  for (const pieceName of piecesToCheck) {
+    const allWhitePieces = game.findPiece({ type: pieceName, color: WHITE });
+    const allBlackPieces = game.findPiece({ type: pieceName, color: BLACK });
+    const allPiece = [...allWhitePieces, ...allBlackPieces];
+    for (const sq of allPiece) {
+      const p = isPieceHanging(game.fen(), sq);
+      if (p) allPinnedPieces.push(sq);
+    }
+  }
+  return allPinnedPieces;
+}
+
 export const promotions = [undefined, "b", "n", "r", "q"];
 
 export function isMoveLegal(fen: string, move: string): boolean {

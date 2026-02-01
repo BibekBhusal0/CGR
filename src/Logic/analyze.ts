@@ -1,9 +1,10 @@
 import { useSettingsState } from "@/Logic/state/settings";
-import { Chess, Move } from "chess.js";
+import { Chess, Move, Square } from "chess.js";
 import { getOpeningName, openingDatabase } from "@/api/opening";
 import { MT } from "@/components/moveTypes/types";
 import { evaluationType, StockfishOutput } from "@/Logic/stockfish";
 import StockfishManager from "@/Logic/stockfish";
+import { allPinnedPiecesType, getAllHangingPieces, getAllPinnedPieces } from "@/Logic/pieces";
 
 export interface openingType {
   name: string;
@@ -31,6 +32,8 @@ export interface analysisType extends StockfishOutput {
   fenLines: string[];
   bestMoveComment?: string;
   moveComment?: string;
+  pinnedPieces?: allPinnedPiecesType;
+  hangingPieces?: Square[];
 }
 
 export function convertToSAN(SF: StockfishOutput, fen: string) {
@@ -111,7 +114,6 @@ export async function analyzeMove({
   let moveType: MT;
   let accuracy: number = 100;
   const chess = new Chess(fen);
-  const legalMoves = chess.moves();
   const isWhiteTurn = chess.turn() === "w";
 
   const crrEval = stockfishAnalysis.eval;
@@ -119,10 +121,12 @@ export async function analyzeMove({
   const effectiveEvalDiff = isWhiteTurn ? evalDifference : -evalDifference;
   const absEvaluation = stockfishAnalysis.eval.value * (isWhiteTurn ? 1 : -1);
   const absPrevEvaluation = prevEval.value * (isWhiteTurn ? -1 : 1);
+  const hangingPieces = getAllHangingPieces(chess);
+  const pinnedPieces = getAllPinnedPieces(chess);
 
   if (inBook) {
     moveType = "book";
-  } else if (legalMoves.length === 1) {
+  } else if (!SFanalysis.secondBest) {
     // only possible move
     moveType = "forcing";
   } else if (SFanalysis.bestMove.trim() === positionDetails.san.trim()) {
@@ -203,6 +207,8 @@ export async function analyzeMove({
     opening: lichessResponse,
     moveComment,
     bestMoveComment,
+    hangingPieces,
+    pinnedPieces,
   };
 }
 
