@@ -130,10 +130,49 @@ export function getXrayAttackers(game: Chess, square: Square, color: Color): Squ
   return xrayAttackers;
 }
 
-function getAllAttackers(game: Chess, square: Square, color: Color): Square[] {
+type attackerType = {
+  square: Square;
+  type: "direct" | "x-ray";
+  value: number;
+};
+
+function getAllAttackers(game: Chess, square: Square, color: Color): attackerType[] {
   const directAttackers = game.attackers(square, color);
   const xrayAttackers = getXrayAttackers(game, square, color);
-  return [...directAttackers, ...xrayAttackers];
+  const attackers: attackerType[] = [];
+  // Pinned piece can't attack
+  directAttackers.forEach((a) => {
+    const pinned = isPinned(game.fen(), a);
+    // Somethimes it can take the attacking piece even though pinned.
+    if (pinned && pinned.by.square !== square) {
+    } else {
+      const piece = game.get(a)?.type;
+      if (piece) {
+        const value = pieceValues[piece];
+        attackers.push({ square: a, type: "direct", value });
+      }
+    }
+  });
+
+  const opp = getOpp(color);
+  // X-ray attack through pinned piece don't count
+  xrayAttackers.forEach((a) => {
+    const inBetween = getPiecesBetween(game, a, square);
+    // Pinned pieces are not pushed into attackers array
+    // So if it is not if attacker arry its pinned.
+    const pinned = inBetween.every((b) => {
+      // We are not adding opponent's piece in attacker array but xray attack can be done through attackers piece as well
+      if (b.color === opp) return false;
+      return !attackers.some((c) => b.square === c.square);
+    });
+    const piece = game.get(a)?.type;
+    if (piece && !pinned) {
+      const value = pieceValues[piece];
+      attackers.push({ square: a, type: "x-ray", value });
+    }
+  });
+
+  return attackers;
 }
 
 function getDelta(direction: directions) {
@@ -192,26 +231,36 @@ export function getDirection(from: Square, to: Square): directions | undefined {
   return undefined;
 }
 
-export function isEmpty(game: Chess, from: Square, to: Square, direction: directions): boolean {
+export function isEmpty(game: Chess, from: Square, to: Square): boolean {
+  return getPiecesBetween(game, from, to).length === 0;
+}
+
+export function getPiecesBetween(game: Chess, from: Square, to: Square): PieceAndSquare[] {
   const fromCoor = notationToCoors(from);
-  const delta = getDelta(direction);
+  const toCoor = notationToCoors(to);
+  const delta = {
+    x: Math.sign(toCoor.x - fromCoor.x),
+    y: Math.sign(toCoor.y - fromCoor.y),
+  };
+  const inBetween: PieceAndSquare[] = [];
 
   // this case will not happen just to be extra safe to avoid infinite loop
-  if (delta.x === 0 && delta.y === 0) return false;
+  if (delta.x === 0 && delta.y === 0) return inBetween;
   const crr = {
     x: fromCoor.x + delta.x,
     y: fromCoor.y + delta.y,
   };
 
+  // to avoid infinite loop Just in case squares don't line up (not going outside board)
   while (crr.x <= 7 && crr.x >= 0 && crr.y >= 0 && crr.y <= 7) {
     const notation = coorsToNotation(crr);
-    if (notation === to) return true;
+    if (notation === to) break;
     const piece = game.get(notation);
-    if (piece) return false;
+    if (piece) inBetween.push({ ...piece, square: notation });
     crr.x += delta.x;
     crr.y += delta.y;
   }
-  return true;
+  return inBetween;
 }
 
 export function isPinned(fen: string, square: Square): isPinnedReturn | undefined {
@@ -234,7 +283,7 @@ export function isPinned(fen: string, square: Square): isPinnedReturn | undefine
       // Check if piece can move in that direction.
       if (!pieceDirections[pieceSymbol]?.includes(direction)) continue;
       // Path need to be clear for piece to be attacked
-      if (!isEmpty(game, oppPiece, square, direction)) continue;
+      if (!isEmpty(game, oppPiece, square)) continue;
       const behind = seeBehindPiece(square, direction, game);
       // It should be our piece and piece with higher value
       if (!behind) continue;
@@ -263,35 +312,21 @@ export function isPieceHanging(fen: string, square: Square): boolean {
   }
   const piece = game.get(square);
   if (!piece) return false;
+  const pieceValue = pieceValues[piece.type];
   const opp = getOpp(piece.color);
   const defenders = getAllAttackers(game, square, piece.color);
   const attackers = getAllAttackers(game, square, opp);
-  let attackerCount = 0;
-  let defenderCount = 0;
-  // attacker
-  for (const attacker_sq of attackers) {
-    const attacker_piece = game.get(attacker_sq);
-    if (!attacker_piece) continue;
-    // Check if piece is pinned
-    const pinned = isPinned(game.fen(), attacker_sq);
-    // Somethimes it can take the attacking piece even though pinned.
-    if (pinned && pinned.by.square !== attacker_sq) continue;
-    // If pawn can take piece it's hanging
-    if (attacker_piece.type === PAWN && piece.type !== PAWN) return true;
-    attackerCount++;
-  }
 
-  for (const defender_sq of defenders) {
-    const defender_piece = game.get(defender_sq);
-    if (!defender_piece) continue;
-    // Check if piece is pinned
-    const pinned = isPinned(game.fen(), defender_sq);
-    // Somethimes it can take the attacking piece even though pinned.
-    if (pinned && pinned.by.square !== defender_sq) continue;
-    defenderCount++;
-  }
+  // If being attacked directly by lower value piece it's hanging
+  if (attackers.some((a) => a.type === "direct" && a.value < pieceValue)) return true;
 
-  if (attackerCount > defenderCount) return true;
+  // If single direct defender is lower value than all attacker not hanging
+  const lowestValueAttacker = Math.min(
+    ...attackers.filter((a) => a.type === "direct").map((a) => a.value)
+  );
+  if (defenders.some((d) => d.type === "direct" && d.value < lowestValueAttacker)) return false;
+
+  if (attackers.length > defenders.length) return true;
   return false;
 }
 
