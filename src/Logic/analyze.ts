@@ -82,32 +82,29 @@ export async function analyzeMove({
   positionDetails,
   moveIndex,
 }: analyzePropsType): Promise<analysisType> {
-  //
   let lichessResponse: openingType | undefined;
   const fen = positionDetails[moveIndex === -1 ? "before" : "after"];
   let inBook = false;
   let opName, moveComment, bestMoveComment;
 
   const SFanalysis = convertToSAN(stockfishAnalysis, fen);
-  if (moveIndex) {
-    if (moveIndex < 20) {
-      opName = getOpeningName(fen);
-      inBook = opName !== undefined;
-      try {
-        const openingData = await openingDatabase(fen, "lichess");
-        const {
-          opening: { name },
-          black,
-          white,
-          draws,
-        } = openingData;
-        lichessResponse = { name, winRate: { black, draws, white } };
-      } catch (error) {
-        console.log(`Can't get opening data from lichess ${error}`);
-      }
-      if (!lichessResponse && opName) {
-        lichessResponse = { name: opName.name };
-      }
+  if (moveIndex && moveIndex < 20) {
+    opName = getOpeningName(fen);
+    inBook = opName !== undefined;
+    try {
+      const openingData = await openingDatabase(fen, "lichess");
+      const {
+        opening: { name },
+        black,
+        white,
+        draws,
+      } = openingData;
+      lichessResponse = { name, winRate: { black, draws, white } };
+    } catch (error) {
+      console.log(`Can't get opening data from lichess ${error}`);
+    }
+    if (!lichessResponse && opName) {
+      lichessResponse = { name: opName.name };
     }
   }
 
@@ -209,7 +206,7 @@ export async function analyzeMove({
   };
 }
 
-export async function analyzeGame(Game: Chess, setProgress: (progress: number) => void) {
+export async function analyzeGame(Game: Chess, setProgress?: (progress: number) => void) {
   const { depth } = useSettingsState.getState();
   const stockfish = new StockfishManager();
   const analyzePosition = async (
@@ -219,8 +216,6 @@ export async function analyzeGame(Game: Chess, setProgress: (progress: number) =
     move: Move
   ) => {
     const SFresult = await stockfish.analyzePosition(fen, depth);
-    // __AUTO_GENERATED_PRINT_VAR_START__
-    console.log("analyzeGame#analyzePosition SFresult:", SFresult); // __AUTO_GENERATED_PRINT_VAR_END__
     const analysis = await analyzeMove({
       stockfishAnalysis: SFresult,
       prevEval,
@@ -236,7 +231,7 @@ export async function analyzeGame(Game: Chess, setProgress: (progress: number) =
   const gameOver = CM || SM;
   let completed = 0;
   const analysisResult = [];
-  let prevEval = { type: "cp", value: 0 };
+  let prevEval: evaluationType = { type: "cp", value: 0 };
 
   const initialMove = await analyzePosition(history[0].before, prevEval, -1, history[0]);
   analysisResult.push(initialMove);
@@ -256,7 +251,9 @@ export async function analyzeGame(Game: Chess, setProgress: (progress: number) =
     }
 
     completed++;
-    setProgress(completed / history.length);
+    if (setProgress) {
+      setProgress(completed / history.length);
+    }
   }
   stockfish.terminate();
   return analysisResult;
