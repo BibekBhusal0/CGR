@@ -25,6 +25,11 @@ function coorsToNotation(coors: coors): Square {
   return ("abcdefgh".charAt(coors.x) + (coors.y + 1).toString()) as Square;
 }
 
+export function isLightSquare(square: Square) {
+  const coors = notationToCoors(square);
+  return (coors.x + coors.y) % 2 !== 0;
+}
+
 function getOpp(color: Color): Color {
   return color === WHITE ? BLACK : WHITE;
 }

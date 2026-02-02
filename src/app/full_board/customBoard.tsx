@@ -6,6 +6,7 @@ import { AllIcons } from "@/components/moveTypes/types";
 import { MoveIcon } from "@/components/moveTypes/MoveIcon";
 import { useGameState } from "@/Logic/state/game";
 import { cn } from "@heroui/theme";
+import { isLightSquare } from "@/Logic/pieces";
 
 interface PieceProps {
   isDragging: boolean;
@@ -139,7 +140,9 @@ function JustBoard() {
           "relative size-full"
         )}>
         {notationStyle === "in-square" && !children && (
-          <div className="absolute-center md:text-md text-xs text-white select-none md:font-bold">
+          <div
+            className="absolute-center md:text-md text-xs select-none md:font-bold"
+            style={{ color: isLightSquare(square as Square) ? dark : light }}>
             {square}
           </div>
         )}
@@ -170,6 +173,8 @@ function JustBoard() {
         //
         lightSquareStyle: { backgroundColor: light },
         darkSquareStyle: { backgroundColor: dark },
+        darkSquareNotationStyle: { color: light },
+        lightSquareNotationStyle: { color: dark },
       }}
     />
   );
