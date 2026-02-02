@@ -104,8 +104,8 @@ class StockfishManager {
   async analyzePosition(fen: string, depth: number): Promise<StockfishOutput> {
     this.blackToMove = fen.includes(" b ");
     return new Promise((resolve) => {
-      if (fen === DEFAULT_POSITION)
-        resolve({
+      if (fen === DEFAULT_POSITION) {
+        this.output = {
           bestMove: "e2e4",
           lines: [
             "e2e4",
@@ -144,12 +144,16 @@ class StockfishManager {
             ],
             eval: { type: "cp", value: 34 },
           },
-        });
-      this.resolveCallback = resolve;
-      this.output = { ...EmptyValue };
-      this.sendCommand(`position fen ${fen}`);
-      this.sendCommand("setoption name MultiPV value 2");
-      this.sendCommand(`go depth ${depth}`);
+        };
+
+        resolve(this.output);
+      } else {
+        this.resolveCallback = resolve;
+        this.output = { ...EmptyValue };
+        this.sendCommand(`position fen ${fen}`);
+        this.sendCommand("setoption name MultiPV value 2");
+        this.sendCommand(`go depth ${depth}`);
+      }
     });
   }
 }
