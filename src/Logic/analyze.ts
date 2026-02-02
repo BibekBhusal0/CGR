@@ -130,22 +130,66 @@ export async function analyzeMove({
   const crrEval = stockfishAnalysis.eval;
   const cappedEval = capEval(crrEval);
   const prevCappedEval = capEval(prevEval);
-  const evalDiff = cappedEval - prevCappedEval;
-  const hadAdvantage = isWhiteTurn ? evalDiff > 0 : evalDiff < 0;
-  if (inBook) moveType = "book";
-  else if (hadAdvantage) moveType = "best";
-  else moveType = "blunder";
 
+  // If best move had been found eval diff should be 0.
+  const evalDiff = cappedEval - prevCappedEval;
+  const gotAdvantage = isWhiteTurn ? evalDiff > 0 : evalDiff < 0;
   const color = positionDetails.color;
   const opp = getOpp(color);
   const opponentsHangingPieces = fen === DEFAULT_POSITION ? [] : getAllHangingPieces(chess, opp);
   const hangingPieces = fen === DEFAULT_POSITION ? [] : getAllHangingPieces(chess, color);
+  const prevHangingPieceOpps = prevAnalysis?.hangingPieces?.[opp];
+  const prevHangingPiece = prevAnalysis?.hangingPieces?.[color];
+  const allPinnedPieces = {};
+
+  // Theory
+  if (inBook) moveType = "book";
+  // Only possible move forcing.
+  if (!SFanalysis.secondBest) moveType = "forcing";
+  // If it's best move by engine, it's either `Best` or `Great` or `Brilliant`
+  if (SFanalysis.bestMove === positionDetails.san) {
+    const secondBestEval = SFanalysis.secondBest?.eval;
+    if (secondBestEval) {
+      const cappedSecondBestEval = capEval(secondBestEval);
+      // since this is second best move eval can't be higher,
+      // so we don't need to consider negitive value
+      const onlyWinning = Math.abs(cappedSecondBestEval - cappedEval) > 6;
+      if (onlyWinning) {
+        const isUnderPromosion =
+          positionDetails.isPromotion() && !SFanalysis.bestMove.endsWith("=Q");
+        const isSacrifice = hangingPieces.length > 0;
+        if (isSacrifice) moveType = "brilliant";
+        else if (isUnderPromosion) moveType = "brilliant";
+        // Great move should be only winning move or only not loosing move.
+        else moveType = "great";
+      } else moveType = "best";
+    } else moveType = "best";
+  }
+  // Even though it's not best move by engine if it is still getting advantage
+  // then it's `Good` or `Excellent`. (determined based on eval difference)
+  else if (gotAdvantage) {
+    if (evalDiff > 3) moveType = "excellent";
+    else moveType = "good";
+  } else {
+    const absDiff = Math.abs(evalDiff);
+    if (absDiff > 4) {
+      // If Check Mate it allowed it's blunder.
+      // If free piece is given it's blunder.
+
+      // If check mate is not found it's miss.
+      // If free piece is not taken it's miss.
+      moveType = "blunder";
+    }
+    // In other cases it's `inaccuracy` or `mistake` based on eval diff
+    else if (absDiff > 2) moveType = "mistake";
+    else moveType = "inaccuracy";
+  }
+
   // @ts-ignore both color are added shut up typescript
   const allHangingPieces: Record<Color, Square[]> = {
     [opp]: opponentsHangingPieces,
     [color]: hangingPieces,
   };
-  const allPinnedPieces = {};
 
   if (accuracy === 100) {
     accuracy = moveAcc[moveType];
