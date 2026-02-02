@@ -114,7 +114,7 @@ function JustBoard() {
       }
       if (highlightHangingPieces) {
         const hp = analysis[moveIndex + 1]?.hangingPieces;
-        if (hp) hangingPieces.push(...hp);
+        if (hp) hangingPieces.push(...hp.b, ...hp.w);
       }
       if (bestMove) {
         const chess = new Chess(history[moveIndex].before);
