@@ -37,17 +37,20 @@ export interface analysisType extends StockfishOutput {
 }
 
 export function convertToSAN(SF: StockfishOutput, fen: string) {
-  let { bestMove, lines } = SF;
+  let { bestMove } = SF;
   const chess = new Chess(fen);
   const fenLines: string[] = [];
+  let lines = [];
 
   try {
-    const moveOutput = chess.move(reformatMove(SF.bestMove));
+    const bestMoveAtFirst = SF.lines[0] === bestMove;
+    const moveOutput = chess.move(SF.bestMove);
     bestMove = moveOutput.san;
 
-    lines = [];
-    lines.push(bestMove);
-    fenLines.push(moveOutput.after);
+    if (!bestMoveAtFirst) {
+      lines.push(bestMove);
+      fenLines.push(moveOutput.after);
+    } else chess.undo();
 
     SF.lines.forEach((move) => {
       const moveOutput = chess.move(reformatMove(move));
