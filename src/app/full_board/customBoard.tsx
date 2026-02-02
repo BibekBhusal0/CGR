@@ -101,7 +101,7 @@ function JustBoard() {
       if (highlightPins) {
         const hp = analysis[moveIndex + 1]?.pinnedPieces;
         if (hp) {
-          for (let sq in hp) {
+          for (const sq in hp) {
             const p = hp[sq as Square];
             if (p)
               pins.push({

@@ -40,7 +40,7 @@ export function convertToSAN(SF: StockfishOutput, fen: string) {
   let { bestMove } = SF;
   const chess = new Chess(fen);
   const fenLines: string[] = [];
-  let lines = [];
+  const lines = [];
 
   try {
     const bestMoveAtFirst = SF.lines[0] === bestMove;
