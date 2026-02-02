@@ -1,3 +1,4 @@
+import { DEFAULT_POSITION } from "chess.js";
 import { availableStockfish, useSettingsState } from "./state/settings";
 import { isMultiThreadSupported } from "@/utils/sf";
 
@@ -103,6 +104,47 @@ class StockfishManager {
   async analyzePosition(fen: string, depth: number): Promise<StockfishOutput> {
     this.blackToMove = fen.includes(" b ");
     return new Promise((resolve) => {
+      if (fen === DEFAULT_POSITION)
+        resolve({
+          bestMove: "e2e4",
+          lines: [
+            "e2e4",
+            "e7e6",
+            "d2d4",
+            "d7d5",
+            "b1d2",
+            "c7c5",
+            "g1f3",
+            "a7a6",
+            "e4d5",
+            "e6d5",
+            "c2c4",
+            "c5d4",
+            "c4d5",
+            "d8d5",
+          ],
+          eval: { type: "cp", value: 34 },
+          secondBest: {
+            lines: [
+              "d2d4",
+              "d7d5",
+              "c2c4",
+              "e7e6",
+              "g1f3",
+              "g8f6",
+              "g2g3",
+              "c7c5",
+              "c4d5",
+              "f6d5",
+              "f1g2",
+              "f8e7",
+              "b1c3",
+              "e8g8",
+              "e1g1",
+            ],
+            eval: { type: "cp", value: 34 },
+          },
+        });
       this.resolveCallback = resolve;
       this.output = { ...EmptyValue };
       this.sendCommand(`position fen ${fen}`);
