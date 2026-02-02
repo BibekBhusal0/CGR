@@ -1,10 +1,10 @@
 import { useSettingsState } from "@/Logic/state/settings";
-import { Chess, Move, Square, DEFAULT_POSITION } from "chess.js";
+import { Chess, Move, Square, DEFAULT_POSITION, Color } from "chess.js";
 import { getOpeningName, openingDatabase } from "@/api/opening";
 import { MT } from "@/components/moveTypes/types";
 import { evaluationType, StockfishOutput } from "@/Logic/stockfish";
 import StockfishManager from "@/Logic/stockfish";
-import { allPinnedPiecesType, getAllHangingPieces, getAllPinnedPieces } from "@/Logic/pieces";
+import { allPinnedPiecesType, getAllHangingPieces, getOpp } from "@/Logic/pieces";
 
 export interface openingType {
   name: string;
@@ -33,7 +33,14 @@ export interface analysisType extends StockfishOutput {
   bestMoveComment?: string;
   moveComment?: string;
   pinnedPieces?: allPinnedPiecesType;
-  hangingPieces?: Square[];
+  hangingPieces?: Record<Color, Square[]>;
+}
+
+function capEval(e: evaluationType, cap: number = 50): number {
+  if (e.type === "mate") return e.value > 0 ? cap : -cap;
+  if (e.value > cap) return cap;
+  if (e.value < -cap) return -cap;
+  return e.value;
 }
 
 export function convertToSAN(SF: StockfishOutput, fen: string) {
@@ -77,14 +84,14 @@ function reformatMove(move: string) {
 
 export interface analyzePropsType {
   stockfishAnalysis: StockfishOutput;
-  prevEval: evaluationType;
   positionDetails: Move;
+  prevAnalysis?: analysisType;
   moveIndex?: number;
 }
 
 export async function analyzeMove({
   stockfishAnalysis,
-  prevEval,
+  prevAnalysis,
   positionDetails,
   moveIndex,
 }: analyzePropsType): Promise<analysisType> {
@@ -119,85 +126,26 @@ export async function analyzeMove({
   const chess = new Chess(fen);
   const isWhiteTurn = chess.turn() === "w";
 
+  const prevEval = prevAnalysis?.eval || { type: "cp", value: 0 };
   const crrEval = stockfishAnalysis.eval;
-  const evalDifference = crrEval.value - prevEval.value;
-  const effectiveEvalDiff = isWhiteTurn ? evalDifference : -evalDifference;
-  const absEvaluation = stockfishAnalysis.eval.value * (isWhiteTurn ? 1 : -1);
-  const absPrevEvaluation = prevEval.value * (isWhiteTurn ? -1 : 1);
-  const hangingPieces = fen === DEFAULT_POSITION ? [] : getAllHangingPieces(chess);
-  const pinnedPieces = fen === DEFAULT_POSITION ? {} : getAllPinnedPieces(chess);
+  const cappedEval = capEval(crrEval);
+  const prevCappedEval = capEval(prevEval);
+  const evalDiff = cappedEval - prevCappedEval;
+  const hadAdvantage = isWhiteTurn ? evalDiff > 0 : evalDiff < 0;
+  if (inBook) moveType = "book";
+  else if (hadAdvantage) moveType = "best";
+  else moveType = "blunder";
 
-  if (inBook) {
-    moveType = "book";
-  } else if (!SFanalysis.secondBest) {
-    // only possible move
-    moveType = "forcing";
-  } else if (SFanalysis.bestMove.trim() === positionDetails.san.trim()) {
-    // best move according to engine
-    moveType = "best";
-  } else if (prevEval.type === "cp" && crrEval.type === "mate") {
-    //  mate in evaluation when previous evaluation don't have mate
-    if (absEvaluation > 0) {
-      //  opponent getting mated
-      moveType = "best";
-    } else if (absEvaluation >= -3) {
-      moveType = "blunder";
-    } else if (absEvaluation >= -7) {
-      moveType = "mistake";
-    } else moveType = "inaccuracy";
-  } else if (prevEval.type === "mate" && crrEval.type === "mate") {
-    if (absPrevEvaluation > 0) {
-      if (absEvaluation <= -4) {
-        moveType = "mistake";
-      } else if (absEvaluation < 0) {
-        moveType = "blunder";
-      } else if (absEvaluation < absPrevEvaluation) {
-        moveType = "best";
-      } else if (absEvaluation <= absPrevEvaluation + 2) {
-        moveType = "excellent";
-      } else {
-        moveType = "good";
-      }
-    } else {
-      if (absEvaluation === absPrevEvaluation) {
-        moveType = "best";
-      } else {
-        moveType = "good";
-      }
-    }
-  } else if (prevEval.type === "cp" && crrEval.type === "cp") {
-    if (effectiveEvalDiff > 0) {
-      accuracy = Math.min(100, 100 - Math.abs(effectiveEvalDiff) / 10);
-    } else {
-      accuracy = Math.max(0, 100 - Math.abs(effectiveEvalDiff) / 5);
-    }
-    if (accuracy > 95) {
-      moveType = "best";
-    } else if (accuracy > 85) {
-      moveType = "excellent";
-    } else if (accuracy > 70) {
-      moveType = "good";
-    } else if (accuracy > 50) {
-      moveType = "inaccuracy";
-    } else if (accuracy > 30) {
-      moveType = "mistake";
-    } else {
-      moveType = "blunder";
-    }
-  } else if (prevEval.type === "mate" && crrEval.type === "cp") {
-    // mate in previous move no mate now (escaped the mate)
-    if (absPrevEvaluation < 0 && absEvaluation < 0) {
-      moveType = "best";
-    } else if (absEvaluation >= 400) {
-      moveType = "good";
-    } else if (absEvaluation >= 150) {
-      moveType = "inaccuracy";
-    } else if (absEvaluation >= -100) {
-      moveType = "mistake";
-    } else {
-      moveType = "blunder";
-    }
-  } else moveType = "great";
+  const color = positionDetails.color;
+  const opp = getOpp(color);
+  const opponentsHangingPieces = fen === DEFAULT_POSITION ? [] : getAllHangingPieces(chess, opp);
+  const hangingPieces = fen === DEFAULT_POSITION ? [] : getAllHangingPieces(chess, color);
+  // @ts-ignore both color are added shut up typescript
+  const allHangingPieces: Record<Color, Square[]> = {
+    [opp]: opponentsHangingPieces,
+    [color]: hangingPieces,
+  };
+  const allPinnedPieces = {};
 
   if (accuracy === 100) {
     accuracy = moveAcc[moveType];
@@ -210,8 +158,8 @@ export async function analyzeMove({
     opening: lichessResponse,
     moveComment,
     bestMoveComment,
-    hangingPieces,
-    pinnedPieces,
+    hangingPieces: allHangingPieces,
+    pinnedPieces: allPinnedPieces,
   };
 }
 
@@ -220,14 +168,14 @@ export async function analyzeGame(Game: Chess, setProgress?: (progress: number) 
   const stockfish = new StockfishManager();
   const analyzePosition = async (
     fen: string,
-    prevEval: evaluationType,
     moveIndex: number,
-    move: Move
+    move: Move,
+    prevAnalysis?: analysisType
   ) => {
     const SFresult = await stockfish.analyzePosition(fen, depth);
     const analysis = await analyzeMove({
       stockfishAnalysis: SFresult,
-      prevEval,
+      prevAnalysis,
       positionDetails: move,
       moveIndex,
     });
@@ -237,18 +185,18 @@ export async function analyzeGame(Game: Chess, setProgress?: (progress: number) 
   const history = Game.history({ verbose: true });
   let completed = 0;
   const analysisResult = [];
-  let prevEval: evaluationType = { type: "cp", value: 0 };
+  let prevAnalysis: analysisType | undefined = undefined;
 
-  const initialMove = await analyzePosition(history[0].before, prevEval, -1, history[0]);
+  const initialMove = await analyzePosition(history[0].before, -1, history[0], prevAnalysis);
   analysisResult.push(initialMove);
-  prevEval = initialMove.eval;
+  prevAnalysis = initialMove;
 
   for (let i = 0; i < history.length; i++) {
     const fen = history[i].after;
 
-    const a = await analyzePosition(fen, prevEval, i, history[i]);
+    const a = await analyzePosition(fen, i, history[i], prevAnalysis);
     analysisResult.push(a);
-    prevEval = a.eval;
+    prevAnalysis = a;
 
     completed++;
     if (setProgress) {

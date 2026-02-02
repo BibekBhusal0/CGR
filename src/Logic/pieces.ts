@@ -30,7 +30,7 @@ export function isLightSquare(square: Square) {
   return (coors.x + coors.y) % 2 !== 0;
 }
 
-function getOpp(color: Color): Color {
+export function getOpp(color: Color): Color {
   return color === WHITE ? BLACK : WHITE;
 }
 
@@ -368,14 +368,12 @@ export function getAllPinnedPieces(game: Chess): allPinnedPiecesType {
   return allPinnedPieces;
 }
 
-export function getAllHangingPieces(game: Chess): Square[] {
+export function getAllHangingPieces(game: Chess, color: Color): Square[] {
   const piecesToCheck: PieceSymbol[] = [KNIGHT, ROOK, QUEEN, PAWN];
   const allPinnedPieces: Square[] = [];
   for (const pieceName of piecesToCheck) {
-    const allWhitePieces = game.findPiece({ type: pieceName, color: WHITE });
-    const allBlackPieces = game.findPiece({ type: pieceName, color: BLACK });
-    const allPiece = [...allWhitePieces, ...allBlackPieces];
-    for (const sq of allPiece) {
+    const allPieces = game.findPiece({ type: pieceName, color });
+    for (const sq of allPieces) {
       const p = isPieceHanging(game.fen(), sq);
       if (p) allPinnedPieces.push(sq);
     }
