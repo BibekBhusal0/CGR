@@ -235,9 +235,6 @@ export async function analyzeGame(Game: Chess, setProgress?: (progress: number) 
   };
 
   const history = Game.history({ verbose: true });
-  const CM = Game.isCheckmate();
-  const SM = Game.isStalemate();
-  const gameOver = CM || SM;
   let completed = 0;
   const analysisResult = [];
   let prevEval: evaluationType = { type: "cp", value: 0 };
@@ -249,15 +246,9 @@ export async function analyzeGame(Game: Chess, setProgress?: (progress: number) 
   for (let i = 0; i < history.length; i++) {
     const fen = history[i].after;
 
-    if (gameOver && i === history.length - 1) {
-      const turn = Game.turn();
-      if (SM) prevEval = { type: "cp", value: 0 };
-      else prevEval = { type: "mate", value: turn === "w" ? -1 : 1 };
-    } else {
-      const a = await analyzePosition(fen, prevEval, i, history[i]);
-      analysisResult.push(a);
-      prevEval = a.eval;
-    }
+    const a = await analyzePosition(fen, prevEval, i, history[i]);
+    analysisResult.push(a);
+    prevEval = a.eval;
 
     completed++;
     if (setProgress) {

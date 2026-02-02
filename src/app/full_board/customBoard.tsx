@@ -77,7 +77,7 @@ function JustBoard() {
   if (stage === "third" && moveIndex !== -1 && boardStage === "normal") {
     if (Game !== undefined && analysis !== undefined) {
       const history = Game.history({ verbose: true });
-      const type = analysis[moveIndex].moveType;
+      const type = analysis[moveIndex + 1].moveType;
       const sq = history[moveIndex].to;
       reviews[sq] = type;
 
