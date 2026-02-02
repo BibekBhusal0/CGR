@@ -11,6 +11,7 @@ export type booleanSettings =
   | "devMode"
   | "highlightHangingPieces"
   | "highlightPins"
+  | "analyzePerMove"
   | "sidebarCollapsed";
 const m = ["chess.com", "pgn"] as const;
 const n = ["none", "in-board", "in-square"] as const;
@@ -30,6 +31,7 @@ export interface settingType {
   devMode: boolean;
   animation: boolean;
   sidebarCollapsed: boolean;
+  analyzePerMove: boolean;
   btheme: boardThemes;
   inputMode: inputModes;
   openAccordions: string[];
@@ -59,6 +61,7 @@ const initialState: settingType = {
   bestMove: true,
   animation: true,
   sidebarCollapsed: false,
+  analyzePerMove: false,
   highlightHangingPieces: false,
   highlightPins: false,
   btheme: "default",

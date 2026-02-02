@@ -1,5 +1,8 @@
 import { Arrow, Chessboard, PieceRenderObject, SquareHandlerArgs } from "react-chessboard";
-import { FC } from "react";
+import {
+  FC,
+  // useState,
+} from "react";
 import { Chess, Square } from "chess.js";
 import { boardThemes, useSettingsState } from "@/Logic/state/settings";
 import { AllIcons } from "@/components/moveTypes/types";
@@ -48,17 +51,59 @@ const customPieces = (theme: string): { [key: string]: FC<PieceProps> } => {
   return pieces;
 };
 
-function JustBoard() {
+function Board({
+  arrows,
+  squareRenderer,
+}: {
+  arrows?: Arrow[];
+  squareRenderer?: ({
+    piece,
+    square,
+    children,
+  }: SquareHandlerArgs & {
+    children?: React.ReactNode;
+  }) => React.JSX.Element;
+}) {
   const allowMoves = useGameState((state) => state.allowMoves);
   const fen = useGameState((state) => state.fen);
   const bottom = useGameState((state) => state.bottom);
+  const animation = useSettingsState((state) => state.animation);
+  const btheme = useSettingsState((state) => state.btheme);
+  const notationStyle = useSettingsState((state) => state.notationStyle);
+
+  const { light, dark } = colors[btheme];
+
+  return (
+    <Chessboard
+      options={{
+        id: "board",
+        position: fen,
+        //
+        allowDragging: allowMoves,
+        boardOrientation: bottom,
+        animationDurationInMs: animation ? 300 : 0,
+        showNotation: notationStyle === "in-board",
+        //
+        pieces: customPieces(btheme) as PieceRenderObject,
+        arrows: arrows,
+        squareRenderer: squareRenderer,
+        //
+        lightSquareStyle: { backgroundColor: light },
+        darkSquareStyle: { backgroundColor: dark },
+        darkSquareNotationStyle: { color: light },
+        lightSquareNotationStyle: { color: dark },
+      }}
+    />
+  );
+}
+
+function MainBoard() {
   const Game = useGameState((state) => state.Game);
   const moveIndex = useGameState((state) => state.moveIndex);
   const termination = useGameState((state) => state.termination);
   const analysis = useGameState((state) => state.analysis);
   const stage = useGameState((state) => state.stage);
   const boardStage = useGameState((state) => state.boardStage);
-  const animation = useSettingsState((state) => state.animation);
   const highlightPins = useSettingsState((state) => state.highlightPins);
   const highlightHangingPieces = useSettingsState((state) => state.highlightHangingPieces);
   const bestMove = useSettingsState((state) => state.bestMove);
@@ -156,28 +201,19 @@ function JustBoard() {
     );
   };
 
-  return (
-    <Chessboard
-      options={{
-        id: "board",
-        position: fen,
-        //
-        allowDragging: allowMoves,
-        boardOrientation: bottom,
-        animationDurationInMs: animation ? 300 : 0,
-        showNotation: notationStyle === "in-board",
-        //
-        arrows: [...arrows, ...pins],
-        pieces: customPieces(btheme) as PieceRenderObject,
-        squareRenderer: squareRenderer,
-        //
-        lightSquareStyle: { backgroundColor: light },
-        darkSquareStyle: { backgroundColor: dark },
-        darkSquareNotationStyle: { color: light },
-        lightSquareNotationStyle: { color: dark },
-      }}
-    />
-  );
+  return <Board arrows={[...arrows, ...pins]} {...{ squareRenderer }} />;
 }
 
+function PerMoveAnalysisBoard() {
+  // const [analysis, setAnalysis] = useState([])
+  const arrows: Arrow[] = [];
+  const pins: Arrow[] = [];
+
+  return <Board arrows={[...arrows, ...pins]} />;
+}
+
+function JustBoard() {
+  const analyzePerMove = useSettingsState((state) => state.analyzePerMove);
+  return <>{analyzePerMove ? <PerMoveAnalysisBoard /> : <MainBoard />}</>;
+}
 export default JustBoard;

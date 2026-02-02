@@ -105,11 +105,11 @@ export const useGameState = create<GameState>((set, get) => ({
 
   setIndex: (index) => {
     const state = get();
-    if (!state.Game || !state.analysis) return;
+    if (!state.Game) return;
     const full_history = state.Game.history({ verbose: true });
     if (index < -1 || index >= full_history.length) return;
     set(() => {
-      if (!state.Game || !state.analysis) return {};
+      if (!state.Game) return {};
       const moveIndex = index;
       let fen;
       let evaluation: evaluationType = { value: 0, type: "cp" };
@@ -119,7 +119,7 @@ export const useGameState = create<GameState>((set, get) => ({
         return {};
       } else {
         try {
-          evaluation = state.analysis[moveIndex].eval;
+          if (state.analysis) evaluation = state.analysis[moveIndex].eval;
         } catch (error) {
           console.log(`can't get evaluation of position `);
           console.error(error);

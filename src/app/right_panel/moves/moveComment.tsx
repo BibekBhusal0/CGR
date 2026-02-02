@@ -18,9 +18,7 @@ export const MoveComment: FC = () => {
   const setIndex2 = useGameState((state) => state.setIndex2);
   const bestMove = useSettingsState((state) => state.bestMove);
 
-  if (!analysis || !Game) {
-    throw new Error("game not available or analysis not available");
-  }
+  if (!analysis || !Game) return null;
   let crrMove, crrPositionAnalysis, prevPositionAnalysis;
 
   const getClickHandler = (index: number): (() => boolean) => {

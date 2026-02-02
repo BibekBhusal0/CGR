@@ -10,7 +10,7 @@ import { useState } from "react";
 import { Button } from "@heroui/button";
 import { Modal, ModalContent, ModalHeader, ModalBody } from "@heroui/modal";
 import { cn } from "@heroui/theme";
-import { ToggleSwitch } from "@/components/switch";
+import SwitchGroup from "@/components/switchGroup";
 
 const Items = {
   "General Settings": { content: <GeneralSettings />, icon: icons.left_panel.settings },
@@ -26,8 +26,13 @@ const devItems = {
 function DevSettings() {
   return (
     <>
-      <ToggleSwitch item="highlightPins" children="Highlight Pins" />
-      <ToggleSwitch item="highlightHangingPieces" children="Highlight Hanging Pieces" />
+      <SwitchGroup
+        switches={[
+          { item: "highlightPins", children: "Highlight Pins" },
+          { item: "highlightHangingPieces", children: "Highlight Hanging Pieces" },
+          { item: "analyzePerMove", children: "Per Move Analysis" },
+        ]}
+      />
     </>
   );
 }
