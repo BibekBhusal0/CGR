@@ -1,5 +1,5 @@
 import { useSettingsState } from "@/Logic/state/settings";
-import { Chess, Move, Square } from "chess.js";
+import { Chess, Move, Square, DEFAULT_POSITION } from "chess.js";
 import { getOpeningName, openingDatabase } from "@/api/opening";
 import { MT } from "@/components/moveTypes/types";
 import { evaluationType, StockfishOutput } from "@/Logic/stockfish";
@@ -121,8 +121,8 @@ export async function analyzeMove({
   const effectiveEvalDiff = isWhiteTurn ? evalDifference : -evalDifference;
   const absEvaluation = stockfishAnalysis.eval.value * (isWhiteTurn ? 1 : -1);
   const absPrevEvaluation = prevEval.value * (isWhiteTurn ? -1 : 1);
-  const hangingPieces = getAllHangingPieces(chess);
-  const pinnedPieces = getAllPinnedPieces(chess);
+  const hangingPieces = fen === DEFAULT_POSITION ? [] : getAllHangingPieces(chess);
+  const pinnedPieces = fen === DEFAULT_POSITION ? {} : getAllPinnedPieces(chess);
 
   if (inBook) {
     moveType = "book";

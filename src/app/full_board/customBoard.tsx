@@ -58,14 +58,18 @@ function JustBoard() {
   const stage = useGameState((state) => state.stage);
   const boardStage = useGameState((state) => state.boardStage);
   const animation = useSettingsState((state) => state.animation);
+  const highlightPins = useSettingsState((state) => state.highlightPins);
+  const highlightHangingPieces = useSettingsState((state) => state.highlightHangingPieces);
   const bestMove = useSettingsState((state) => state.bestMove);
   const btheme = useSettingsState((state) => state.btheme);
   const highlight = useSettingsState((state) => state.highlight);
   const notationStyle = useSettingsState((state) => state.notationStyle);
+  const hangingPieces: Square[] = [];
 
   const { light, dark } = colors[btheme];
 
   const arrows: Arrow[] = [];
+  const pins: Arrow[] = [];
   const highlights: string[] = [];
   const reviews: Review = {};
 
@@ -93,6 +97,24 @@ function JustBoard() {
         const { from, to } = history[moveIndex];
         highlights.push(from, to);
       }
+      if (highlightPins) {
+        const hp = analysis[moveIndex + 1]?.pinnedPieces;
+        if (hp) {
+          for (let sq in hp) {
+            const p = hp[sq as Square];
+            if (p)
+              pins.push({
+                startSquare: p.by.square,
+                endSquare: p.targetPiece.square,
+                color: "red",
+              });
+          }
+        }
+      }
+      if (highlightHangingPieces) {
+        const hp = analysis[moveIndex + 1]?.hangingPieces;
+        if (hp) hangingPieces.push(...hp);
+      }
       if (bestMove) {
         const chess = new Chess(history[moveIndex].before);
         const moveOuptut = chess.move(analysis[moveIndex].bestMove);
@@ -107,9 +129,15 @@ function JustBoard() {
     square,
   }: SquareHandlerArgs & { children?: React.ReactNode }) => {
     const highlightThis = highlights.includes(square);
+    const isHanging = hangingPieces.includes(square as Square);
     const review = reviews[square as Square];
     return (
-      <div className={cn(highlightThis && "bg-[rgba(255,0,0,0.2)]", "relative size-full")}>
+      <div
+        className={cn(
+          highlightThis && "bg-[rgba(255,0,0,0.1)]",
+          isHanging && "bg-[rgba(0,255,0,0.5)]",
+          "relative size-full"
+        )}>
         {notationStyle === "in-square" && !children && (
           <div className="absolute-center md:text-md text-xs text-white select-none md:font-bold">
             {square}
@@ -136,7 +164,7 @@ function JustBoard() {
         animationDurationInMs: animation ? 300 : 0,
         showNotation: notationStyle === "in-board",
         //
-        arrows: arrows,
+        arrows: [...arrows, ...pins],
         pieces: customPieces(btheme) as PieceRenderObject,
         squareRenderer: squareRenderer,
         //
