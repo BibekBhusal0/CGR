@@ -138,8 +138,8 @@ export async function analyzeMove({
   const opp = getOpp(color);
   const opponentsHangingPieces = fen === DEFAULT_POSITION ? [] : getAllHangingPieces(chess, opp);
   const hangingPieces = fen === DEFAULT_POSITION ? [] : getAllHangingPieces(chess, color);
-  const prevHangingPieceOpps = prevAnalysis?.hangingPieces?.[opp];
-  const prevHangingPiece = prevAnalysis?.hangingPieces?.[color];
+  // const prevHangingPieceOpps = prevAnalysis?.hangingPieces?.[opp];
+  // const prevHangingPiece = prevAnalysis?.hangingPieces?.[color];
   const allPinnedPieces = {};
 
   // Theory
@@ -207,38 +207,45 @@ export async function analyzeMove({
   };
 }
 
-export async function analyzeGame(Game: Chess, setProgress?: (progress: number) => void) {
+export const analyzePosition = async (
+  fen: string,
+  moveIndex: number,
+  move: Move,
+  stockfish: StockfishManager,
+  prevAnalysis?: analysisType
+) => {
   const { depth } = useSettingsState.getState();
-  const stockfish = new StockfishManager();
-  const analyzePosition = async (
-    fen: string,
-    moveIndex: number,
-    move: Move,
-    prevAnalysis?: analysisType
-  ) => {
-    const SFresult = await stockfish.analyzePosition(fen, depth);
-    const analysis = await analyzeMove({
-      stockfishAnalysis: SFresult,
-      prevAnalysis,
-      positionDetails: move,
-      moveIndex,
-    });
-    return analysis;
-  };
+  const SFresult = await stockfish.analyzePosition(fen, depth);
+  const analysis = await analyzeMove({
+    stockfishAnalysis: SFresult,
+    prevAnalysis,
+    positionDetails: move,
+    moveIndex,
+  });
+  return analysis;
+};
 
+export async function analyzeGame(Game: Chess, setProgress?: (progress: number) => void) {
+  const stockfish = new StockfishManager();
   const history = Game.history({ verbose: true });
   let completed = 0;
   const analysisResult = [];
   let prevAnalysis: analysisType | undefined = undefined;
 
-  const initialMove = await analyzePosition(history[0].before, -1, history[0], prevAnalysis);
+  const initialMove = await analyzePosition(
+    history[0].before,
+    -1,
+    history[0],
+    stockfish,
+    prevAnalysis
+  );
   analysisResult.push(initialMove);
   prevAnalysis = initialMove;
 
   for (let i = 0; i < history.length; i++) {
     const fen = history[i].after;
 
-    const a = await analyzePosition(fen, i, history[i], prevAnalysis);
+    const a = await analyzePosition(fen, i, history[i], stockfish, prevAnalysis);
     analysisResult.push(a);
     prevAnalysis = a;
 

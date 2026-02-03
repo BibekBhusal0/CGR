@@ -119,7 +119,7 @@ export const useGameState = create<GameState>((set, get) => ({
         return {};
       } else {
         try {
-          if (state.analysis) evaluation = state.analysis[moveIndex].eval;
+          if (state.analysis && state.analysis[moveIndex]) evaluation = state.analysis[moveIndex].eval;
         } catch (error) {
           console.log(`can't get evaluation of position `);
           console.error(error);
