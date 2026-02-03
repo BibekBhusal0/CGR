@@ -9,8 +9,6 @@ export type booleanSettings =
   | "bestMove"
   | "animation"
   | "devMode"
-  | "highlightHangingPieces"
-  | "highlightPins"
   | "analyzePerMove"
   | "sidebarCollapsed";
 const m = ["chess.com", "pgn"] as const;
@@ -37,8 +35,6 @@ export interface settingType {
   openAccordions: string[];
   notationStyle: notationStyle;
   stockfish: availableStockfish;
-  highlightHangingPieces: boolean;
-  highlightPins: boolean;
 }
 
 interface settingActions {
@@ -62,8 +58,6 @@ const initialState: settingType = {
   animation: true,
   sidebarCollapsed: false,
   analyzePerMove: false,
-  highlightHangingPieces: false,
-  highlightPins: false,
   btheme: "default",
   inputMode: "chess.com",
   openAccordions: ["General Settings", "Stockfish Settings"],

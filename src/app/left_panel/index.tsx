@@ -28,8 +28,6 @@ function DevSettings() {
     <>
       <SwitchGroup
         switches={[
-          { item: "highlightPins", children: "Highlight Pins" },
-          { item: "highlightHangingPieces", children: "Highlight Hanging Pieces" },
           { item: "analyzePerMove", children: "Per Move Analysis" },
         ]}
       />
