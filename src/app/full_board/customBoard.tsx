@@ -1,8 +1,5 @@
 import { Arrow, Chessboard, PieceRenderObject, SquareHandlerArgs } from "react-chessboard";
-import {
-  FC,
-  // useState,
-} from "react";
+import { FC } from "react";
 import { Chess, Square } from "chess.js";
 import { boardThemes, useSettingsState } from "@/Logic/state/settings";
 import { AllIcons } from "@/components/moveTypes/types";
@@ -51,18 +48,19 @@ const customPieces = (theme: string): { [key: string]: FC<PieceProps> } => {
   return pieces;
 };
 
+type squareRendererType = ({
+  piece,
+  square,
+  children,
+}: SquareHandlerArgs & {
+  children?: React.ReactNode;
+}) => React.JSX.Element;
 function Board({
   arrows,
   squareRenderer,
 }: {
   arrows?: Arrow[];
-  squareRenderer?: ({
-    piece,
-    square,
-    children,
-  }: SquareHandlerArgs & {
-    children?: React.ReactNode;
-  }) => React.JSX.Element;
+  squareRenderer?: squareRendererType;
 }) {
   const allowMoves = useGameState((state) => state.allowMoves);
   const fen = useGameState((state) => state.fen);
@@ -70,6 +68,35 @@ function Board({
   const animation = useSettingsState((state) => state.animation);
   const btheme = useSettingsState((state) => state.btheme);
   const notationStyle = useSettingsState((state) => state.notationStyle);
+
+  const baseSquareRenderer: squareRendererType = squareRenderer
+    ? squareRenderer
+    : ({ children }: SquareHandlerArgs & { children?: React.ReactNode }) => <>{children}</>;
+
+  let newSquareRenderer: squareRendererType | undefined;
+
+  if (notationStyle === "in-square") {
+    newSquareRenderer = ({
+      square,
+      piece,
+      children,
+    }: SquareHandlerArgs & { children?: React.ReactNode }) => {
+      return (
+        <>
+          {baseSquareRenderer({ piece, square, children })}
+          {!children && (
+            <div
+              className="absolute-center md:text-md text-xs select-none md:font-bold"
+              style={{
+                color: isLightSquare(square as Square) ? dark : light,
+              }}>
+              {square}
+            </div>
+          )}
+        </>
+      );
+    };
+  }
 
   const { light, dark } = colors[btheme];
 
@@ -86,7 +113,7 @@ function Board({
         //
         pieces: customPieces(btheme) as PieceRenderObject,
         arrows: arrows,
-        squareRenderer: squareRenderer,
+        squareRenderer: newSquareRenderer,
         //
         lightSquareStyle: { backgroundColor: light },
         darkSquareStyle: { backgroundColor: dark },
@@ -104,18 +131,10 @@ function MainBoard() {
   const analysis = useGameState((state) => state.analysis);
   const stage = useGameState((state) => state.stage);
   const boardStage = useGameState((state) => state.boardStage);
-  const highlightPins = useSettingsState((state) => state.highlightPins);
-  const highlightHangingPieces = useSettingsState((state) => state.highlightHangingPieces);
   const bestMove = useSettingsState((state) => state.bestMove);
-  const btheme = useSettingsState((state) => state.btheme);
   const highlight = useSettingsState((state) => state.highlight);
-  const notationStyle = useSettingsState((state) => state.notationStyle);
-  const hangingPieces: Square[] = [];
-
-  const { light, dark } = colors[btheme];
 
   const arrows: Arrow[] = [];
-  const pins: Arrow[] = [];
   const highlights: string[] = [];
   const reviews: Review = {};
 
@@ -143,24 +162,6 @@ function MainBoard() {
         const { from, to } = history[moveIndex];
         highlights.push(from, to);
       }
-      if (highlightPins) {
-        const hp = analysis[moveIndex + 1]?.pinnedPieces;
-        if (hp) {
-          for (const sq in hp) {
-            const p = hp[sq as Square];
-            if (p)
-              pins.push({
-                startSquare: p.by.square,
-                endSquare: p.targetPiece.square,
-                color: "red",
-              });
-          }
-        }
-      }
-      if (highlightHangingPieces) {
-        const hp = analysis[moveIndex + 1]?.hangingPieces;
-        if (hp) hangingPieces.push(...hp.b, ...hp.w);
-      }
       if (bestMove) {
         const chess = new Chess(history[moveIndex].before);
         const moveOuptut = chess.move(analysis[moveIndex].bestMove);
@@ -170,27 +171,11 @@ function MainBoard() {
     }
   }
 
-  const squareRenderer = ({
-    children,
-    square,
-  }: SquareHandlerArgs & { children?: React.ReactNode }) => {
+  const squareRenderer: squareRendererType = ({ children, square }) => {
     const highlightThis = highlights.includes(square);
-    const isHanging = hangingPieces.includes(square as Square);
     const review = reviews[square as Square];
     return (
-      <div
-        className={cn(
-          highlightThis && "bg-[rgba(255,0,0,0.1)]",
-          isHanging && "bg-[rgba(0,255,0,0.5)]",
-          "relative size-full"
-        )}>
-        {notationStyle === "in-square" && !children && (
-          <div
-            className="absolute-center md:text-md text-xs select-none md:font-bold"
-            style={{ color: isLightSquare(square as Square) ? dark : light }}>
-            {square}
-          </div>
-        )}
+      <div className={cn(highlightThis && "bg-[rgba(255,0,0,0.1)]", "relative size-full")}>
         {review && (
           <div className="absolute -top-3 -right-3 z-50 scale-90 text-xl">
             <MoveIcon type={review} />
@@ -201,15 +186,83 @@ function MainBoard() {
     );
   };
 
-  return <Board arrows={[...arrows, ...pins]} {...{ squareRenderer }} />;
+  return <Board arrows={[...arrows]} {...{ squareRenderer }} />;
 }
 
 function PerMoveAnalysisBoard() {
-  // const [analysis, setAnalysis] = useState([])
-  const arrows: Arrow[] = [];
-  const pins: Arrow[] = [];
+  const Game = useGameState((state) => state.Game);
+  const moveIndex = useGameState((state) => state.moveIndex);
+  const termination = useGameState((state) => state.termination);
+  const analysis = useGameState((state) => state.analysis);
+  const hangingPieces: Square[] = [];
 
-  return <Board arrows={[...arrows, ...pins]} />;
+  const arrows: Arrow[] = [];
+  const highlights: string[] = [];
+  const reviews: Review = {};
+
+  if (Game !== undefined && analysis !== undefined && moveIndex !== -1 && analysis[moveIndex + 1]) {
+    const history = Game.history({ verbose: true });
+    const type = analysis[moveIndex + 1].moveType;
+    const sq = history[moveIndex].to;
+    reviews[sq] = type;
+
+    if (moveIndex === history.length - 1 && termination !== undefined) {
+      const whiteKingSq = Game.findPiece({ type: "k", color: "w" })[0];
+      const blackKingSq = Game.findPiece({ type: "k", color: "b" })[0];
+
+      if (!termination.winner) {
+        reviews[whiteKingSq] = "draw";
+        reviews[blackKingSq] = "draw";
+      } else {
+        reviews[blackKingSq] = termination.winner === "b" ? "win" : termination.overBy;
+        reviews[whiteKingSq] = termination.winner === "w" ? "win" : termination.overBy;
+      }
+    }
+
+    const { from: Hfrom, to: Hto } = history[moveIndex];
+    highlights.push(Hfrom, Hto);
+    const pins = analysis[moveIndex + 1]?.pinnedPieces;
+    if (pins) {
+      for (const sq in pins) {
+        const p = pins[sq as Square];
+        if (p)
+          arrows.push({
+            startSquare: p.by.square,
+            endSquare: p.targetPiece.square,
+            color: "red",
+          });
+      }
+    }
+    const hp = analysis[moveIndex + 1]?.hangingPieces;
+    if (hp) hangingPieces.push(...hp.b, ...hp.w);
+    const chess = new Chess(history[moveIndex].before);
+    const moveOuptut = chess.move(analysis[moveIndex].bestMove);
+    const { from, to } = moveOuptut;
+    arrows.push({ startSquare: from, endSquare: to, color: "green" });
+  }
+
+  const squareRenderer: squareRendererType = ({ children, square }) => {
+    const highlightThis = highlights.includes(square);
+    const isHanging = hangingPieces.includes(square as Square);
+    const review = reviews[square as Square];
+    return (
+      <div
+        className={cn(
+          highlightThis && "bg-[rgba(255,0,0,0.1)]",
+          isHanging && "bg-[rgba(0,255,0,0.5)]",
+          "relative size-full"
+        )}>
+        {review && (
+          <div className="absolute -top-3 -right-3 z-50 scale-90 text-xl">
+            <MoveIcon type={review} />
+          </div>
+        )}
+        {children}
+      </div>
+    );
+  };
+
+  return <Board arrows={[...arrows]} {...{ squareRenderer }} />;
 }
 
 function JustBoard() {
