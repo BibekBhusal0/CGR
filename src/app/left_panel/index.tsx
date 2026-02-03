@@ -26,11 +26,7 @@ const devItems = {
 function DevSettings() {
   return (
     <>
-      <SwitchGroup
-        switches={[
-          { item: "analyzePerMove", children: "Per Move Analysis" },
-        ]}
-      />
+      <SwitchGroup switches={[{ item: "analyzePerMove", children: "Per Move Analysis" }]} />
     </>
   );
 }
