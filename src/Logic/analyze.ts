@@ -185,7 +185,7 @@ export async function analyzeMove({
     else moveType = "inaccuracy";
   }
 
-  // @ts-ignore both color are added shut up typescript
+  // @ts-expect-error both color are added shut up typescript
   const allHangingPieces: Record<Color, Square[]> = {
     [opp]: opponentsHangingPieces,
     [color]: hangingPieces,

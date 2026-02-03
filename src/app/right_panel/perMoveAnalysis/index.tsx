@@ -52,6 +52,7 @@ export function PerMoveAnalysis() {
     // Analyze first 2 position if not available
     if (!Game) return;
     if (!analysis) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(true);
       analyze(-1).then(() => {
         analyze(0).then(() => {
