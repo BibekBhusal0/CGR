@@ -141,7 +141,7 @@ function MainBoard() {
   if (stage === "third" && moveIndex !== -1 && boardStage === "normal") {
     if (Game !== undefined && analysis !== undefined) {
       const history = Game.history({ verbose: true });
-      const type = analysis[moveIndex + 1].moveType;
+      const type = analysis[moveIndex].moveType;
       const sq = history[moveIndex].to;
       reviews[sq] = type;
 
@@ -200,9 +200,9 @@ function PerMoveAnalysisBoard() {
   const highlights: string[] = [];
   const reviews: Review = {};
 
-  if (Game !== undefined && analysis !== undefined && moveIndex !== -1 && analysis[moveIndex + 1]) {
+  if (Game !== undefined && analysis !== undefined && moveIndex !== -1 && analysis[moveIndex]) {
     const history = Game.history({ verbose: true });
-    const type = analysis[moveIndex + 1].moveType;
+    const type = analysis[moveIndex].moveType;
     const sq = history[moveIndex].to;
     reviews[sq] = type;
 
