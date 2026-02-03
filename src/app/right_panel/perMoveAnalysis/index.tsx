@@ -8,9 +8,7 @@ import { analysisType, analyzePosition } from "@/Logic/analyze";
 import StockfishManager from "@/Logic/stockfish";
 import { cn } from "@heroui/theme";
 import { ChevronIcon } from "@heroui/shared-icons";
-import { MoveIcon } from "@/components/moveTypes/MoveIcon";
-import { MoveExplained } from "@/components/moveTypes/types";
-import OpeningCard from "../moves/opening";
+import { MoveComment } from "../moves/moveComment";
 
 export function PerMoveAnalysis() {
   const moveIndex = useGameState((state) => state.moveIndex);
@@ -82,65 +80,12 @@ export function PerMoveAnalysis() {
         <Warning />
       </CardHeader>
       <CardBody>
-        {loading ? <div>Per move detail will be here loading ....</div> : <AnalysisCard />}
+        {loading ? <div>Per move detail will be here loading ....</div> : <MoveComment />}
       </CardBody>
       <CardFooter className="flex-center">
         <Controls />
       </CardFooter>
     </>
-  );
-}
-
-function AnalysisCard() {
-  const Game = useGameState((state) => state.Game);
-  const analysis = useGameState((state) => state.analysis);
-  const moveIndex = useGameState((state) => state.moveIndex);
-  const bestMove = useSettingsState((state) => state.bestMove);
-
-  if (!analysis || !Game) return null;
-  let crrMove, crrPositionAnalysis, prevPositionAnalysis;
-
-  if (moveIndex !== -1) {
-    crrMove = Game.history({ verbose: true })[moveIndex].san;
-    crrPositionAnalysis = analysis[moveIndex + 1];
-    prevPositionAnalysis = analysis[moveIndex];
-  }
-  return (
-    <div className="bg-success-50 flex flex-col gap-2 rounded-md px-8 py-3">
-      {moveIndex === -1 ? (
-        <div className="text-lg">Start Analyzing Game</div>
-      ) : (
-        crrPositionAnalysis &&
-        crrMove &&
-        prevPositionAnalysis && (
-          <>
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center justify-start gap-2">
-                <MoveIcon type={prevPositionAnalysis.moveType} />
-                <div>
-                  {crrMove} is {MoveExplained[prevPositionAnalysis.moveType]}.
-                </div>
-              </div>
-            </div>
-            {bestMove && prevPositionAnalysis.bestMove !== crrMove && (
-              <>
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center justify-start gap-2">
-                    <MoveIcon type="best" />
-                    <div>{prevPositionAnalysis.bestMove} is the best move</div>
-                  </div>
-                </div>
-              </>
-            )}
-            {crrPositionAnalysis.opening ? (
-              <OpeningCard opening={crrPositionAnalysis.opening} />
-            ) : (
-              ""
-            )}
-          </>
-        )
-      )}
-    </div>
   );
 }
 
