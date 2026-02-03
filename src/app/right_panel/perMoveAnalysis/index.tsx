@@ -80,7 +80,14 @@ export function PerMoveAnalysis() {
         <Warning />
       </CardHeader>
       <CardBody>
-        {loading ? <div>Per move detail will be here loading ....</div> : <MoveComment />}
+        {loading ? (
+          <div>Per move detail will be here loading ....</div>
+        ) : (
+          <>
+            <Button className ="mb-2 text-xl" onPress={analyzeCurrentPos} >Reanalyze This move</Button>
+            <MoveComment />
+          </>
+        )}
       </CardBody>
       <CardFooter className="flex-center">
         <Controls />
@@ -96,6 +103,9 @@ function Warning() {
 
   return (
     <div
+      onClick={() => {
+        if (!expanded) setExpanded(true);
+      }}
       className={cn(
         "relative overflow-clip rounded-b-md",
         expanded ? "h-auto max-h-80" : "max-h-9.5",
