@@ -46,6 +46,9 @@ export function PerMoveAnalysis() {
     }
   }
 
+  if (analysis) {
+    console.log(analysis[moveIndex + 1]);
+  }
   useEffect(() => {
     // Analyze first 2 position if not available
     if (!Game) return;
@@ -67,7 +70,7 @@ export function PerMoveAnalysis() {
         // If analysis for previous moves available analyze the move
         analyzeCurrentPos();
       } else {
-        setLoading(false);
+        if (loading) setLoading(false);
       }
     }
   }, [analysis, moveIndex]);
@@ -84,7 +87,9 @@ export function PerMoveAnalysis() {
           <div>Per move detail will be here loading ....</div>
         ) : (
           <>
-            <Button className ="mb-2 text-xl" onPress={analyzeCurrentPos} >Reanalyze This move</Button>
+            <Button className="mb-2 text-xl" onPress={analyzeCurrentPos}>
+              Reanalyze This move
+            </Button>
             <MoveComment />
           </>
         )}

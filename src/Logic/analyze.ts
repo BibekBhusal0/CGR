@@ -133,7 +133,7 @@ export async function analyzeMove({
 
   // If best move had been found eval diff should be 0.
   const evalDiff = cappedEval - prevCappedEval;
-  const gotAdvantage = isWhiteTurn ? evalDiff > 0 : evalDiff < 0;
+  const gotAdvantage = isWhiteTurn ? evalDiff >= 0 : evalDiff <= 0;
   const color = positionDetails.color;
   const opp = getOpp(color);
   const opponentsHangingPieces = fen === DEFAULT_POSITION ? [] : getAllHangingPieces(chess, opp);
@@ -145,9 +145,9 @@ export async function analyzeMove({
   // Theory
   if (inBook) moveType = "book";
   // Only possible move forcing.
-  if (!SFanalysis.secondBest) moveType = "forcing";
+  else if (SFanalysis?.secondBest?.lines?.length === 0) moveType = "forcing";
   // If it's best move by engine, it's either `Best` or `Great` or `Brilliant`
-  if (SFanalysis.bestMove === positionDetails.san) {
+  else if (SFanalysis.bestMove === positionDetails.san) {
     const secondBestEval = SFanalysis.secondBest?.eval;
     if (secondBestEval) {
       const cappedSecondBestEval = capEval(secondBestEval);
