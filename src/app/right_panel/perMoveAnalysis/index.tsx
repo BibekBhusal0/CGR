@@ -46,9 +46,6 @@ export function PerMoveAnalysis() {
     }
   }
 
-  if (analysis) {
-    console.log(analysis[moveIndex + 1]);
-  }
   useEffect(() => {
     // Analyze first 2 position if not available
     if (!Game) return;

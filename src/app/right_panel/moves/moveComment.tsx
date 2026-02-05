@@ -44,14 +44,13 @@ export const MoveComment: FC = () => {
         <div className="text-lg">Start Analyzing Game</div>
       ) : (
         crrPositionAnalysis &&
-        crrMove &&
-        prevPositionAnalysis && (
+        crrMove && (
           <>
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center justify-start gap-2">
-                <MoveIcon type={prevPositionAnalysis.moveType} />
+                <MoveIcon type={crrPositionAnalysis.moveType} />
                 <div>
-                  {crrMove} is {MoveExplained[prevPositionAnalysis.moveType]}.
+                  {crrMove} is {MoveExplained[crrPositionAnalysis.moveType]}.
                 </div>
               </div>
               <EvalBox evaluation={crrPositionAnalysis.eval} />

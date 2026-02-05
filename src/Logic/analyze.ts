@@ -145,9 +145,9 @@ export async function analyzeMove({
   // Theory
   if (inBook) moveType = "book";
   // Only possible move forcing.
-  else if (SFanalysis?.secondBest?.lines?.length === 0) moveType = "forcing";
+  else if (prevAnalysis?.secondBest?.lines?.length === 0) moveType = "forcing";
   // If it's best move by engine, it's either `Best` or `Great` or `Brilliant`
-  else if (SFanalysis.bestMove === positionDetails.san) {
+  else if (prevAnalysis?.bestMove === positionDetails.san) {
     const secondBestEval = SFanalysis.secondBest?.eval;
     if (secondBestEval) {
       const cappedSecondBestEval = capEval(secondBestEval);

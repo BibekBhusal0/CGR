@@ -103,7 +103,7 @@ const SingleMove: FC<{ move: string; index: number }> = ({ move, index }) => {
 
   let moveType;
   if (index !== -1 && analysis !== undefined) {
-    moveType = analysis[index + 1].moveType;
+    moveType = analysis[index + 1]?.moveType;
   }
 
   const elementRef = useRef<HTMLDivElement>(null);

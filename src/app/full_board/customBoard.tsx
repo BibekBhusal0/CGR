@@ -74,7 +74,7 @@ function Board({
     ? squareRenderer
     : ({ children }: SquareHandlerArgs & { children?: React.ReactNode }) => <>{children}</>;
 
-  let newSquareRenderer: squareRendererType  = baseSquareRenderer
+  let newSquareRenderer: squareRendererType = baseSquareRenderer;
 
   if (notationStyle === "in-square") {
     newSquareRenderer = ({
@@ -142,7 +142,7 @@ function MainBoard() {
   if (stage === "third" && moveIndex !== -1 && boardStage === "normal") {
     if (Game !== undefined && analysis !== undefined) {
       const history = Game.history({ verbose: true });
-      const type = analysis[moveIndex].moveType;
+      const type = analysis[moveIndex + 1].moveType;
       const sq = history[moveIndex].to;
       reviews[sq] = type;
 
@@ -201,9 +201,9 @@ function PerMoveAnalysisBoard() {
   const highlights: string[] = [];
   const reviews: Review = {};
 
-  if (Game !== undefined && analysis !== undefined && moveIndex !== -1 && analysis[moveIndex]) {
+  if (Game !== undefined && analysis !== undefined && moveIndex !== -1 && analysis[moveIndex + 1]) {
     const history = Game.history({ verbose: true });
-    const type = analysis[moveIndex].moveType;
+    const type = analysis[moveIndex + 1].moveType;
     const sq = history[moveIndex].to;
     reviews[sq] = type;
 
