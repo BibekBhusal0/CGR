@@ -55,6 +55,7 @@ type squareRendererType = ({
 }: SquareHandlerArgs & {
   children?: React.ReactNode;
 }) => React.JSX.Element;
+
 function Board({
   arrows,
   squareRenderer,
@@ -73,7 +74,7 @@ function Board({
     ? squareRenderer
     : ({ children }: SquareHandlerArgs & { children?: React.ReactNode }) => <>{children}</>;
 
-  let newSquareRenderer: squareRendererType | undefined;
+  let newSquareRenderer: squareRendererType  = baseSquareRenderer
 
   if (notationStyle === "in-square") {
     newSquareRenderer = ({
