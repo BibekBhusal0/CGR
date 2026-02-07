@@ -50,7 +50,8 @@ export const MoveComment: FC = () => {
               <div className="flex items-center justify-start gap-2">
                 <MoveIcon type={crrPositionAnalysis.moveType} />
                 <div>
-                  {crrMove} is {MoveExplained[crrPositionAnalysis.moveType]}.
+                  {crrPositionAnalysis.moveComment ||
+                    `${crrMove} is ${MoveExplained[crrPositionAnalysis.moveType]}.`}
                 </div>
               </div>
               <EvalBox evaluation={crrPositionAnalysis.eval} />
