@@ -37,10 +37,10 @@ export interface analysisType extends StockfishOutput {
 }
 
 function capEval(e: evaluationType, cap: number = 50): number {
-  if (e.type === "mate") return e.value > 0 ? cap / 100 : -cap / 100;
-  if (e.value > cap) return cap;
-  if (e.value < -cap) return -cap;
-  return e.value;
+  if (e.type === "mate") return e.value > 0 ? cap : -cap ;
+  if (e.value > cap) return cap / 100;
+  if (e.value < -cap) return -cap / 100;
+  return e.value / 100;
 }
 
 export function convertToSAN(SF: StockfishOutput, fen: string) {
