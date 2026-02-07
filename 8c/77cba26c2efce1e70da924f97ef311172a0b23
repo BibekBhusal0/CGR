@@ -1,0 +1,23 @@
+src/app/right_panel/moves/moveComment.tsx
+  56be4292c935bb61 53-54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.42",
+  "base_commit_sha": "8c77cba26c2efce1e70da924f97ef311172a0b23",
+  "prompts": {
+    "56be4292c935bb61": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_3c7372ac6ffevL5AJ6WBBCgg3H",
+        "model": "opencode/gpt-5-nano"
+      },
+      "human_author": "Bibek Bhusal <bibekbhusal04@gmail.com>",
+      "messages": [],
+      "total_additions": 9,
+      "total_deletions": 8,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    }
+  }
+}
