@@ -68,7 +68,7 @@ export const MoveComment: FC = () => {
                 </Button>
               )}
             </div>
-            {bestMove && prevPositionAnalysis.bestMove !== crrMove && (
+            {bestMove && prevPositionAnalysis && prevPositionAnalysis.bestMove !== crrMove && (
               <>
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center justify-start gap-2">
