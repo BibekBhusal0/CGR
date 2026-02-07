@@ -1,0 +1,23 @@
+src/Logic/analyze.ts
+  56be4292c935bb61 7,178-189,192-194,196,198-199,201,203-209,212
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.42",
+  "base_commit_sha": "b67a90dfba5f1fde06f871c5a4562d7494c28797",
+  "prompts": {
+    "56be4292c935bb61": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_3c7372ac6ffevL5AJ6WBBCgg3H",
+        "model": "opencode/big-pickle"
+      },
+      "human_author": "Bibek Bhusal <bibekbhusal04@gmail.com>",
+      "messages": [],
+      "total_additions": 191,
+      "total_deletions": 117,
+      "accepted_lines": 31,
+      "overriden_lines": 6
+    }
+  }
+}
