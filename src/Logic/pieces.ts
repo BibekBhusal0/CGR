@@ -326,7 +326,7 @@ export function isPieceHanging(fen: string, square: Square): boolean {
   if (attackers.some((a) => a.type === "direct" && a.value < pieceValue)) return true;
 
   // should have atleast one direct attacker to be hanging(All x-ray attackers don't count)
-  if ( attackers.filter((a) => a.type === "direct").length === 0 ) return false
+  if (attackers.filter((a) => a.type === "direct").length === 0) return false;
 
   // If single direct defender is lower value than all attacker not hanging
   const lowestValueAttacker = Math.min(
@@ -383,6 +383,29 @@ export function getAllHangingPieces(game: Chess, color: Color): Square[] {
   }
   return allPinnedPieces;
 }
+
+export function getHighestValueHangingPiece(
+  game: Chess,
+  hangingPieces: Square[]
+): PieceSymbol | null {
+  let highestValuePiece: PieceSymbol | null = null;
+
+  for (const square of hangingPieces) {
+    const piece = game.get(square);
+    if (piece) {
+      if (!highestValuePiece || pieceValues[piece.type] > pieceValues[highestValuePiece]) {
+        highestValuePiece = piece.type;
+      }
+    }
+  }
+
+  return highestValuePiece;
+}
+
+export const colorNames: Record<Color, string> = {
+  [WHITE]: "White",
+  [BLACK]: "Black",
+};
 
 export const promotions = [undefined, "b", "n", "r", "q"];
 

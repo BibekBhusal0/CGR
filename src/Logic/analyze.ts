@@ -1,5 +1,5 @@
 import { useSettingsState } from "@/Logic/state/settings";
-import { Chess, Move, Square, DEFAULT_POSITION, Color, PieceSymbol } from "chess.js";
+import { Chess, Move, Square, DEFAULT_POSITION, Color } from "chess.js";
 import { getOpeningName, openingDatabase } from "@/api/opening";
 import { MT } from "@/components/moveTypes/types";
 import { evaluationType, StockfishOutput } from "@/Logic/stockfish";
@@ -8,8 +8,10 @@ import {
   allPinnedPiecesType,
   getAllHangingPieces,
   getOpp,
-  pieceValues,
   pieceNames,
+  getHighestValueHangingPiece,
+  colorNames,
+  pieceValues,
 } from "@/Logic/pieces";
 
 export interface openingType {
@@ -147,6 +149,8 @@ export async function analyzeMove({
   const prevHangingPieceOpps = prevAnalysis?.hangingPieces?.[opp];
   const prevHangingPiece = prevAnalysis?.hangingPieces?.[color];
   const allPinnedPieces = {};
+  const colorName = colorNames[color];
+  // const oppColorName = colorNames[opp];
 
   // Theory
   if (inBook) moveType = "book";
@@ -164,8 +168,13 @@ export async function analyzeMove({
         const isUnderPromosion =
           positionDetails.isPromotion() && !SFanalysis.bestMove.endsWith("=Q");
         const isSacrifice = hangingPieces.length > 0;
-        if (isSacrifice) moveType = "brilliant";
-        else if (isUnderPromosion) moveType = "brilliant";
+        if (isSacrifice) {
+          moveType = "brilliant";
+          const sacrificedPiece = getHighestValueHangingPiece(chess, hangingPieces);
+          if (sacrificedPiece) {
+            moveComment = `${colorName} sacrificed ${pieceNames[sacrificedPiece]}`;
+          }
+        } else if (isUnderPromosion) moveType = "brilliant";
         // Great move should be only winning move or only not loosing move.
         else moveType = "great";
       } else moveType = "best";
@@ -191,7 +200,7 @@ export async function analyzeMove({
         if (hadMateForCurrentPlayer) {
           isMiss = true;
           const mateIn = Math.abs(prevMateValue);
-          moveComment = `You missed mate in ${mateIn}`;
+          moveComment = `${colorName} missed mate in ${mateIn}`;
         }
       }
 
@@ -199,7 +208,7 @@ export async function analyzeMove({
       if (!isMiss && !positionDetails.isCapture() && prevHangingPiece && prevHangingPieceOpps) {
         let ourHangingMaterial = 0;
         let theirHangingMaterial = 0;
-        let theirBestHangingPiece: PieceSymbol | null = null;
+        const theirBestHangingPiece = getHighestValueHangingPiece(chess, prevHangingPieceOpps);
 
         // Calculate our hanging material
         prevHangingPiece.forEach((square) => {
@@ -207,24 +216,15 @@ export async function analyzeMove({
           if (piece) ourHangingMaterial += pieceValues[piece.type];
         });
 
+        // Calculate their hanging material
         prevHangingPieceOpps.forEach((square) => {
           const piece = chess.get(square);
-          if (piece) {
-            theirHangingMaterial += pieceValues[piece.type];
-            if (
-              !theirBestHangingPiece ||
-              pieceValues[piece.type] > pieceValues[theirBestHangingPiece]
-            ) {
-              theirBestHangingPiece = piece.type;
-            }
-          }
+          if (piece) theirHangingMaterial += pieceValues[piece.type];
         });
 
-        if (theirHangingMaterial > ourHangingMaterial) {
-          isMiss = true;
-        }
+        if (theirHangingMaterial > ourHangingMaterial) isMiss = true;
         if (theirBestHangingPiece) {
-          moveComment = `You did not take free ${pieceNames[theirBestHangingPiece]}`;
+          moveComment = `${colorName} did not take free ${pieceNames[theirBestHangingPiece]}`;
         }
       }
 
@@ -233,20 +233,10 @@ export async function analyzeMove({
       moveType = isMiss ? "miss" : "blunder";
 
       if (!isMiss && prevHangingPiece) {
-        let ourWorstHangingPiece: PieceSymbol | null = null;
-
-        prevHangingPiece.forEach((square) => {
-          const piece = chess.get(square);
-          if (
-            piece &&
-            (!ourWorstHangingPiece || pieceValues[piece.type] > pieceValues[ourWorstHangingPiece])
-          ) {
-            ourWorstHangingPiece = piece.type;
-          }
-        });
+        const ourWorstHangingPiece = getHighestValueHangingPiece(chess, prevHangingPiece);
 
         if (ourWorstHangingPiece) {
-          moveComment = `You left your ${pieceNames[ourWorstHangingPiece]} hanging`;
+          moveComment = `${colorName} left ${pieceNames[ourWorstHangingPiece]} hanging`;
         }
       }
     }
