@@ -4,7 +4,7 @@ import { getOpeningName, openingDatabase } from "@/api/opening";
 import { MT } from "@/components/moveTypes/types";
 import { evaluationType, StockfishOutput } from "@/Logic/stockfish";
 import StockfishManager from "@/Logic/stockfish";
-import { allPinnedPiecesType, getAllHangingPieces, getOpp } from "@/Logic/pieces";
+import { allPinnedPiecesType, getAllHangingPieces, getOpp, pieceValues } from "@/Logic/pieces";
 
 export interface openingType {
   name: string;
@@ -138,8 +138,8 @@ export async function analyzeMove({
   const opp = getOpp(color);
   const opponentsHangingPieces = fen === DEFAULT_POSITION ? [] : getAllHangingPieces(chess, opp);
   const hangingPieces = fen === DEFAULT_POSITION ? [] : getAllHangingPieces(chess, color);
-  // const prevHangingPieceOpps = prevAnalysis?.hangingPieces?.[opp];
-  // const prevHangingPiece = prevAnalysis?.hangingPieces?.[color];
+  const prevHangingPieceOpps = prevAnalysis?.hangingPieces?.[opp];
+  const prevHangingPiece = prevAnalysis?.hangingPieces?.[color];
   const allPinnedPieces = {};
 
   // Theory
@@ -173,12 +173,43 @@ export async function analyzeMove({
   } else {
     const absDiff = Math.abs(evalDiff);
     if (absDiff > 4) {
-      // If Check Mate it allowed it's blunder.
-      // If free piece is given it's blunder.
-
       // If check mate is not found it's miss.
       // If free piece is not taken it's miss.
-      moveType = "blunder";
+      let isMiss = false;
+
+      // Check if mate was missed
+      if (prevAnalysis?.eval?.type === "mate") {
+        const prevMateValue = prevAnalysis.eval.value;
+        const hadMateForCurrentPlayer = isWhiteTurn ? prevMateValue > 0 : prevMateValue < 0;
+
+        if (hadMateForCurrentPlayer) {
+          isMiss = true;
+        }
+      }
+
+      // Check if free piece was not taken
+      if (!isMiss && !positionDetails.isCapture() && prevHangingPiece && prevHangingPieceOpps) {
+        let ourHangingMaterial = 0;
+        let theirHangingMaterial = 0;
+
+        prevHangingPiece.forEach((square) => {
+          const piece = chess.get(square);
+          if (piece) ourHangingMaterial += pieceValues[piece.type];
+        });
+
+        prevHangingPieceOpps.forEach((square) => {
+          const piece = chess.get(square);
+          if (piece) theirHangingMaterial += pieceValues[piece.type];
+        });
+
+        if (theirHangingMaterial > ourHangingMaterial) {
+          isMiss = true;
+        }
+      }
+
+      // If Check Mate it allowed it's blunder.
+      // If free piece is given it's blunder.
+      moveType = isMiss ? "miss" : "blunder";
     }
     // In other cases it's `inaccuracy` or `mistake` based on eval diff
     else if (absDiff > 2) moveType = "mistake";
