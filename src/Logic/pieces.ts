@@ -325,6 +325,9 @@ export function isPieceHanging(fen: string, square: Square): boolean {
   // If being attacked directly by lower value piece it's hanging
   if (attackers.some((a) => a.type === "direct" && a.value < pieceValue)) return true;
 
+  // should have atleast one direct attacker to be hanging(All x-ray attackers don't count)
+  if ( attackers.filter((a) => a.type === "direct").length === 0 ) return false
+
   // If single direct defender is lower value than all attacker not hanging
   const lowestValueAttacker = Math.min(
     ...attackers.filter((a) => a.type === "direct").map((a) => a.value)

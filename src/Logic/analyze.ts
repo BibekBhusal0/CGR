@@ -1,10 +1,16 @@
 import { useSettingsState } from "@/Logic/state/settings";
-import { Chess, Move, Square, DEFAULT_POSITION, Color } from "chess.js";
+import { Chess, Move, Square, DEFAULT_POSITION, Color, PieceSymbol } from "chess.js";
 import { getOpeningName, openingDatabase } from "@/api/opening";
 import { MT } from "@/components/moveTypes/types";
 import { evaluationType, StockfishOutput } from "@/Logic/stockfish";
 import StockfishManager from "@/Logic/stockfish";
-import { allPinnedPiecesType, getAllHangingPieces, getOpp, pieceValues } from "@/Logic/pieces";
+import {
+  allPinnedPiecesType,
+  getAllHangingPieces,
+  getOpp,
+  pieceValues,
+  pieceNames,
+} from "@/Logic/pieces";
 
 export interface openingType {
   name: string;
@@ -184,6 +190,8 @@ export async function analyzeMove({
 
         if (hadMateForCurrentPlayer) {
           isMiss = true;
+          const mateIn = Math.abs(prevMateValue);
+          moveComment = `You missed mate in ${mateIn}`;
         }
       }
 
@@ -191,7 +199,9 @@ export async function analyzeMove({
       if (!isMiss && !positionDetails.isCapture() && prevHangingPiece && prevHangingPieceOpps) {
         let ourHangingMaterial = 0;
         let theirHangingMaterial = 0;
+        let theirBestHangingPiece: PieceSymbol | null = null;
 
+        // Calculate our hanging material
         prevHangingPiece.forEach((square) => {
           const piece = chess.get(square);
           if (piece) ourHangingMaterial += pieceValues[piece.type];
@@ -199,17 +209,46 @@ export async function analyzeMove({
 
         prevHangingPieceOpps.forEach((square) => {
           const piece = chess.get(square);
-          if (piece) theirHangingMaterial += pieceValues[piece.type];
+          if (piece) {
+            theirHangingMaterial += pieceValues[piece.type];
+            if (
+              !theirBestHangingPiece ||
+              pieceValues[piece.type] > pieceValues[theirBestHangingPiece]
+            ) {
+              theirBestHangingPiece = piece.type;
+            }
+          }
         });
 
         if (theirHangingMaterial > ourHangingMaterial) {
           isMiss = true;
+        }
+        if (theirBestHangingPiece) {
+          moveComment = `You did not take free ${pieceNames[theirBestHangingPiece]}`;
         }
       }
 
       // If Check Mate it allowed it's blunder.
       // If free piece is given it's blunder.
       moveType = isMiss ? "miss" : "blunder";
+
+      if (!isMiss && prevHangingPiece) {
+        let ourWorstHangingPiece: PieceSymbol | null = null;
+
+        prevHangingPiece.forEach((square) => {
+          const piece = chess.get(square);
+          if (
+            piece &&
+            (!ourWorstHangingPiece || pieceValues[piece.type] > pieceValues[ourWorstHangingPiece])
+          ) {
+            ourWorstHangingPiece = piece.type;
+          }
+        });
+
+        if (ourWorstHangingPiece) {
+          moveComment = `You left your ${pieceNames[ourWorstHangingPiece]} hanging`;
+        }
+      }
     }
     // In other cases it's `inaccuracy` or `mistake` based on eval diff
     else if (absDiff > 2) moveType = "mistake";
