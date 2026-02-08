@@ -46,8 +46,8 @@ export interface analysisType extends StockfishOutput {
 
 function capEval(e: evaluationType, cap: number = 50): number {
   if (e.type === "mate") return e.value > 0 ? cap : -cap;
-  if (e.value > cap) return cap / 100;
-  if (e.value < -cap) return -cap / 100;
+  if (e.value > cap * 100) return cap;
+  if (e.value < -cap * 100) return -cap;
   return e.value / 100;
 }
 
