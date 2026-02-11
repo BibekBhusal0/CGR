@@ -1,0 +1,7 @@
+name: cgr
+root: "~/Code/React/CGR/"
+
+windows:
+  - editor: nvim :SessionLoad cgr
+  - server: npm run dev
+  - misc:
