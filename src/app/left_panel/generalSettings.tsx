@@ -9,7 +9,7 @@ import {
   useSettingsState,
 } from "@/Logic/state/settings";
 import { base_path } from "@/app/full_board/customBoard";
-import { ToggleSwitch } from "@/components/switch";
+import SwitchGroup from "@/components/switchGroup";
 import { switchClassNames } from "@/components/switch_types";
 
 function getImageSource(theme: string, board_theme: string) {
@@ -44,6 +44,7 @@ function GeneralSettings() {
         onChange={(e) => {
           if (e.target.value.trim() !== "") {
             const v = e.target.value.trim() as boardThemes;
+            if (!allBoardThemes.includes(v)) return;
             setBoardTheme(v);
           }
         }}
@@ -77,6 +78,7 @@ function GeneralSettings() {
         onChange={(e) => {
           if (e.target.value.trim() !== "") {
             const v = e.target.value.trim() as notationStyle;
+            if (!allNotationStyles.includes(v)) return;
             setNotationStyle(v);
           }
         }}
@@ -99,9 +101,13 @@ function GeneralSettings() {
         classNames={switchClassNames}
         children="Dark Mode"
       />
-      <ToggleSwitch item="highlight" children="Highlight Moves" />
-      <ToggleSwitch item="animation" />
-      <ToggleSwitch item="devMode" children="Dev Mode" />
+      <SwitchGroup
+        switches={[
+          { item: "highlight", children: "Highlight Moves" },
+          { item: "animation", children: "Animation" },
+          { item: "devMode", children: "Dev Mode" },
+        ]}
+      />
     </>
   );
 }

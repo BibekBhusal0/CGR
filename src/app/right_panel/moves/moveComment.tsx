@@ -18,9 +18,7 @@ export const MoveComment: FC = () => {
   const setIndex2 = useGameState((state) => state.setIndex2);
   const bestMove = useSettingsState((state) => state.bestMove);
 
-  if (!analysis || !Game) {
-    throw new Error("game not available or analysis not available");
-  }
+  if (!analysis || !Game) return null;
   let crrMove, crrPositionAnalysis, prevPositionAnalysis;
 
   const getClickHandler = (index: number): (() => boolean) => {
@@ -46,14 +44,14 @@ export const MoveComment: FC = () => {
         <div className="text-lg">Start Analyzing Game</div>
       ) : (
         crrPositionAnalysis &&
-        crrMove &&
-        prevPositionAnalysis && (
+        crrMove && (
           <>
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center justify-start gap-2">
-                <MoveIcon type={prevPositionAnalysis.moveType} />
+                <MoveIcon type={crrPositionAnalysis.moveType} />
                 <div>
-                  {crrMove} is {MoveExplained[prevPositionAnalysis.moveType]}.
+                  {crrPositionAnalysis.moveComment ||
+                    `${crrMove} is ${MoveExplained[crrPositionAnalysis.moveType]}.`}
                 </div>
               </div>
               <EvalBox evaluation={crrPositionAnalysis.eval} />
@@ -71,7 +69,7 @@ export const MoveComment: FC = () => {
                 </Button>
               )}
             </div>
-            {bestMove && prevPositionAnalysis.bestMove !== crrMove && (
+            {bestMove && prevPositionAnalysis && prevPositionAnalysis.bestMove !== crrMove && (
               <>
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center justify-start gap-2">

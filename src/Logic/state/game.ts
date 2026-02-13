@@ -96,23 +96,31 @@ export const useGameState = create<GameState>((set, get) => ({
   setBottom: (bottom) => set({ bottom }),
 
   changeState: (stage) => {
+    const state = get();
+    if (stage === state.stage) return;
     if (stage === "first") set({ ...initialState });
     else if (stage === "second") set({ moveIndex: -1 });
     set({ stage });
   },
 
-  setIndex: (index) =>
-    set((state) => {
-      if (!state.Game || !state.analysis) return state;
+  setIndex: (index) => {
+    const state = get();
+    if (!state.Game) return;
+    const full_history = state.Game.history({ verbose: true });
+    if (index < -1 || index >= full_history.length) return;
+    set(() => {
+      if (!state.Game) return {};
       const moveIndex = index;
       let fen;
       let evaluation: evaluationType = { value: 0, type: "cp" };
-      const full_history = state.Game.history({ verbose: true });
       if (moveIndex === -1) {
         fen = full_history[0].before;
+      } else if (moveIndex < -1 || moveIndex >= full_history.length) {
+        return {};
       } else {
         try {
-          evaluation = state.analysis[moveIndex].eval;
+          if (state.analysis && state.analysis[moveIndex])
+            evaluation = state.analysis[moveIndex].eval;
         } catch (error) {
           console.log(`can't get evaluation of position `);
           console.error(error);
@@ -120,7 +128,8 @@ export const useGameState = create<GameState>((set, get) => ({
         fen = full_history[moveIndex].after;
       }
       return { moveIndex, fen, evaluation, index2: 0, boardStage: "normal" };
-    }),
+    });
+  },
 
   setBoardStage: (boardStage) => {
     const state = get();

@@ -1,251 +1,420 @@
-import { Chess, Color, Piece, PieceSymbol, Square } from "chess.js";
+import {
+  Chess,
+  Color,
+  Piece,
+  PieceSymbol,
+  Square,
+  BLACK,
+  WHITE,
+  KING,
+  QUEEN,
+  KNIGHT,
+  BISHOP,
+  PAWN,
+  ROOK,
+} from "chess.js";
 
-export interface SquarePiece extends Piece {
-  square: Square;
-}
-interface Coordinate {
-  x: number;
-  y: number;
-}
-
-export const pieceValues: { [key in PieceSymbol]: number } = {
-  p: 1,
-  n: 3,
-  b: 3,
-  r: 5,
-  q: 9,
-  k: Infinity,
-};
-
-export const pieceNames: { [key in PieceSymbol]: string } = {
-  p: "pawn",
-  n: "knight",
-  b: "bishop",
-  r: "rook",
-  q: "queen",
-  k: "king",
-};
-
-export const promotions = [undefined, "b", "n", "r", "q"];
-
-function getBoardCoordinates(square: Square): Coordinate {
+type coors = { x: number; y: number };
+function notationToCoors(notation: Square): coors {
   return {
-    x: "abcdefgh".indexOf(square.slice(0, 1)),
-    y: parseInt(square.slice(1)) - 1,
+    x: "abcdefgh".indexOf(notation.slice(0, 1)),
+    y: parseInt(notation.slice(1)) - 1,
   };
 }
-
-function getSquare(coordinate: Coordinate): Square {
-  return ("abcdefgh".charAt(coordinate.x) + (coordinate.y + 1).toString()) as Square;
+function coorsToNotation(coors: coors): Square {
+  return ("abcdefgh".charAt(coors.x) + (coors.y + 1).toString()) as Square;
 }
 
-export function getPieces(
-  game: Chess,
-  color: Color | "any" = "any",
-  piece: PieceSymbol | "any" = "any"
-) {
-  const sq: SquarePiece[] = [];
-  game.board().forEach((row) => {
-    row.forEach((SqPiece) => {
-      if (SqPiece) {
-        if (
-          (color === "any" || SqPiece.color === color) &&
-          (piece === "any" || SqPiece.type === piece)
-        ) {
-          sq.push({ ...SqPiece });
-        }
+export function isLightSquare(square: Square) {
+  const coors = notationToCoors(square);
+  return (coors.x + coors.y) % 2 !== 0;
+}
+
+export function getOpp(color: Color): Color {
+  return color === WHITE ? BLACK : WHITE;
+}
+
+// Laser pieces are pieces which can move straight
+// And can't jumb between pieces.
+// Those pieces can pin
+const lp = [ROOK, QUEEN, BISHOP] as const;
+type laserPieces = (typeof lp)[number];
+export const allLaserPieces: laserPieces[] = [...lp];
+
+export const pieceValues: Record<PieceSymbol, number> = {
+  [PAWN]: 1,
+  [KNIGHT]: 3,
+  [BISHOP]: 3,
+  [ROOK]: 5,
+  [QUEEN]: 9,
+  [KING]: Infinity,
+};
+export const pieceNames: Record<PieceSymbol, string> = {
+  [PAWN]: "pawn",
+  [KNIGHT]: "knight",
+  [BISHOP]: "bishop",
+  [ROOK]: "rook",
+  [QUEEN]: "queen",
+  [KING]: "king",
+};
+
+export type isPinnedReturn = {
+  type: "relative" | "absolute";
+  targetPiece: PieceAndSquare;
+  by: PieceAndSquare;
+};
+
+const t = [
+  "up",
+  "down",
+  "left",
+  "right",
+  "up-left",
+  "down-left",
+  "down-right",
+  "up-right",
+] as const;
+
+type directions = (typeof t)[number];
+const allDirections: directions[] = [...t];
+
+const rookMoves: directions[] = ["up", "down", "left", "right"];
+const bishopMoves: directions[] = ["up-left", "down-left", "up-right", "down-right"];
+export const pieceDirections: Record<laserPieces, directions[]> = {
+  [ROOK]: rookMoves,
+  [BISHOP]: bishopMoves,
+  [QUEEN]: [...rookMoves, ...bishopMoves],
+};
+
+export function getXrayAttackers(game: Chess, square: Square, color: Color): Square[] {
+  const coor = notationToCoors(square);
+  const xrayAttackers: Square[] = [];
+  const opp = getOpp(color);
+  for (const direction of allDirections) {
+    let striked = false; // Can only strike one time
+    const delta = getDelta(direction);
+    const crr = {
+      x: coor.x + delta.x,
+      y: coor.y + delta.y,
+    };
+    function increment() {
+      crr.x += delta.x;
+      crr.y += delta.y;
+    }
+    while (crr.x <= 7 && crr.x >= 0 && crr.y >= 0 && crr.y <= 7) {
+      const crrNotation = coorsToNotation(crr);
+      const p = game.get(crrNotation);
+      if (!p) {
+        increment();
+        continue;
       }
-    });
+      const piece = p.type as laserPieces;
+      if (p.type === PAWN) {
+        // Pawn can only capture diagonally
+        if (!bishopMoves.includes(direction)) break;
+        // Pawn an only capture 1 square
+        if (Math.abs(coor.y - crr.y) !== 1) break;
+        // Pawn can only capture forward
+        const canPawnCapture = p.color === WHITE ? crr.y < coor.y : crr.y > coor.y;
+        // p.color === WHITE ? direction.includes("down") : direction.includes("up");
+        if (canPawnCapture) {
+          striked = true;
+          increment();
+          continue;
+        } else break;
+      } else if (!allLaserPieces.includes(piece)) break;
+      if (!pieceDirections[piece].includes(direction)) break;
+      if (striked) {
+        if (p.color === opp) break;
+        xrayAttackers.push(crrNotation);
+      }
+      striked = true; //  Can't strike twice
+      increment();
+    }
+  }
+  return xrayAttackers;
+}
+
+type attackerType = {
+  square: Square;
+  type: "direct" | "x-ray";
+  value: number;
+};
+
+function getAllAttackers(game: Chess, square: Square, color: Color): attackerType[] {
+  const directAttackers = game.attackers(square, color);
+  const xrayAttackers = getXrayAttackers(game, square, color);
+  const attackers: attackerType[] = [];
+  // Pinned piece can't attack
+  directAttackers.forEach((a) => {
+    const pinned = isPinned(game.fen(), a);
+    // Somethimes it can take the attacking piece even though pinned.
+    if (pinned && pinned.by.square !== square) {
+    } else {
+      const piece = game.get(a)?.type;
+      if (piece) {
+        const value = pieceValues[piece];
+        attackers.push({ square: a, type: "direct", value });
+      }
+    }
   });
-  return sq;
-}
 
-export function isLightSquare(square: Square): boolean {
-  const column = square.charAt(0); // 'a' to 'h'
-  const row = parseInt(square.charAt(1), 10); // 1 to 8
-  const columnNumber = column.charCodeAt(0) - "a".charCodeAt(0) + 1;
-  const isLightSquare = (columnNumber + row) % 2 === 0;
-
-  return isLightSquare;
-}
-
-export function getAttackers(fen: string, square: Square): SquarePiece[] {
-  const attackers: SquarePiece[] = [];
-
-  const board = new Chess(fen);
-  const piece = board.get(square);
-
-  if (!piece) return [];
-  // Set colour to move to opposite of attacked piece
-  board.load(
-    fen
-      .replace(/(?<= )(?:w|b)(?= )/g, piece.color === "w" ? "b" : "w")
-      .replace(/ [a-h][1-8] /g, " - ")
-  );
-
-  // Find each legal move that captures attacked piece
-  const legalMoves = board.moves({ verbose: true });
-
-  for (const move of legalMoves) {
-    if (move.to === square) {
-      attackers.push({
-        square: move.from,
-        color: move.color,
-        type: move.piece,
-      });
-    }
-  }
-
-  // If there is an opposite king around the attacked piece add him as an attacker
-  // if he is not the only attacker or it is a legal move for the king to capture it
-  let oppositeKing: SquarePiece | undefined;
-  const oppositeColour = piece.color === "w" ? "b" : "w";
-
-  const pieceCoordinate = getBoardCoordinates(square);
-  for (let xOffset = -1; xOffset <= 1; xOffset++) {
-    for (let yOffset = -1; yOffset <= 1; yOffset++) {
-      if (xOffset === 0 && yOffset === 0) continue;
-
-      const offsetSquare = getSquare({
-        x: Math.min(Math.max(pieceCoordinate.x + xOffset, 0), 7),
-        y: Math.min(Math.max(pieceCoordinate.y + yOffset, 0), 7),
-      });
-      const offsetPiece = board.get(offsetSquare);
-      if (!offsetPiece) continue;
-
-      if (offsetPiece.color === oppositeColour && offsetPiece.type === "k") {
-        oppositeKing = {
-          color: offsetPiece.color,
-          square: offsetSquare,
-          type: offsetPiece.type,
-        };
-        break;
-      }
-    }
-    if (oppositeKing) break;
-  }
-
-  if (!oppositeKing) return attackers;
-
-  let kingCaptureLegal = false;
-  try {
-    board.move({
-      from: oppositeKing.square,
-      to: square,
+  const opp = getOpp(color);
+  // X-ray attack through pinned piece don't count
+  xrayAttackers.forEach((a) => {
+    const inBetween = getPiecesBetween(game, a, square);
+    // Pinned pieces are not pushed into attackers array
+    // So if it is not if attacker arry its pinned.
+    const pinned = inBetween.every((b) => {
+      // We are not adding opponent's piece in attacker array but xray attack can be done through attackers piece as well
+      if (b.color === opp) return false;
+      return !attackers.some((c) => b.square === c.square);
     });
-
-    kingCaptureLegal = true;
-  } catch {}
-
-  if (oppositeKing && (attackers.length > 0 || kingCaptureLegal)) {
-    attackers.push(oppositeKing);
-  }
+    const piece = game.get(a)?.type;
+    if (piece && !pinned) {
+      const value = pieceValues[piece];
+      attackers.push({ square: a, type: "x-ray", value });
+    }
+  });
 
   return attackers;
 }
 
-export function getDefenders(fen: string, square: Square) {
-  const board = new Chess(fen);
-  const piece = board.get(square);
-  if (!piece) return [];
-  const testAttacker = getAttackers(fen, square)[0];
-
-  // If there is an attacker we can test capture the piece with
-  if (testAttacker) {
-    // Set player to move to colour of test attacker
-    board.load(
-      fen.replace(/(?<= )(?:w|b)(?= )/g, testAttacker.color).replace(/ [a-h][1-8] /g, " - ")
-    );
-
-    // Capture the defended piece with the test attacker
-    for (const promotion of promotions) {
-      try {
-        board.move({
-          from: testAttacker.square,
-          to: square,
-          promotion: promotion,
-        });
-
-        // Return the attackers that can now capture the test attacker
-        return getAttackers(board.fen(), square);
-      } catch {}
-    }
-  } else {
-    // Set player to move to defended piece colour
-    board.load(fen.replace(/(?<= )(?:w|b)(?= )/g, piece.color).replace(/ [a-h][1-8] /g, " - "));
-
-    // Replace defended piece with an enemy queen
-    board.put(
-      {
-        color: piece.color === "w" ? "b" : "w",
-        type: "q",
-      },
-      square
-    );
-
-    // Return the attackers of that piece
-    return getAttackers(board.fen(), square);
-  }
-
-  return [];
+function getDelta(direction: directions) {
+  return {
+    y: direction.includes("up") ? 1 : direction.includes("down") ? -1 : 0,
+    x: direction.includes("right") ? 1 : direction.includes("left") ? -1 : 0,
+  };
 }
 
-export function isPieceHanging(lastFen: string, fen: string, square: Square) {
-  const lastBoard = new Chess(lastFen);
-  const board = new Chess(fen);
+export interface PieceAndSquare extends Piece {
+  square: Square;
+}
+// See what's behind a piece useful function to check pin/skewer
+export function seeBehindPiece(
+  from: Square,
+  direction: directions,
+  game: Chess
+): PieceAndSquare | undefined {
+  const fromCoor = notationToCoors(from);
 
-  const lastPiece = lastBoard.get(square);
-  const piece = board.get(square);
-  if (!piece || !lastPiece) return [];
+  const delta = getDelta(direction);
 
-  const attackers = getAttackers(fen, square);
-  const defenders = getDefenders(fen, square);
+  // this case will not happen just to be extra safe to avoid infinite loop
+  if (delta.x === 0 && delta.y === 0) return;
+  const crr = {
+    x: fromCoor.x + delta.x,
+    y: fromCoor.y + delta.y,
+  };
 
-  // If piece was just traded equally or better, not hanging
-  if (pieceValues[lastPiece.type] >= pieceValues[piece.type] && lastPiece.color !== piece.color) {
+  while (crr.x <= 7 && crr.x >= 0 && crr.y >= 0 && crr.y <= 7) {
+    const notation = coorsToNotation(crr);
+    const sq = game.get(notation);
+    if (sq) return { ...sq, square: notation };
+    crr.x += delta.x;
+    crr.y += delta.y;
+  }
+  return undefined;
+}
+
+// if piece are in line it returns direction.
+export function getDirection(from: Square, to: Square): directions | undefined {
+  const toCoor = notationToCoors(to);
+  const fromCoor = notationToCoors(from);
+  if (toCoor.x === fromCoor.x) return toCoor.y < fromCoor.y ? "down" : "up";
+  if (toCoor.y === fromCoor.y) return toCoor.x < fromCoor.x ? "left" : "right";
+
+  // If it is in diagonal delta will be equal
+  const deltaX = fromCoor.x - toCoor.x;
+  const deltaY = fromCoor.y - toCoor.y;
+  if (Math.abs(deltaX) === Math.abs(deltaY)) {
+    if (deltaX > 0 && deltaY > 0) return "down-left";
+    if (deltaX < 0 && deltaY < 0) return "up-right";
+    if (deltaX < 0 && deltaY > 0) return "down-right";
+    if (deltaX > 0 && deltaY < 0) return "up-left";
+  }
+  return undefined;
+}
+
+export function isEmpty(game: Chess, from: Square, to: Square): boolean {
+  return getPiecesBetween(game, from, to).length === 0;
+}
+
+export function getPiecesBetween(game: Chess, from: Square, to: Square): PieceAndSquare[] {
+  const fromCoor = notationToCoors(from);
+  const toCoor = notationToCoors(to);
+  const delta = {
+    x: Math.sign(toCoor.x - fromCoor.x),
+    y: Math.sign(toCoor.y - fromCoor.y),
+  };
+  const inBetween: PieceAndSquare[] = [];
+
+  // this case will not happen just to be extra safe to avoid infinite loop
+  if (delta.x === 0 && delta.y === 0) return inBetween;
+  const crr = {
+    x: fromCoor.x + delta.x,
+    y: fromCoor.y + delta.y,
+  };
+
+  // to avoid infinite loop Just in case squares don't line up (not going outside board)
+  while (crr.x <= 7 && crr.x >= 0 && crr.y >= 0 && crr.y <= 7) {
+    const notation = coorsToNotation(crr);
+    if (notation === to) break;
+    const piece = game.get(notation);
+    if (piece) inBetween.push({ ...piece, square: notation });
+    crr.x += delta.x;
+    crr.y += delta.y;
+  }
+  return inBetween;
+}
+
+export function isPinned(fen: string, square: Square): isPinnedReturn | undefined {
+  let game;
+  try {
+    game = new Chess(fen, { skipValidation: true });
+  } catch {
+    return;
+  }
+  const piece = game.get(square);
+  if (!piece) return;
+  const opp = getOpp(piece.color);
+
+  for (const pieceSymbol of allLaserPieces) {
+    const oppPieces = game.findPiece({ type: pieceSymbol, color: opp });
+    if (!oppPieces) continue;
+    for (const oppPiece of oppPieces) {
+      const direction = getDirection(oppPiece, square);
+      if (!direction) continue;
+      // Check if piece can move in that direction.
+      if (!pieceDirections[pieceSymbol]?.includes(direction)) continue;
+      // Path need to be clear for piece to be attacked
+      if (!isEmpty(game, oppPiece, square)) continue;
+      const behind = seeBehindPiece(square, direction, game);
+      // It should be our piece and piece with higher value
+      if (!behind) continue;
+      if (behind.color !== piece.color) continue;
+      if (pieceValues[behind.type] > pieceValues[piece.type]) {
+        let type: "relative" | "absolute" = "relative";
+        if (behind.type === KING) type = "absolute";
+        return {
+          type,
+          targetPiece: behind,
+          by: { color: opp, square: oppPiece, type: pieceSymbol },
+        };
+      }
+    }
+  }
+}
+
+// Calculating if piece is hanging.
+
+export function isPieceHanging(fen: string, square: Square): boolean {
+  let game;
+  try {
+    game = new Chess(fen, { skipValidation: true });
+  } catch {
     return false;
   }
+  const piece = game.get(square);
+  if (!piece) return false;
+  const pieceValue = pieceValues[piece.type];
+  const opp = getOpp(piece.color);
+  const defenders = getAllAttackers(game, square, piece.color);
+  const attackers = getAllAttackers(game, square, opp);
 
-  // If a rook took a minor piece that was only defended by one other
-  // minor piece, it was a favourable rook exchange, so rook not hanging
-  if (
-    piece.type === "r" &&
-    pieceValues[lastPiece.type] === 3 &&
-    attackers.every((atk) => pieceValues[atk.type] === 3) &&
-    attackers.length === 1
-  ) {
-    return false;
-  }
+  // If being attacked directly by lower value piece it's hanging
+  if (attackers.some((a) => a.type === "direct" && a.value < pieceValue)) return true;
 
-  // If piece has an attacker of lower value, hanging
-  if (attackers.some((atk) => pieceValues[atk.type] < pieceValues[piece.type])) {
-    return true;
-  }
+  // should have atleast one direct attacker to be hanging(All x-ray attackers don't count)
+  if (attackers.filter((a) => a.type === "direct").length === 0) return false;
 
-  if (attackers.length > defenders.length) {
-    let minAttackerValue = Infinity;
-    for (const attacker of attackers) {
-      minAttackerValue = Math.min(pieceValues[attacker.type], minAttackerValue);
-    }
+  // If single direct defender is lower value than all attacker not hanging
+  const lowestValueAttacker = Math.min(
+    ...attackers.filter((a) => a.type === "direct").map((a) => a.value)
+  );
+  if (defenders.some((d) => d.type === "direct" && d.value < lowestValueAttacker)) return false;
 
-    // If taking the piece even though it has more attackers than defenders
-    // would be a sacrifice in itself, not hanging
-    if (
-      pieceValues[piece.type] < minAttackerValue &&
-      defenders.some((dfn) => pieceValues[dfn.type] < minAttackerValue)
-    ) {
-      return false;
-    }
-
-    // If any of the piece's defenders are pawns, then the sacrificed piece
-    // is the defending pawn. The least valuable attacker is equal in value
-    // to the sacrificed piece at this point of the logic
-    if (defenders.some((dfn) => pieceValues[dfn.type] === 1)) {
-      return false;
-    }
-
-    return true;
-  }
-
+  if (attackers.length > defenders.length) return true;
   return false;
+}
+
+export function getMaterial(fen: string, color: Color) {
+  const pieces = fen.split(" ")[1];
+  if (!pieces) return 0;
+
+  let material = 0;
+  pieces.split("").forEach((p) => {
+    if (p.toLowerCase() !== "k") {
+      const isPieceWhite = p.toUpperCase() === p;
+      if ((isPieceWhite && color === "w") || (!isPieceWhite && color !== "w")) {
+        const value = pieceValues[p as PieceSymbol];
+        if (value) material += value;
+      }
+    }
+  });
+  return material;
+}
+
+export type allPinnedPiecesType = Partial<Record<Square, isPinnedReturn>>;
+export function getAllPinnedPieces(game: Chess): allPinnedPiecesType {
+  const piecesToCheck: PieceSymbol[] = [KNIGHT, ROOK, QUEEN, PAWN];
+  const allPinnedPieces: allPinnedPiecesType = {};
+  for (const pieceName of piecesToCheck) {
+    const allWhitePieces = game.findPiece({ type: pieceName, color: WHITE });
+    const allBlackPieces = game.findPiece({ type: pieceName, color: BLACK });
+    const allPiece = [...allWhitePieces, ...allBlackPieces];
+    for (const piece of allPiece) {
+      const p = isPinned(game.fen(), piece);
+      if (p) allPinnedPieces[piece] = p;
+    }
+  }
+  return allPinnedPieces;
+}
+
+export function getAllHangingPieces(game: Chess, color: Color): Square[] {
+  const piecesToCheck: PieceSymbol[] = [KNIGHT, ROOK, QUEEN, PAWN];
+  const allPinnedPieces: Square[] = [];
+  for (const pieceName of piecesToCheck) {
+    const allPieces = game.findPiece({ type: pieceName, color });
+    for (const sq of allPieces) {
+      const p = isPieceHanging(game.fen(), sq);
+      if (p) allPinnedPieces.push(sq);
+    }
+  }
+  return allPinnedPieces;
+}
+
+export function getHighestValueHangingPiece(
+  game: Chess,
+  hangingPieces: Square[]
+): PieceSymbol | null {
+  let highestValuePiece: PieceSymbol | null = null;
+
+  for (const square of hangingPieces) {
+    const piece = game.get(square);
+    if (piece) {
+      if (!highestValuePiece || pieceValues[piece.type] > pieceValues[highestValuePiece]) {
+        highestValuePiece = piece.type;
+      }
+    }
+  }
+
+  return highestValuePiece;
+}
+
+export const colorNames: Record<Color, string> = {
+  [WHITE]: "White",
+  [BLACK]: "Black",
+};
+
+export const promotions = [undefined, "b", "n", "r", "q"];
+
+export function isMoveLegal(fen: string, move: string): boolean {
+  try {
+    const game = new Chess(fen);
+    game.move(move);
+    return true;
+  } catch {
+    return false;
+  }
 }

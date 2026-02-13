@@ -3,13 +3,10 @@ import { allTypesOfMove, MT } from "@/components/moveTypes/types";
 import { CardBody, CardFooter } from "@heroui/card";
 import { Button, ButtonGroup, ButtonProps } from "@heroui/button";
 import { Progress } from "@heroui/progress";
-import StockfishManager, { evaluationType } from "@/Logic/stockfish";
 import EvalGraph from "@/Logic/evalgraph";
-import { analysisType, analyze } from "@/Logic/analyze";
-import { Move } from "chess.js";
+import { analysisType, analyzeGame } from "@/Logic/analyze";
 import { useGameState } from "@/Logic/state/game";
 import { MoveClass } from "@/components/moveTypes";
-import { useSettingsState } from "@/Logic/state/settings";
 import { icons } from "@/components/icons";
 import { addToast } from "@heroui/toast";
 import { cn } from "@heroui/theme";
@@ -40,8 +37,6 @@ function Summary() {
   const setAnalysis = useGameState((state) => state.setAnalysis);
   const Game = useGameState((state) => state.Game);
   const analysis = useGameState((state) => state.analysis);
-  const depth = useSettingsState((state) => state.depth);
-  const localStockfish = useSettingsState((state) => state.localStockfish);
   const saveGameToArchive = useGameState((state) => state.saveGameToArchive);
 
   const addGameToArchive = async () => {
@@ -77,66 +72,17 @@ function Summary() {
 
   useEffect(() => {
     if (!Game) return;
-    const stockfish = new StockfishManager();
 
-    const analyzePosition = async (
-      fen: string,
-      prevEval: evaluationType,
-      moveIndex: number,
-      move: Move
-    ) => {
-      const SFresult = await stockfish.analyzePosition(fen, depth, localStockfish);
-      const analysis = await analyze({
-        stockfishAnalysis: SFresult,
-        prevEval,
-        positionDetails: move,
-        moveIndex,
+    if (!analysis) {
+      analyzeGame(Game, setProgress).then((a) => {
+        setAnalysis(a);
+        setPlayerSummary(countTypes(a));
       });
-      return analysis;
-    };
-
-    const analysisLoop = async () => {
-      const history = Game.history({ verbose: true });
-      const CM = Game.isCheckmate();
-      const SM = Game.isStalemate();
-      const gameOver = CM || SM;
-      let completed = 0;
-      const analysisResult = [];
-      let prevEval = { type: "cp", value: 0 };
-
-      const initialMove = await analyzePosition(history[0].before, prevEval, -1, history[0]);
-      analysisResult.push(initialMove);
-      prevEval = initialMove.eval;
-
-      for (let i = 0; i < history.length; i++) {
-        const fen = history[i].after;
-
-        if (gameOver && i === history.length - 1) {
-          const turn = Game.turn();
-          if (SM) prevEval = { type: "cp", value: 0 };
-          else prevEval = { type: "mate", value: turn === "w" ? -1 : 1 };
-        } else {
-          const a = await analyzePosition(fen, prevEval, i, history[i]);
-          analysisResult.push(a);
-          prevEval = a.eval;
-        }
-
-        completed++;
-        setProgress(completed / history.length);
-      }
-
-      setAnalysis(analysisResult);
-      setPlayerSummary(countTypes(analysisResult));
-    };
-
-    if (!analysis) analysisLoop();
-    else {
+    } else {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       if (progress !== 1) setProgress(1);
       setPlayerSummary(countTypes(analysis));
     }
-
-    return () => stockfish.terminate();
   }, []);
   if (!Game) throw new Error();
 

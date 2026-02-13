@@ -1,5 +1,5 @@
 import { Accordion, AccordionItem } from "@heroui/accordion";
-import IconPreview from "@/components/icons_preview";
+// import IconPreview from "@/components/icons_preview";
 import GeneralSettings from "@/app/left_panel/generalSettings";
 import StockfishSettings from "@/app/left_panel/stockfishSettings";
 import Archive from "@/app/left_panel/archive";
@@ -10,6 +10,7 @@ import { useState } from "react";
 import { Button } from "@heroui/button";
 import { Modal, ModalContent, ModalHeader, ModalBody } from "@heroui/modal";
 import { cn } from "@heroui/theme";
+import SwitchGroup from "@/components/switchGroup";
 
 const Items = {
   "General Settings": { content: <GeneralSettings />, icon: icons.left_panel.settings },
@@ -18,8 +19,17 @@ const Items = {
 };
 
 const devItems = {
-  "Icons D": { content: <IconPreview />, icon: icons.left_panel.code },
+  Extras: { content: <DevSettings />, icon: icons.left_panel.code },
+  // "Icons D": { content: <IconPreview />, icon: icons.left_panel.code },
 };
+
+function DevSettings() {
+  return (
+    <>
+      <SwitchGroup switches={[{ item: "analyzePerMove", children: "Per Move Analysis" }]} />
+    </>
+  );
+}
 
 function LeftPanel() {
   const openAccordions = useSettingsState((state) => state.openAccordions);
