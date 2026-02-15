@@ -55,15 +55,15 @@ export function PerMoveAnalysis() {
     const text = `{
   positionDetails: toMove(${JSON.stringify(moveData, null, 2)}),
   stockfishAnalysis: ${JSON.stringify(
-      {
-        bestMove: crrAnalysis.bestMove,
-        eval: crrAnalysis.eval,
-        lines: crrAnalysis.lines,
-        secondBest: crrAnalysis.secondBest,
-      },
-      null,
-      2
-    )},
+    {
+      bestMove: crrAnalysis.bestMove,
+      eval: crrAnalysis.eval,
+      lines: crrAnalysis.lines,
+      secondBest: crrAnalysis.secondBest,
+    },
+    null,
+    2
+  )},
   prevAnalysis: ${JSON.stringify(prevAnalysis, null, 2)},
   moveIndex: ${moveIndex},
 }`;

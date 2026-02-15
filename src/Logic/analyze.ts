@@ -42,7 +42,7 @@ export type analysisType = StockfishOutput & {
   moveComment?: string;
   pinnedPieces?: allPinnedPiecesType;
   hangingPieces?: Record<Color, Square[]>;
-}
+};
 
 function capEval(e: evaluationType, cap: number = 50): number {
   if (e.type === "mate") return e.value > 0 ? cap : -cap;

@@ -190,9 +190,9 @@ describe("Blunders From My Games", () => {
   });
 });
 
-describe("Blunders From Other Games", () => { });
-describe("Blunders from Lichess Puzzels", () => { });
+describe("Blunders From Other Games", () => {});
+describe("Blunders from Lichess Puzzels", () => {});
 
-describe("Brilliancies From My Games", () => { });
-describe("Brilliancies From Other Games", () => { });
-describe("Brilliancies from Lichess Puzzels", () => { });
+describe("Brilliancies From My Games", () => {});
+describe("Brilliancies From Other Games", () => {});
+describe("Brilliancies from Lichess Puzzels", () => {});
