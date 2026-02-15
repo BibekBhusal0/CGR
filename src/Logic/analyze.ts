@@ -132,7 +132,8 @@ export async function analyzeMove({
   let moveType: MT;
   let accuracy: number = 100;
   const chess = new Chess(fen);
-  const isWhiteTurn = chess.turn() === "w";
+  const color = positionDetails.color;
+  const isWhiteTurn = color === "w";
 
   const prevEval = prevAnalysis?.eval || { type: "cp", value: 0 };
   const crrEval = stockfishAnalysis.eval;
@@ -142,7 +143,6 @@ export async function analyzeMove({
   // If best move had been found eval diff should be 0.
   const evalDiff = cappedEval - prevCappedEval;
   const gotAdvantage = isWhiteTurn ? evalDiff >= 0 : evalDiff <= 0;
-  const color = positionDetails.color;
   const opp = getOpp(color);
   const opponentsHangingPieces = fen === DEFAULT_POSITION ? [] : getAllHangingPieces(chess, opp);
   const hangingPieces = fen === DEFAULT_POSITION ? [] : getAllHangingPieces(chess, color);
@@ -232,8 +232,8 @@ export async function analyzeMove({
       // If free piece is given it's blunder.
       moveType = isMiss ? "miss" : "blunder";
 
-      if (!isMiss && prevHangingPiece) {
-        const ourWorstHangingPiece = getHighestValueHangingPiece(chess, prevHangingPiece);
+      if (!isMiss && hangingPieces) {
+        const ourWorstHangingPiece = getHighestValueHangingPiece(chess, hangingPieces);
 
         if (ourWorstHangingPiece) {
           moveComment = `${colorName} left ${pieceNames[ourWorstHangingPiece]} hanging`;
@@ -242,6 +242,7 @@ export async function analyzeMove({
     }
     // In other cases it's `inaccuracy` or `mistake` based on eval diff
     else if (absDiff > 2) moveType = "mistake";
+    else if (absDiff < 0.5) moveType = "good";
     else moveType = "inaccuracy";
   }
 
