@@ -9,6 +9,24 @@ import StockfishManager from "@/Logic/stockfish";
 import { cn } from "@heroui/theme";
 import { ChevronIcon } from "@heroui/shared-icons";
 import { MoveComment } from "../moves/moveComment";
+import { Move } from "chess.js";
+
+export type SerializableMove = Omit<
+  Move,
+  | "isBigPawn"
+  | "isCapture"
+  | "isEnPassant"
+  | "isKingsideCastle"
+  | "isPromotion"
+  | "isQueensideCastle"
+> & {
+  isBigPawn: boolean;
+  isCapture: boolean;
+  isEnPassant: boolean;
+  isKingsideCastle: boolean;
+  isPromotion: boolean;
+  isQueensideCastle: boolean;
+};
 
 export function PerMoveAnalysis() {
   const moveIndex = useGameState((state) => state.moveIndex);
@@ -18,10 +36,33 @@ export function PerMoveAnalysis() {
   const Game = useGameState((state) => state.Game);
   const [loading, setLoading] = useState(!!analysis);
 
-  const prevAnalysis = analysis![moveIndex - 1];
-  const crrAnalysis = analysis![moveIndex];
-  function copy(obj: any) {
-    if (obj) navigator.clipboard.writeText(JSON.stringify(obj));
+  function copyAnalyzeProps() {
+    const prevAnalysis = analysis![moveIndex - 1];
+    const crrAnalysis = analysis![moveIndex];
+    if (!Game || crrAnalysis === undefined) return;
+    const history = Game.history({ verbose: true });
+    const move = history[moveIndex];
+    const moveData: SerializableMove = {
+      ...move,
+      isBigPawn: move.isBigPawn(),
+      isCapture: move.isCapture(),
+      isEnPassant: move.isEnPassant(),
+      isKingsideCastle: move.isKingsideCastle(),
+      isPromotion: move.isPromotion(),
+      isQueensideCastle: move.isQueensideCastle(),
+    };
+    const props = {
+      stockfishAnalysis: {
+        bestMove: crrAnalysis.bestMove,
+        eval: crrAnalysis.eval,
+        lines: crrAnalysis.lines,
+        secondBest: crrAnalysis.secondBest,
+      },
+      positionDetails: moveData,
+      prevAnalysis: prevAnalysis,
+      moveIndex: moveIndex,
+    };
+    navigator.clipboard.writeText(JSON.stringify(props));
   }
 
   function analyzeCurrentPos() {
@@ -87,22 +128,13 @@ export function PerMoveAnalysis() {
         ) : (
           <>
             <div className="mb-2 flex gap-2">
-              <Button
-                className="grow text-xl"
-                onPress={() => copy(prevAnalysis)}
-                isDisabled={!prevAnalysis}>
-                Copy prev analysis
+              <Button className="grow text-xl" onPress={copyAnalyzeProps}>
+                Copy analyzeProps
               </Button>
-              <Button
-                className="grow text-xl"
-                onPress={() => copy(crrAnalysis)}
-                isDisabled={!crrAnalysis}>
-                Copy crr analysis
+              <Button className="mb-2 text-xl" onPress={analyzeCurrentPos}>
+                Reanalyze This move
               </Button>
             </div>
-            <Button className="mb-2 text-xl" onPress={analyzeCurrentPos}>
-              Reanalyze This move
-            </Button>
             <MoveComment />
           </>
         )}
