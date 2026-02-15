@@ -18,6 +18,12 @@ export function PerMoveAnalysis() {
   const Game = useGameState((state) => state.Game);
   const [loading, setLoading] = useState(!!analysis);
 
+  const prevAnalysis = analysis![moveIndex - 1];
+  const crrAnalysis = analysis![moveIndex];
+  function copy(obj: any) {
+    if (obj) navigator.clipboard.writeText(JSON.stringify(obj));
+  }
+
   function analyzeCurrentPos() {
     analyze().then(() => setLoading(false));
   }
@@ -52,11 +58,7 @@ export function PerMoveAnalysis() {
     if (!analysis) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(true);
-      analyze(-1).then(() => {
-        analyze(0).then(() => {
-          setLoading(false);
-        });
-      });
+      analyze(-1).then(() => analyzeCurrentPos());
     } else {
       // Make sure to analyze without jumping
       // If analysis for prev moves not available rollback some moves
@@ -84,6 +86,20 @@ export function PerMoveAnalysis() {
           <div>Per move detail will be here loading ....</div>
         ) : (
           <>
+            <div className="mb-2 flex gap-2">
+              <Button
+                className="grow text-xl"
+                onPress={() => copy(prevAnalysis)}
+                isDisabled={!prevAnalysis}>
+                Copy prev analysis
+              </Button>
+              <Button
+                className="grow text-xl"
+                onPress={() => copy(crrAnalysis)}
+                isDisabled={!crrAnalysis}>
+                Copy crr analysis
+              </Button>
+            </div>
             <Button className="mb-2 text-xl" onPress={analyzeCurrentPos}>
               Reanalyze This move
             </Button>
