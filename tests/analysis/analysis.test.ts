@@ -150,11 +150,69 @@ describe("Blunders From My Games", () => {
     expect(result).toBeObject();
     expect(result.moveType).toBe("blunder");
   });
+  test("case:2 hung a queen", async () => {
+    const result = await analyzeMove({
+      stockfishAnalysis: {
+        bestMove: "Nxf7",
+        eval: { type: "cp", value: -589 },
+        lines: ["Nxf7", "Rg3", "Qd8", "Re3", "Rxe3", "fxe3", "Nd6", "Ka1"],
+        secondBest: {
+          lines: ["e8e2", "d4e2", "d6f7", "e2f4", "b6f6", "f4d5", "f6g6", "h1e1", "a8a7", "d5f4"],
+          eval: { type: "cp", value: -460 },
+        },
+      },
+      positionDetails: toMove({
+        color: "w",
+        from: "f4",
+        to: "f7",
+        piece: "q",
+        captured: "p",
+        flags: "c",
+        san: "Qxf7",
+        lan: "f4f7",
+        before: "k1r1r3/1p3ppp/pq1n4/3p4/3N1Q2/2PR3P/PP3PP1/1K5R w - - 0 24",
+        after: "k1r1r3/1p3Qpp/pq1n4/3p4/3N4/2PR3P/PP3PP1/1K5R b - - 0 24",
+        isBigPawn: false,
+        isCapture: true,
+        isEnPassant: false,
+        isKingsideCastle: false,
+        isPromotion: false,
+        isQueensideCastle: false,
+      }),
+      prevAnalysis: {
+        bestMove: "Rc1",
+        lines: ["Rc1", "h6", "Rdd1", "Re4", "Qg3", "g6", "f3", "Ree8", "Qf2"],
+        eval: { type: "cp", value: 18 },
+        secondBest: {
+          lines: ["h1d1", "f7f6", "f4c1", "e8e7", "d3e3", "e7e4", "d1e1"],
+          eval: { type: "cp", value: 15 },
+        },
+        fenLines: [
+          "k1r1r3/1p3ppp/pq1n4/3p4/3N1Q2/2PR3P/PP3PP1/1KR5 b - - 1 24",
+          "k1r1r3/1p3pp1/pq1n3p/3p4/3N1Q2/2PR3P/PP3PP1/1KR5 w - - 0 25",
+          "k1r1r3/1p3pp1/pq1n3p/3p4/3N1Q2/2P4P/PP3PP1/1KRR4 b - - 1 25",
+          "k1r5/1p3pp1/pq1n3p/3p4/3NrQ2/2P4P/PP3PP1/1KRR4 w - - 2 26",
+          "k1r5/1p3pp1/pq1n3p/3p4/3Nr3/2P3QP/PP3PP1/1KRR4 b - - 3 26",
+          "k1r5/1p3p2/pq1n2pp/3p4/3Nr3/2P3QP/PP3PP1/1KRR4 w - - 0 27",
+          "k1r5/1p3p2/pq1n2pp/3p4/3Nr3/2P2PQP/PP4P1/1KRR4 b - - 0 27",
+          "k1r1r3/1p3p2/pq1n2pp/3p4/3N4/2P2PQP/PP4P1/1KRR4 w - - 1 28",
+          "k1r1r3/1p3p2/pq1n2pp/3p4/3N4/2P2P1P/PP3QP1/1KRR4 b - - 2 28",
+        ],
+        accuracy: 100,
+        moveType: "best",
+        hangingPieces: { w: [], b: [] },
+        pinnedPieces: {},
+      },
+      moveIndex: 46,
+    });
+    expect(result).toBeObject();
+    expect(result.moveType).toBe("blunder");
+  });
 });
 
-describe("Blunders From Other Games", () => {});
-describe("Blunders from Lichess Puzzels", () => {});
+describe("Blunders From Other Games", () => { });
+describe("Blunders from Lichess Puzzels", () => { });
 
-describe("Brilliancies From My Games", () => {});
-describe("Brilliancies From Other Games", () => {});
-describe("Brilliancies from Lichess Puzzels", () => {});
+describe("Brilliancies From My Games", () => { });
+describe("Brilliancies From Other Games", () => { });
+describe("Brilliancies from Lichess Puzzels", () => { });

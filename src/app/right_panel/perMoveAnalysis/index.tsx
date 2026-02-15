@@ -37,8 +37,8 @@ export function PerMoveAnalysis() {
   const [loading, setLoading] = useState(!!analysis);
 
   function copyAnalyzeProps() {
-    const prevAnalysis = analysis![moveIndex - 1];
-    const crrAnalysis = analysis![moveIndex];
+    const prevAnalysis = analysis![moveIndex];
+    const crrAnalysis = analysis![moveIndex + 1];
     if (!Game || crrAnalysis === undefined) return;
     const history = Game.history({ verbose: true });
     const move = history[moveIndex];

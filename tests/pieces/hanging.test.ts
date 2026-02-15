@@ -151,4 +151,8 @@ describe("Complex (X-ray/pins)", () => {
     const result = isPieceHanging("r6k/p5p1/1pQ4p/3r4/1P6/P1q5/5PPP/R1R3K1 b - - 0 1", "c6");
     expect(result).toBe(false);
   });
+  test("7 (Another x-ray)", () => {
+    const result = isPieceHanging("1kr4r/1p3ppp/pq1b1n2/3p4/5B2/2Pn2QP/PP2NPP1/1K1R3R w - - 0 1", "d6");
+    expect(result).toBe(true);
+  });
 });
