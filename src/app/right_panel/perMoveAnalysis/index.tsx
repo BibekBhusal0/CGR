@@ -10,6 +10,7 @@ import { cn } from "@heroui/theme";
 import { ChevronIcon } from "@heroui/shared-icons";
 import { MoveComment } from "../moves/moveComment";
 import { Move } from "chess.js";
+import { addToast } from "@heroui/toast";
 
 export type SerializableMove = Omit<
   Move,
@@ -51,18 +52,23 @@ export function PerMoveAnalysis() {
       isPromotion: move.isPromotion(),
       isQueensideCastle: move.isQueensideCastle(),
     };
-    const props = {
-      stockfishAnalysis: {
+    const text = `{
+  positionDetails: toMove(${JSON.stringify(moveData, null, 2)}),
+  stockfishAnalysis: ${JSON.stringify(
+      {
         bestMove: crrAnalysis.bestMove,
         eval: crrAnalysis.eval,
         lines: crrAnalysis.lines,
         secondBest: crrAnalysis.secondBest,
       },
-      positionDetails: moveData,
-      prevAnalysis: prevAnalysis,
-      moveIndex: moveIndex,
-    };
-    navigator.clipboard.writeText(JSON.stringify(props));
+      null,
+      2
+    )},
+  prevAnalysis: ${JSON.stringify(prevAnalysis, null, 2)},
+  moveIndex: ${moveIndex},
+}`;
+    navigator.clipboard.writeText(text);
+    addToast({ title: "Copied analyzeProps to clipboard", variant: "flat", color: "success" });
   }
 
   function analyzeCurrentPos() {
