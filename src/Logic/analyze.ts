@@ -33,7 +33,7 @@ export const moveAcc: Record<MT, number> = {
   forcing: 100,
 };
 
-export interface analysisType extends StockfishOutput {
+export type analysisType = StockfishOutput & {
   moveType: MT;
   accuracy: number;
   opening?: openingType;
