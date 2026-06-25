@@ -1,14 +1,11 @@
 import { FC, useEffect, useRef, useState } from "react";
-import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
-import { Button } from "@heroui/button";
+import { Card, Button, cn, Modal } from "@heroui/react";
 import { Controls } from "@/app/right_panel/moves/controls";
 import EvalGraph from "@/Logic/evalgraph";
 import { MoveComment } from "@/app/right_panel/moves/moveComment";
-import { cn } from "@heroui/theme";
 import { MoveIcon } from "@/components/moveTypes/MoveIcon";
 import { useGameState } from "@/Logic/state/game";
 import { icons } from "@/components/icons";
-import { Modal, ModalContent } from "@heroui/modal";
 
 function Moves() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -21,7 +18,7 @@ function Moves() {
           <Button
             isIconOnly
             className="absolute right-2 bottom-2 p-2 text-4xl"
-            radius="full"
+            // radius="full"
             onPress={() => setModalOpen(true)}>
             {icons.others.graph}
           </Button>
@@ -63,14 +60,14 @@ const Analysis: FC<{ modal?: boolean }> = ({ modal }) => {
 
   return (
     <>
-      <CardHeader
+      <Card.Header
         className={cn(
           "bg-default-100 flex h-20 w-full flex-col justify-center px-3",
           !modal && "hidden lg:flex"
         )}>
         <EvalGraph />
-      </CardHeader>
-      <CardBody className={cn(!modal && "hidden lg:flex")}>
+      </Card.Header>
+      <Card.Content className={cn(!modal && "hidden lg:flex")}>
         <div className="max-h-96 min-h-20 overflow-auto">
           {Pears.map((p, rowIndex) => (
             <div className="flex" key={rowIndex}>
@@ -82,8 +79,8 @@ const Analysis: FC<{ modal?: boolean }> = ({ modal }) => {
             </div>
           ))}
         </div>
-      </CardBody>
-      <CardFooter className={cn(!modal && "hidden lg:flex")}>
+      </Card.Content>
+      <Card.Footer className={cn(!modal && "hidden lg:flex")}>
         <div className="align-center flex w-full flex-col justify-center gap-3 align-middle">
           <MoveComment />
           <Controls />
@@ -91,7 +88,7 @@ const Analysis: FC<{ modal?: boolean }> = ({ modal }) => {
             <div className="text-2xl">Back</div>
           </Button>
         </div>
-      </CardFooter>
+      </Card.Footer>
     </>
   );
 };

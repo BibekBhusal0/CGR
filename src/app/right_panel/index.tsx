@@ -13,12 +13,13 @@ function RightPanel() {
   return (
     <Card
       style={{ position: "unset" }}
-      classNames={{
-        base: "max-h-[650px]",
-        footer: "overflow-visible",
-        body: "overflow-auto",
-        header: "overflow-visible",
-      }}>
+      // classNames={{
+      //   base: "max-h-[650px]",
+      //   footer: "overflow-visible",
+      //   body: "overflow-auto",
+      //   header: "overflow-visible",
+      // }}
+      >
       {stage === "first" ? (
         <Input />
       ) : analyzePerMove ? (

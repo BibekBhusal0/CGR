@@ -13,7 +13,6 @@ export function ToggleSwitch({ item, ...props }: ToggleSwitchProps) {
       {...props}
       isSelected={value}
       onChange={toggle}
-      // children={props.children || item}
       // classNames={switchClassNames}
     >
       <Switch.Content>

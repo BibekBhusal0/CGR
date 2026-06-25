@@ -1,4 +1,4 @@
-import { CardBody, CardFooter, CardHeader, cn, ChevronIcon, addToast } from "@heroui/react";
+import { Card, cn, ChevronIcon, toast } from "@heroui/react";
 // import { Button } from "@heroui/button";
 import { Controls } from "../moves/controls";
 import { useSettingsState } from "@/Logic/state/settings";
@@ -6,11 +6,9 @@ import { useGameState } from "@/Logic/state/game";
 import { useEffect, useState } from "react";
 import { analysisType, analyzePosition } from "@/Logic/analyze";
 import StockfishManager from "@/Logic/stockfish";
-// import { cn } from "@heroui/theme";
-// import { ChevronIcon } from "@heroui/shared-icons";
 import { MoveComment } from "../moves/moveComment";
 import { Move } from "chess.js";
-// import { addToast } from "@heroui/toast";
+import { Button } from "@heroui/button";
 
 export type SerializableMove = Omit<
   Move,
@@ -68,7 +66,7 @@ export function PerMoveAnalysis() {
   moveIndex: ${moveIndex},
 }`;
     navigator.clipboard.writeText(text);
-    addToast({ title: "Copied analyzeProps to clipboard", variant: "flat", color: "success" });
+    toast.success("Copied analyzeProps to clipboard")
   }
 
   function analyzeCurrentPos() {
@@ -125,10 +123,10 @@ export function PerMoveAnalysis() {
 
   return (
     <>
-      <CardHeader className="flex flex-col gap-2">
+      <Card.Header className="flex flex-col gap-2">
         <Warning />
-      </CardHeader>
-      <CardBody>
+      </Card.Header>
+      <Card.Content>
         {loading ? (
           <div>Per move detail will be here loading ....</div>
         ) : (
@@ -144,10 +142,10 @@ export function PerMoveAnalysis() {
             <MoveComment />
           </>
         )}
-      </CardBody>
-      <CardFooter className="flex-center">
+      </Card.Content>
+      <Card.Footer className="flex-center">
         <Controls />
-      </CardFooter>
+      </Card.Footer>
     </>
   );
 }

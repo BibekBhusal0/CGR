@@ -1,11 +1,12 @@
+import { analysisType } from "@/Logic/analyze";
 import { create } from "zustand";
 import { Chess, DEFAULT_POSITION } from "chess.js";
 import { evaluationType } from "@/Logic/stockfish";
-import { analysisType } from "@/Logic/analyze";
 import { GOT } from "@/components/moveTypes/types";
 import { chessResults, drawResults, game } from "@/api/CDC";
 import { ToastProps } from "@heroui/toast";
 import { addGameToArchive, getAllGamesFromArchive } from "@/utils/archive";
+import { toast } from "@heroui/react";
 
 function reformatLostResult(result: chessResults): GOT {
   if (result === "checkmated" || result === "timeout" || result === "resigned") {
@@ -60,7 +61,7 @@ interface GameActions {
   loadGame: (load: saveType) => void;
   loadFromCdc: (game: game, userName?: string) => void;
   getGameToSave: () => saveType | undefined;
-  saveGameToArchive: () => Promise<ToastProps>;
+  saveGameToArchive: () => void;
 }
 
 export type saveType = loadType & { pgn: string; name: string; id: string };
@@ -205,14 +206,14 @@ export const useGameState = create<GameState>((set, get) => ({
     const { getGameToSave } = get();
     const g = getGameToSave();
     if (!g) {
-      return { title: "No game to save", color: "danger" } as ToastProps;
+      toast.danger("No Game to save");
     }
     const all = await getAllGamesFromArchive();
-    const alreadySaved = all.some((game) => game.pgn === g.pgn);
+    const alreadySaved = all.some((game) => game.pgn === g?.pgn);
     if (alreadySaved) {
       return { title: "Game already archived", color: "warning" } as ToastProps;
     }
     await addGameToArchive(g as saveType);
-    return { title: "Game archived", color: "success" } as ToastProps;
+    toast.success("Game Archived");
   },
 }));

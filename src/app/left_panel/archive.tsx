@@ -1,12 +1,10 @@
 import { clearArchive, getAllGamesFromArchive, importGamesToArchive, getDb } from "@/utils/archive";
 import { saveToJson } from "@/utils/import_export";
-import { Button, ButtonGroup, ButtonProps } from "@heroui/react";
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/react";
+import { Button, ButtonGroup, ButtonProps, Modal, toast } from "@heroui/react";
 import { useState, useRef } from "react";
 import { icons } from "@/components/icons";
 import { cn } from "@heroui/react";
 import { Fragment } from "react/jsx-runtime";
-import { addToast } from "@heroui/react";
 import { saveType, useGameState } from "@/Logic/state/game";
 
 export default function Archive() {
@@ -22,9 +20,9 @@ export default function Archive() {
     loadGame(game);
     try {
       setArchiveOpen(false);
-      addToast({ title: "Game Imported", color: "success" });
+      toast.success("Game Imported");
     } catch {
-      addToast({ title: "Game can not be imported", color: "danger" });
+      toast.danger("Game can not be imported");
     }
   };
 
@@ -36,7 +34,7 @@ export default function Archive() {
 
   const handleAddGame = async () => {
     const toast = await saveGameToArchive();
-    addToast(toast);
+    toast(toast);
   };
 
   const handleImportArchive = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,29 +44,29 @@ export default function Archive() {
     const games = JSON.parse(text);
     if (Array.isArray(games)) {
       await importGamesToArchive(games);
-      addToast({ title: "Archive imported", color: "success" });
+      toast.success("Archive imported");
     } else {
-      addToast({ title: "Invalid Archive Format", color: "danger" });
+      toast.danger("Invalid Archive Format");
     }
   };
 
   const handleExportArchive = async () => {
     const all = await getAllGamesFromArchive();
     saveToJson(all, "chess_archive");
-    addToast({ title: "Archive downloaded", color: "success" });
+    toast.success("Archive downloaded");
   };
 
   const handleDeleteGame = async (id: string) => {
     const db = await getDb();
     await db.delete("games", id);
     loadGames();
-    addToast({ title: "Game deleted", color: "danger" });
+    toast.danger("Game deleted");
   };
 
   const handleClear = async () => {
     await clearArchive();
     setWarningOpen(false);
-    addToast({ title: "Archive cleared", color: "warning" });
+    toast.warning("Archive cleared");
   };
 
   const allButtons: Partial<ButtonProps>[] = [

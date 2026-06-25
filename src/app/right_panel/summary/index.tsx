@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { allTypesOfMove, MT } from "@/components/moveTypes/types";
-import { CardBody, CardFooter , Button, ButtonGroup, ButtonProps, addToast, cn} from "@heroui/react";
+import { Card , Button, ButtonGroup, ButtonProps, cn} from "@heroui/react";
 // import { Button, ButtonGroup, ButtonProps } from "@heroui/button";
 import { Progress } from "@heroui/progress";
 import EvalGraph from "@/Logic/evalgraph";
@@ -8,8 +8,6 @@ import { analysisType, analyzeGame } from "@/Logic/analyze";
 import { useGameState } from "@/Logic/state/game";
 import { MoveClass } from "@/components/moveTypes";
 import { icons } from "@/components/icons";
-// import { addToast } from "@heroui/toast";
-// import { cn } from "@heroui/theme";
 
 export interface playerStats {
   accuracy: number;
@@ -39,11 +37,6 @@ function Summary() {
   const analysis = useGameState((state) => state.analysis);
   const saveGameToArchive = useGameState((state) => state.saveGameToArchive);
 
-  const addGameToArchive = async () => {
-    const toast = await saveGameToArchive();
-    addToast(toast);
-  };
-
   const allButtons: Partial<ButtonProps>[] = [
     {
       children: "Start Analyzing",
@@ -54,7 +47,7 @@ function Summary() {
     {
       children: "Archive",
       startContent: icons.left_panel.archive,
-      onPress: addGameToArchive,
+      onPress: saveGameToArchive,
       disabled: loading,
     },
     {
@@ -88,7 +81,7 @@ function Summary() {
 
   return (
     <>
-      <CardBody>
+      <Card.Content>
         <div className="flex flex-col items-center justify-center gap-3 p-3 text-center align-middle text-lg">
           {!loading && (
             <div className="h-20 w-4/5 rounded-xs">
@@ -129,8 +122,8 @@ function Summary() {
               }></MoveClass>
           ))}
         </div>
-      </CardBody>
-      <CardFooter className="flex justify-center">
+      </Card.Content>
+      <Card.Footer className="flex justify-center">
         <ButtonGroup>
           {allButtons.map((button, i) => (
             <Fragment key={i}>
@@ -144,7 +137,7 @@ function Summary() {
             </Fragment>
           ))}
         </ButtonGroup>
-      </CardFooter>
+      </Card.Footer>
     </>
   );
 }
