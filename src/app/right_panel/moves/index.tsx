@@ -24,19 +24,24 @@ function Moves() {
           </Button>
         )}
       </div>
-      <Modal isOpen={modalOpen} onOpenChange={setModalOpen} hideCloseButton>
-        <ModalContent>
+      <Modal
+        isOpen={modalOpen}
+        onOpenChange={setModalOpen}
+        // hideCloseButton
+      >
+        <Modal.Backdrop>
           <Card
             style={{ position: "unset" }}
-            classNames={{
-              base: "max-h-[80vh]",
-              footer: "overflow-visible",
-              body: "overflow-auto",
-              header: "overflow-visible",
-            }}>
+            // classNames={{
+            //   base: "max-h-[80vh]",
+            //   footer: "overflow-visible",
+            //   body: "overflow-auto",
+            //   header: "overflow-visible",
+            // }}
+            >
             <Analysis modal={true} />
           </Card>
-        </ModalContent>
+        </Modal.Backdrop>
       </Modal>
     </>
   );

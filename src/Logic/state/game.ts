@@ -4,7 +4,6 @@ import { Chess, DEFAULT_POSITION } from "chess.js";
 import { evaluationType } from "@/Logic/stockfish";
 import { GOT } from "@/components/moveTypes/types";
 import { chessResults, drawResults, game } from "@/api/CDC";
-import { ToastProps } from "@heroui/toast";
 import { addGameToArchive, getAllGamesFromArchive } from "@/utils/archive";
 import { toast } from "@heroui/react";
 
@@ -207,11 +206,13 @@ export const useGameState = create<GameState>((set, get) => ({
     const g = getGameToSave();
     if (!g) {
       toast.danger("No Game to save");
+      return
     }
     const all = await getAllGamesFromArchive();
     const alreadySaved = all.some((game) => game.pgn === g?.pgn);
     if (alreadySaved) {
-      return { title: "Game already archived", color: "warning" } as ToastProps;
+      toast.warning("Game already archived")
+      return
     }
     await addGameToArchive(g as saveType);
     toast.success("Game Archived");

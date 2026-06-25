@@ -5,10 +5,7 @@ import StockfishSettings from "@/app/left_panel/stockfishSettings";
 import Archive from "@/app/left_panel/archive";
 import { icons } from "@/components/icons";
 import { useSettingsState } from "@/Logic/state/settings";
-// import { Tab, Tabs } from "@heroui/tabs";
 import { useState } from "react";
-// import { Button } from "@heroui/button";
-// import { Modal, ModalContent, ModalHeader, ModalBody } from "@heroui/modal";
 import { cn } from "@heroui/theme";
 import SwitchGroup from "@/components/switchGroup";
 
@@ -144,13 +141,17 @@ function Left() {
           {icons.left_panel.settings}
         </Button>
       </div>
-      <Modal isOpen={modalOpen} onOpenChange={setModalOpen} size="lg">
-        <ModalContent>
-          <ModalHeader>Settings</ModalHeader>
-          <ModalBody className="p-2">
+      <Modal
+        isOpen={modalOpen}
+        onOpenChange={setModalOpen}
+        // size="lg"
+      >
+        <Modal.Backdrop>
+          <Modal.Header>Settings</Modal.Header>
+          <Modal.Body className="p-2">
             <SettingsTabs />
-          </ModalBody>
-        </ModalContent>
+          </Modal.Body>
+        </Modal.Backdrop>
       </Modal>
     </>
   );

@@ -1,7 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { CDCresponse, getGamesOfPlayer, isGameResponse } from "@/api/CDC";
-import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/react";
-import { CalendarDate } from "@heroui/calendar";
+import { Modal , Calendar } from "@heroui/react";
 import { GameTable, LoadingTable } from "@/app/right_panel/input/game_table";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import ChooseMonth from "@/components/chooseMonth";
@@ -39,16 +38,21 @@ export const SelectGame: FC<SelectGameProps> = ({ input, toggle, isOpen }) => {
 
   return (
     <>
-      <Modal size="3xl" isOpen={isOpen} toggle={toggle}>
-        <ModalContent>
-          <ModalHeader className="flex flex-col justify-center gap-3 text-center">
+      <Modal
+        // size="3xl"
+        isOpen={isOpen}
+        // toggle={toggle}
+      >
+        <Modal.Container>
+          <Modal.Header className="flex flex-col justify-center gap-3 text-center">
             {loaded ? "Searched" : "Searching"} for game of {input} for {month} {date.year} in
             Chess.com
             <div className="flex justify-center gap-3">
               <ChooseMonth onClick={resetDateAndFetch} />
             </div>
-          </ModalHeader>
-          <ModalBody>
+          </Modal.Header>
+          <Modal.Container><Modal.Dialog>
+          <Modal.CloseTrigger />
             {loaded ? (
               data === undefined ? (
                 "Couldn't fetch Data"
@@ -66,8 +70,8 @@ export const SelectGame: FC<SelectGameProps> = ({ input, toggle, isOpen }) => {
             ) : (
               <LoadingTable />
             )}
-          </ModalBody>
-        </ModalContent>
+          </Modal.Dialog></Modal.Container>
+        </Modal.Container>
       </Modal>
     </>
   );

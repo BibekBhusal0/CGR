@@ -1,6 +1,9 @@
-import { Popover, PopoverTrigger, PopoverContent } from "@heroui/popover";
-import { Button } from "@heroui/button";
-import { CalendarDate, RangeCalendar } from "@heroui/calendar";
+import {
+  Popover,
+  Button,
+  DateRangePicker,
+  RangeCalendar,
+} from "@heroui/react";
 import {
   today,
   startOfMonth,
@@ -33,35 +36,66 @@ export default function ChooseMonth({ onClick }: chooseMonthProps) {
   };
 
   return (
-    <Popover isOpen={open} backdrop="blur" onOpenChange={(open) => setOpen(open)}>
-      <PopoverTrigger>
-        <Button color="primary" className="px-10 py-5 text-lg">
+    <Popover
+      isOpen={open}
+      // backdrop="blur"
+      onOpenChange={(open) => setOpen(open)}>
+      <Popover.Trigger>
+        <Button
+          // color="primary"
+          className="px-10 py-5 text-lg">
           Select Another Month
         </Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        <RangeCalendar
-          color="success"
+      </Popover.Trigger>
+      <Popover.Content>
+        <DateRangePicker
+          // color="success"
           aria-label="choose month"
           value={getRange()}
           isReadOnly
           maxValue={today(getLocalTimeZone())}
-          focusedValue={start}
-          nextButtonProps={{ onPress: () => changeMonth(1) }}
-          prevButtonProps={{ onPress: () => changeMonth(-1) }}
-          bottomContent=<div className="flex justify-center p-2">
-            <Button
-              color="primary"
-              variant="solid"
-              onPress={() => {
-                onClick(start);
-                setOpen(false);
-              }}>
-              Select
-            </Button>
-          </div>
-        />
-      </PopoverContent>
+          // focusedValue={start}
+          // nextButtonProps={{ onPress: () => changeMonth(1) }}
+          // prevButtonProps={{ onPress: () => changeMonth(-1) }}
+          // bottomContent=<div className="flex justify-center p-2">
+          //   <Button
+          //     // color="primary"
+          //     // variant="solid"
+          //     onPress={() => {
+          //       onClick(start);
+          //       setOpen(false);
+          //     }}>
+          //     Select
+          //   </Button>
+          // </div>
+        >
+          <DateRangePicker.Popover>
+            <RangeCalendar>
+              <RangeCalendar.Header>
+                <RangeCalendar.YearPickerTrigger>
+                  <RangeCalendar.YearPickerTriggerHeading />
+                  <RangeCalendar.YearPickerTriggerIndicator />
+                </RangeCalendar.YearPickerTrigger>
+                <RangeCalendar.NavButton slot="previous" />
+                <RangeCalendar.NavButton slot="next" />
+              </RangeCalendar.Header>
+              <RangeCalendar.Grid>
+                <RangeCalendar.GridHeader>
+                  {(day) => <RangeCalendar.HeaderCell>{day}</RangeCalendar.HeaderCell>}
+                </RangeCalendar.GridHeader>
+                <RangeCalendar.GridBody>
+                  {(date) => <RangeCalendar.Cell date={date} />}
+                </RangeCalendar.GridBody>
+              </RangeCalendar.Grid>
+              <RangeCalendar.YearPickerGrid>
+                <RangeCalendar.YearPickerGridBody>
+                  {({ year }) => <RangeCalendar.YearPickerCell year={year} />}
+                </RangeCalendar.YearPickerGridBody>
+              </RangeCalendar.YearPickerGrid>
+            </RangeCalendar>
+          </DateRangePicker.Popover>
+        </DateRangePicker>
+      </Popover.Content>
     </Popover>
   );
 }

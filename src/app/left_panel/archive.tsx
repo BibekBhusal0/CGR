@@ -32,11 +32,6 @@ export default function Archive() {
     setArchiveOpen(true);
   };
 
-  const handleAddGame = async () => {
-    const toast = await saveGameToArchive();
-    toast(toast);
-  };
-
   const handleImportArchive = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || file.type !== "application/json") return;
@@ -73,7 +68,7 @@ export default function Archive() {
     {
       children: "Add This Game",
       startContent: icons.others.add,
-      onPress: handleAddGame,
+      onPress: saveGameToArchive,
       disabled: !Game || !analysis,
     },
     { children: "Load From archive", startContent: icons.left_panel.archive, onPress: loadGames },
@@ -120,25 +115,38 @@ export default function Archive() {
       <input type="file" accept=".json" onChange={handleImportArchive} hidden ref={fileRef} />
 
       {/* Warning Modal */}
-      <Modal isOpen={warningOpen} onOpenChange={setWarningOpen} size="xs" hideCloseButton>
-        <ModalContent>
-          <ModalHeader>Are you sure you want to empty the archive?</ModalHeader>
-          <ModalFooter>
-            <Button size="sm" color="danger" onPress={handleClear}>
+      <Modal
+        isOpen={warningOpen}
+        onOpenChange={setWarningOpen}
+        // size="xs"
+        // hideCloseButton
+      >
+        <Modal.Backdrop>
+          <Modal.Header>Are you sure you want to empty the archive?</Modal.Header>
+          <Modal.Footer>
+            <Button
+              size="sm"
+              // color="danger"
+              onPress={handleClear}
+            >
               Yes
             </Button>
             <Button size="sm" onPress={() => setWarningOpen(false)}>
               No
             </Button>
-          </ModalFooter>
-        </ModalContent>
+          </Modal.Footer>
+        </Modal.Backdrop>
       </Modal>
 
       {/* Load Archive Modal */}
-      <Modal isOpen={archiveOpen} onOpenChange={setArchiveOpen} size="md">
-        <ModalContent>
-          <ModalHeader>{games.length === 0 ? "Archive Empty" : "Select a Game"}</ModalHeader>
-          <ModalBody className="flex max-h-96 flex-col overflow-auto">
+      <Modal
+        isOpen={archiveOpen}
+        onOpenChange={setArchiveOpen}
+        // size="md"
+      >
+        <Modal.Backdrop>
+          <Modal.Header>{games.length === 0 ? "Archive Empty" : "Select a Game"}</Modal.Header>
+          <Modal.Body className="flex max-h-96 flex-col overflow-auto">
             {games.length === 0 ? (
               <div className="pb-5 text-center text-gray-500">
                 You can add a game to archive using the <strong>"Add This Game"</strong> button when
@@ -150,13 +158,13 @@ export default function Archive() {
                   <ButtonGroup key={game.id} className="mb-2 w-full">
                     <Button
                       className="w-full justify-start"
-                      variant="solid"
+                      // variant="solid"
                       onPress={() => onLoad(game)}>
                       {game.name || `Game ${i + 1}`}
                     </Button>
                     <Button
-                      color="danger"
-                      variant="flat"
+                      // color="danger"
+                      // variant="flat"
                       className="text-xl"
                       onPress={() => handleDeleteGame(game.id)}
                       isIconOnly>
@@ -166,8 +174,8 @@ export default function Archive() {
                 </Fragment>
               ))
             )}
-          </ModalBody>
-        </ModalContent>
+          </Modal.Body>
+        </Modal.Backdrop>
       </Modal>
     </div>
   );
