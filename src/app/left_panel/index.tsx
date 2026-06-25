@@ -37,7 +37,6 @@ function LeftPanel() {
 
   return (
     <Accordion
-      // itemClasses={{ title: "text-xl overflow-x-hidden", content: "mb-2" }}
       allowsMultipleExpanded
       aria-label="left"
       expandedKeys={new Set(openAccordions)}
@@ -46,20 +45,19 @@ function LeftPanel() {
         val.forEach((i) => opened.push(i as string));
         setOpenAccordtions(opened);
       }}
-      // variant="light"
-    >
+      variant="surface">
       {Object.entries(accordionItems).map(([key, value]) => (
-        <Accordion.Item
-          // classNames={{ content: "space-y-4", startContent: "text-2xl" }}
-          aria-label={key}
-          key={key}>
+        <Accordion.Item aria-label={key} key={key}>
           <Accordion.Heading>
             <Accordion.Trigger>
-              {value.icon}
-              {key}
+              <div className="flex items-center gap-3 text-xl">
+                {value.icon}
+                {key}
+              </div>
+              <Accordion.Indicator />
             </Accordion.Trigger>
           </Accordion.Heading>
-          <Accordion.Panel>{value.content}</Accordion.Panel>
+          <Accordion.Panel className="px-4 py-1">{value.content}</Accordion.Panel>
         </Accordion.Item>
       ))}
     </Accordion>
@@ -70,19 +68,14 @@ function SettingsTabs() {
   const devMode = useSettingsState((state) => state.devMode);
   const modalItems = devMode ? { ...Items, ...devItems } : Items;
   return (
-    <Tabs
-      aria-label="Settings tabs"
-      // variant="light"
-      // size="sm"
-      // classNames={{ tabList: "gap-0" }}
-    >
+    <Tabs aria-label="Settings tabs" variant="primary">
       <Tabs.ListContainer>
-        <Tabs.List>
+        <Tabs.List aria-label="Settings">
           {Object.entries(modalItems).map(([key, value]) => (
             <Tabs.Tab
+              // className="md:text-md p-1 text-sm md:px-2"
               aria-label={key}
               id={key}
-              className="md:text-md p-1 text-sm md:px-2"
               key={key}>
               <div className="flex-center gap-1">
                 {value.icon} <span>{key}</span>
@@ -115,7 +108,7 @@ function Left() {
         )}>
         <Button
           onPress={toggleSidebar}
-          // variant={sidebarCollapsed ? "light" : "ghost"}
+          variant={sidebarCollapsed ? "tertiary" : "outline"}
           size="sm"
           className={cn(
             "hidden text-xl lg:flex",
@@ -130,7 +123,7 @@ function Left() {
           </div>
         )}
         <Button
-          // variant={"light"}
+          variant="tertiary"
           onPress={() => setModalOpen(true)}
           size="sm"
           className={cn(
@@ -141,16 +134,17 @@ function Left() {
           {icons.left_panel.settings}
         </Button>
       </div>
-      <Modal
-        isOpen={modalOpen}
-        onOpenChange={setModalOpen}
-        // size="lg"
-      >
+      <Modal isOpen={modalOpen} onOpenChange={setModalOpen}>
         <Modal.Backdrop>
-          <Modal.Header>Settings</Modal.Header>
-          <Modal.Body className="p-2">
-            <SettingsTabs />
-          </Modal.Body>
+          <Modal.Container size="cover">
+            <Modal.Dialog>
+              <Modal.CloseTrigger />
+              <Modal.Header>Settings</Modal.Header>
+              <Modal.Body className="p-2">
+                <SettingsTabs />
+              </Modal.Body>
+            </Modal.Dialog>
+          </Modal.Container>
         </Modal.Backdrop>
       </Modal>
     </>

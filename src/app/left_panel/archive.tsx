@@ -129,66 +129,63 @@ export default function Archive() {
       <input type="file" accept=".json" onChange={handleImportArchive} hidden ref={fileRef} />
 
       {/* Warning Modal */}
-      <Modal
-        isOpen={warningOpen}
-        onOpenChange={setWarningOpen}
-        // size="xs"
-        // hideCloseButton
-      >
+      <Modal isOpen={warningOpen} onOpenChange={setWarningOpen}>
         <Modal.Backdrop>
-          <Modal.Header>Are you sure you want to empty the archive?</Modal.Header>
-          <Modal.Footer>
-            <Button
-              size="sm"
-              // color="danger"
-              onPress={handleClear}
-            >
-              Yes
-            </Button>
-            <Button size="sm" onPress={() => setWarningOpen(false)}>
-              No
-            </Button>
-          </Modal.Footer>
+          <Modal.Container size="xs">
+            <Modal.Dialog>
+              <Modal.Header>Are you sure you want to empty the archive?</Modal.Header>
+              <Modal.Footer>
+                <Button size="sm" variant="danger" onPress={handleClear}>
+                  Yes
+                </Button>
+                <Button size="sm" onPress={() => setWarningOpen(false)}>
+                  No
+                </Button>
+              </Modal.Footer>
+            </Modal.Dialog>
+          </Modal.Container>
         </Modal.Backdrop>
       </Modal>
 
       {/* Load Archive Modal */}
-      <Modal
-        isOpen={archiveOpen}
-        onOpenChange={setArchiveOpen}
-        // size="md"
-      >
+      <Modal isOpen={archiveOpen} onOpenChange={setArchiveOpen}>
         <Modal.Backdrop>
-          <Modal.Header>{games.length === 0 ? "Archive Empty" : "Select a Game"}</Modal.Header>
-          <Modal.Body className="flex max-h-96 flex-col overflow-auto">
-            {games.length === 0 ? (
-              <div className="pb-5 text-center text-gray-500">
-                You can add a game to archive using the <strong>"Add This Game"</strong> button when
-                you are analyzing a game. Once archived, games will appear here for easy loading.
-              </div>
-            ) : (
-              games.map((game, i) => (
-                <Fragment key={i}>
-                  <ButtonGroup key={game.id} className="mb-2 w-full">
-                    <Button
-                      className="w-full justify-start"
-                      // variant="solid"
-                      onPress={() => onLoad(game)}>
-                      {game.name || `Game ${i + 1}`}
-                    </Button>
-                    <Button
-                      // color="danger"
-                      // variant="flat"
-                      className="text-xl"
-                      onPress={() => handleDeleteGame(game.id)}
-                      isIconOnly>
-                      {icons.others.trash}
-                    </Button>
-                  </ButtonGroup>
-                </Fragment>
-              ))
-            )}
-          </Modal.Body>
+          <Modal.Container size="sm">
+            <Modal.Dialog>
+              <Modal.CloseTrigger />
+              <Modal.Header>{games.length === 0 ? "Archive Empty" : "Select a Game"}</Modal.Header>
+              <Modal.Body className="flex max-h-96 flex-col overflow-auto">
+                {games.length === 0 ? (
+                  <div className="pb-5 text-center text-gray-500">
+                    You can add a game to archive using the <strong>"Add This Game"</strong> button
+                    when you are analyzing a game. Once archived, games will appear here for easy
+                    loading.
+                  </div>
+                ) : (
+                  games.map((game, i) => (
+                    <Fragment key={i}>
+                      <ButtonGroup key={game.id} className="mb-2 w-full">
+                        <Button
+                          className="w-full justify-start"
+                          // variant="solid"
+                          onPress={() => onLoad(game)}>
+                          {game.name || `Game ${i + 1}`}
+                        </Button>
+                        <Button
+                          // color="danger"
+                          // variant="flat"
+                          className="text-xl"
+                          onPress={() => handleDeleteGame(game.id)}
+                          isIconOnly>
+                          {icons.others.trash}
+                        </Button>
+                      </ButtonGroup>
+                    </Fragment>
+                  ))
+                )}
+              </Modal.Body>
+            </Modal.Dialog>
+          </Modal.Container>
         </Modal.Backdrop>
       </Modal>
     </div>

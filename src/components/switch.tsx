@@ -1,5 +1,5 @@
 import { Switch } from "@heroui/react";
-import { switchClassNames, ToggleSwitchProps } from "@/components/switch_types";
+import { ToggleSwitchProps } from "@/components/switch_types";
 import { useSettingsState } from "@/Logic/state/settings";
 
 export function ToggleSwitch({ item, ...props }: ToggleSwitchProps) {
@@ -10,17 +10,12 @@ export function ToggleSwitch({ item, ...props }: ToggleSwitchProps) {
   const toggle = () => toggleValues(item);
 
   return (
-    <Switch
-      {...props}
-      isSelected={value}
-      onChange={toggle}
-      // classNames={switchClassNames}
-    >
+    <Switch {...props} isSelected={value} onChange={toggle}>
       <Switch.Content>
+        {props.children || item}
         <Switch.Control>
           <Switch.Thumb />
         </Switch.Control>
-        {props.children || item}
       </Switch.Content>
     </Switch>
   );
