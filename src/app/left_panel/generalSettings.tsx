@@ -1,6 +1,6 @@
-import { Select, SelectItem } from "@heroui/select";
-import { Switch } from "@heroui/switch";
-import { useTheme } from "@heroui/use-theme";
+// import { Select, SelectItem } from "@heroui/select";
+// import { Switch } from "@heroui/switch";
+import { useTheme, Switch, Select, SelectItem } from "@heroui/react";
 import {
   allBoardThemes,
   allNotationStyles,

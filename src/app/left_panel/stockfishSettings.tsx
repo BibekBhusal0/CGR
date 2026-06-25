@@ -1,11 +1,11 @@
-import { Slider } from "@heroui/slider";
+import { Slider } from "@heroui/react";
 import { ToggleSwitch } from "@/components/switch";
 import {
   allStockfishAvailable,
   availableStockfish,
   useSettingsState,
 } from "@/Logic/state/settings";
-import { Select, SelectItem } from "@heroui/select";
+import { Select, SelectItem } from "@heroui/react";
 
 function StockfishSettings() {
   const depth = useSettingsState((state) => state.depth);

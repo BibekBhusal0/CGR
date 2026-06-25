@@ -1,16 +1,16 @@
-import { CardBody, CardFooter, CardHeader } from "@heroui/card";
-import { Button } from "@heroui/button";
+import { CardBody, CardFooter, CardHeader, cn, ChevronIcon, addToast } from "@heroui/react";
+// import { Button } from "@heroui/button";
 import { Controls } from "../moves/controls";
 import { useSettingsState } from "@/Logic/state/settings";
 import { useGameState } from "@/Logic/state/game";
 import { useEffect, useState } from "react";
 import { analysisType, analyzePosition } from "@/Logic/analyze";
 import StockfishManager from "@/Logic/stockfish";
-import { cn } from "@heroui/theme";
-import { ChevronIcon } from "@heroui/shared-icons";
+// import { cn } from "@heroui/theme";
+// import { ChevronIcon } from "@heroui/shared-icons";
 import { MoveComment } from "../moves/moveComment";
 import { Move } from "chess.js";
-import { addToast } from "@heroui/toast";
+// import { addToast } from "@heroui/toast";
 
 export type SerializableMove = Omit<
   Move,

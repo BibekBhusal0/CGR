@@ -1,13 +1,13 @@
-import { Button } from "@heroui/button";
-import { Chip } from "@heroui/chip";
-import { Select, SelectItem } from "@heroui/select";
-import { Textarea } from "@heroui/input";
+import { Button , Chip, Select, SelectItem, Textarea, addToast, } from "@heroui/react";
+// import { Chip } from "@heroui/chip";
+// import { Select, SelectItem } from "@heroui/select";
+// import { Textarea } from "@heroui/input";
 import { useEffect, useRef, useState } from "react";
 import { SelectGame } from "@/app/right_panel/input/game_select";
 import { Chess } from "chess.js";
 import { CardBody } from "@heroui/card";
 import { icons } from "@/components/icons";
-import { addToast } from "@heroui/toast";
+// import { addToast } from "@heroui/toast";
 import { useDisclosure } from "@heroui/modal";
 import { useSettingsState } from "@/Logic/state/settings";
 import { useGameState } from "@/Logic/state/game";

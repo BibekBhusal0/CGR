@@ -1,11 +1,11 @@
-import { Card } from "@heroui/card";
+import { Card } from "@heroui/react";
 import { FC } from "react";
 import EvalBar from "@/app/full_board/evalbar";
 import JustBoard from "@/app/full_board/customBoard";
 import { useGameState } from "@/Logic/state/game";
 import { useEffect, useRef, useState } from "react";
 import { useSettingsState } from "@/Logic/state/settings";
-import { cn } from "@heroui/theme";
+import { cn } from "@heroui/react";
 
 function FullBoard() {
   const sidebarCollapsed = useSettingsState((state) => state.sidebarCollapsed);

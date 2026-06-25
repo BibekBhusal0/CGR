@@ -1,4 +1,4 @@
-import { Card } from "@heroui/card";
+import { Card } from "@heroui/react";
 import { Input } from "@/app/right_panel/input";
 import Summary from "@/app/right_panel/summary";
 import Moves from "@/app/right_panel/moves";

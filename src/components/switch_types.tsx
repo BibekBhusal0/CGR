@@ -1,4 +1,4 @@
-import { SwitchProps } from "@heroui/switch";
+import { SwitchProps } from "@heroui/react";
 import { booleanSettings } from "@/Logic/state/settings";
 
 export const switchClassNames = {

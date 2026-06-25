@@ -5,7 +5,7 @@ import { boardThemes, useSettingsState } from "@/Logic/state/settings";
 import { AllIcons } from "@/components/moveTypes/types";
 import { MoveIcon } from "@/components/moveTypes/MoveIcon";
 import { useGameState } from "@/Logic/state/game";
-import { cn } from "@heroui/theme";
+import { cn } from "@heroui/react";
 import { isLightSquare } from "@/Logic/pieces";
 
 interface PieceProps {

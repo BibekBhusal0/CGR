@@ -1,12 +1,12 @@
 import { clearArchive, getAllGamesFromArchive, importGamesToArchive, getDb } from "@/utils/archive";
 import { saveToJson } from "@/utils/import_export";
-import { Button, ButtonGroup, ButtonProps } from "@heroui/button";
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/modal";
+import { Button, ButtonGroup, ButtonProps } from "@heroui/react";
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/react";
 import { useState, useRef } from "react";
 import { icons } from "@/components/icons";
-import { cn } from "@heroui/theme";
+import { cn } from "@heroui/react";
 import { Fragment } from "react/jsx-runtime";
-import { addToast } from "@heroui/toast";
+import { addToast } from "@heroui/react";
 import { saveType, useGameState } from "@/Logic/state/game";
 
 export default function Archive() {

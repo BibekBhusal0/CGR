@@ -2,7 +2,7 @@ import { useSettingsState } from "@/Logic/state/settings";
 import FullBoard from "@/app/full_board";
 import Left from "@/app/left_panel";
 import RightPanel from "@/app/right_panel";
-import { cn } from "@heroui/theme";
+import { cn } from "@heroui/react";
 
 function App() {
   const sidebarCollapsed = useSettingsState((state) => state.sidebarCollapsed);

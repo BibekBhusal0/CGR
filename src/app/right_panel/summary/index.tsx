@@ -1,15 +1,15 @@
 import { Fragment, useEffect, useState } from "react";
 import { allTypesOfMove, MT } from "@/components/moveTypes/types";
-import { CardBody, CardFooter } from "@heroui/card";
-import { Button, ButtonGroup, ButtonProps } from "@heroui/button";
+import { CardBody, CardFooter , Button, ButtonGroup, ButtonProps, addToast, cn} from "@heroui/react";
+// import { Button, ButtonGroup, ButtonProps } from "@heroui/button";
 import { Progress } from "@heroui/progress";
 import EvalGraph from "@/Logic/evalgraph";
 import { analysisType, analyzeGame } from "@/Logic/analyze";
 import { useGameState } from "@/Logic/state/game";
 import { MoveClass } from "@/components/moveTypes";
 import { icons } from "@/components/icons";
-import { addToast } from "@heroui/toast";
-import { cn } from "@heroui/theme";
+// import { addToast } from "@heroui/toast";
+// import { cn } from "@heroui/theme";
 
 export interface playerStats {
   accuracy: number;

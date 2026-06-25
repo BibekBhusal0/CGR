@@ -1,4 +1,4 @@
-import { cn } from "@heroui/theme";
+import { cn } from "@heroui/react";
 import { useGameState } from "@/Logic/state/game";
 
 function EvalBar() {

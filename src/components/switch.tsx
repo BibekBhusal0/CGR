@@ -1,4 +1,4 @@
-import { Switch } from "@heroui/switch";
+import { Switch } from "@heroui/react";
 import { switchClassNames, ToggleSwitchProps } from "@/components/switch_types";
 import { useSettingsState } from "@/Logic/state/settings";
 
