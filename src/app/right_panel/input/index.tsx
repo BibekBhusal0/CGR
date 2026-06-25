@@ -1,4 +1,12 @@
-import { Button , Chip, Select, SelectItem, Textarea, addToast, } from "@heroui/react";
+import {
+  Button,
+  Chip,
+  Select,
+  SelectItem,
+  Textarea,
+  addToast,
+  useOverlayState,
+} from "@heroui/react";
 // import { Chip } from "@heroui/chip";
 // import { Select, SelectItem } from "@heroui/select";
 // import { Textarea } from "@heroui/input";
@@ -8,7 +16,6 @@ import { Chess } from "chess.js";
 import { CardBody } from "@heroui/card";
 import { icons } from "@/components/icons";
 // import { addToast } from "@heroui/toast";
-import { useDisclosure } from "@heroui/modal";
 import { useSettingsState } from "@/Logic/state/settings";
 import { useGameState } from "@/Logic/state/game";
 import { allInputModes, inputModes } from "@/Logic/state/settings";
@@ -20,7 +27,7 @@ export function Input() {
   const setInputMode = useSettingsState((state) => state.setInputMode);
   const setBottom = useGameState((state) => state.setBottom);
 
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, open, toggle } = useOverlayState();
   const pgnRef = useRef<HTMLTextAreaElement>(null);
 
   function analyzePgn(pgn: string) {
@@ -37,7 +44,7 @@ export function Input() {
   function handleClick() {
     if (val.trim() !== "") {
       if (mode === "pgn") analyzePgn(val.trim());
-      else onOpen();
+      else open();
     } else {
       addToast({
         title: mode === "pgn" ? "Please Enter Your  PGN" : "Please Enter username",
@@ -71,7 +78,7 @@ export function Input() {
       setInputMode("chess.com");
       setVal(currentUrl.searchParams.get("cdcUsername") || "");
       if (currentUrl.searchParams.get("search") === "true") {
-        onOpen();
+        open();
       }
       clear();
     }
@@ -134,7 +141,7 @@ export function Input() {
         onPress={handleClick}>
         {mode === "pgn" ? "Analyze" : "Search"}
       </Button>
-      <SelectGame {...{ input: val, onOpenChange, isOpen }} />
+      <SelectGame {...{ input: val, toggle, isOpen }} />
     </CardBody>
   );
 }

@@ -1,14 +1,14 @@
 import { FC, useEffect, useState } from "react";
 import { CDCresponse, getGamesOfPlayer, isGameResponse } from "@/api/CDC";
-import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
+import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/react";
 import { CalendarDate } from "@heroui/calendar";
 import { GameTable, LoadingTable } from "@/app/right_panel/input/game_table";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import ChooseMonth from "@/components/chooseMonth";
 
-type SelectGameProps = { input: string; onOpenChange: () => void; isOpen: boolean };
+type SelectGameProps = { input: string; toggle: () => void; isOpen: boolean };
 
-export const SelectGame: FC<SelectGameProps> = ({ input, onOpenChange, isOpen }) => {
+export const SelectGame: FC<SelectGameProps> = ({ input, toggle, isOpen }) => {
   const [data, setData] = useState<CDCresponse>();
   const [date, setDate] = useState(today(getLocalTimeZone()));
   const [loaded, setLoaded] = useState(false);
@@ -39,7 +39,7 @@ export const SelectGame: FC<SelectGameProps> = ({ input, onOpenChange, isOpen })
 
   return (
     <>
-      <Modal size="3xl" isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal size="3xl" isOpen={isOpen} toggle={toggle}>
         <ModalContent>
           <ModalHeader className="flex flex-col justify-center gap-3 text-center">
             {loaded ? "Searched" : "Searching"} for game of {input} for {month} {date.year} in

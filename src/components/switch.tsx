@@ -12,9 +12,16 @@ export function ToggleSwitch({ item, ...props }: ToggleSwitchProps) {
     <Switch
       {...props}
       isSelected={value}
-      onValueChange={toggle}
-      children={props.children || item}
-      classNames={switchClassNames}
-    />
+      onChange={toggle}
+      // children={props.children || item}
+      // classNames={switchClassNames}
+    >
+      <Switch.Content>
+        <Switch.Control>
+          <Switch.Thumb />
+        </Switch.Control>
+      </Switch.Content>
+      {props.children || item }
+    </Switch>
   );
 }

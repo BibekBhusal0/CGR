@@ -1,4 +1,4 @@
-import { Accordion, AccordionItem, Tab, Tabs, Button, Modal  } from "@heroui/react";
+import { Accordion, Tabs, Button, Modal } from "@heroui/react";
 // import IconPreview from "@/components/icons_preview";
 import GeneralSettings from "@/app/left_panel/generalSettings";
 import StockfishSettings from "@/app/left_panel/stockfishSettings";
@@ -40,26 +40,30 @@ function LeftPanel() {
 
   return (
     <Accordion
-      onSelectionChange={(e) => {
-        if (typeof e === "string") return;
+      // itemClasses={{ title: "text-xl overflow-x-hidden", content: "mb-2" }}
+      allowsMultipleExpanded
+      aria-label="left"
+      expandedKeys={new Set(openAccordions)}
+      onExpandedChange={(val) => {
         const opened: string[] = [];
-        e.forEach((i) => opened.push(i as string));
+        val.forEach((i) => opened.push(i as string));
         setOpenAccordtions(opened);
       }}
-      itemClasses={{ title: "text-xl overflow-x-hidden", content: "mb-2" }}
-      aria-label="left"
-      selectedKeys={new Set(openAccordions)}
-      variant="light"
-      selectionMode="multiple">
+      // variant="light"
+    >
       {Object.entries(accordionItems).map(([key, value]) => (
-        <AccordionItem
-          startContent={value.icon}
-          classNames={{ content: "space-y-4", startContent: "text-2xl" }}
+        <Accordion.Item
+          // classNames={{ content: "space-y-4", startContent: "text-2xl" }}
           aria-label={key}
-          title={key}
           key={key}>
-          {value.content}
-        </AccordionItem>
+          <Accordion.Heading>
+            <Accordion.Trigger>
+              {value.icon}
+              {key}
+            </Accordion.Trigger>
+          </Accordion.Heading>
+          <Accordion.Panel>{value.content}</Accordion.Panel>
+        </Accordion.Item>
       ))}
     </Accordion>
   );
@@ -69,19 +73,31 @@ function SettingsTabs() {
   const devMode = useSettingsState((state) => state.devMode);
   const modalItems = devMode ? { ...Items, ...devItems } : Items;
   return (
-    <Tabs aria-label="Settings tabs" variant="light" size="sm" classNames={{ tabList: "gap-0" }}>
+    <Tabs
+      aria-label="Settings tabs"
+      // variant="light"
+      // size="sm"
+      // classNames={{ tabList: "gap-0" }}
+    >
+      <Tabs.ListContainer>
+        <Tabs.List>
+          {Object.entries(modalItems).map(([key, value]) => (
+            <Tabs.Tab
+              aria-label={key}
+              id={key}
+              className="md:text-md p-1 text-sm md:px-2"
+              key={key}>
+              <div className="flex-center gap-1">
+                {value.icon} <span>{key}</span>
+              </div>
+            </Tabs.Tab>
+          ))}
+        </Tabs.List>
+      </Tabs.ListContainer>
       {Object.entries(modalItems).map(([key, value]) => (
-        <Tab
-          aria-label={key}
-          title={
-            <div className="flex-center gap-1">
-              {value.icon} <span>{key}</span>
-            </div>
-          }
-          className="md:text-md p-1 text-sm md:px-2"
-          key={key}>
-          <div className="h-80 w-full space-y-4 overflow-auto">{value.content}</div>
-        </Tab>
+        <Tabs.Panel id={key} key={key} className="h-80 w-full space-y-4 overflow-auto">
+          {value.content}
+        </Tabs.Panel>
       ))}
     </Tabs>
   );
@@ -102,7 +118,7 @@ function Left() {
         )}>
         <Button
           onPress={toggleSidebar}
-          variant={sidebarCollapsed ? "light" : "ghost"}
+          // variant={sidebarCollapsed ? "light" : "ghost"}
           size="sm"
           className={cn(
             "hidden text-xl lg:flex",
@@ -117,7 +133,7 @@ function Left() {
           </div>
         )}
         <Button
-          variant={"light"}
+          // variant={"light"}
           onPress={() => setModalOpen(true)}
           size="sm"
           className={cn(
