@@ -51,19 +51,20 @@ export const GameTable: FC<TableProps> = ({ tableData: { games }, userName }) =>
       // disabledKeys={disabledKeys}
       // disabledBehavior="all"
       // bottomContentPlacement="outside"
-      bottomContent={
-        <div className="flex w-full justify-center">
-          <Pagination
-            // loop
-            // siblings={2}
-            // variant="bordered"
-            showControls
-            showShadow
-            page={page}
-            // onChange={setPage}
-            total={pages}></Pagination>
-        </div>
-      }>
+      // bottomContent={
+      //   <div className="flex w-full justify-center">
+      //     <Pagination
+      //       loop
+      //       siblings={2}
+      //       variant="bordered"
+      //       showControls
+      //       showShadow
+      //       page={page}
+      //       // onChange={setPage}
+      //       total={pages}></Pagination>
+      //   </div>
+      // }
+      >
       <Table.Header>
         {titles.map((t) => (
           <Table.Column key={t}>{t}</Table.Column>

@@ -1,4 +1,4 @@
-import { Card, cn, ChevronIcon, toast } from "@heroui/react";
+import { Card, cn, toast } from "@heroui/react";
 // import { Button } from "@heroui/button";
 import { Controls } from "../moves/controls";
 import { useSettingsState } from "@/Logic/state/settings";
@@ -164,14 +164,14 @@ function Warning() {
         expanded ? "h-auto max-h-80" : "max-h-9.5",
         // animation ? "transition-all" : "transition-none"
       )}>
-      <ChevronIcon
-        className={cn(
-          "absolute top-3 right-4",
-          // animation ? "transition-all" : "transition-none",
-          expanded ? "-rotate-90" : "rotate-0"
-        )}
-        onClick={() => setExpanded((e) => !e)}
-      />
+      {/* <ChevronIcon */}
+      {/*   className={cn( */}
+      {/*     "absolute top-3 right-4", */}
+      {/*     // animation ? "transition-all" : "transition-none", */}
+      {/*     expanded ? "-rotate-90" : "rotate-0" */}
+      {/*   )} */}
+      {/*   onClick={() => setExpanded((e) => !e)} */}
+      {/* /> */}
       <div className="text-md text-danger-800 bg-danger-200 flex flex-col gap-2 rounded-md p-2 pr-8">
         <div>Analysis per move enabled.</div>
         Note that per move analysis is not recommended unless you are inspecting every single move.

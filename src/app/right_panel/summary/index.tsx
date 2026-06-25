@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { allTypesOfMove, MT } from "@/components/moveTypes/types";
-import { Card , Button, ButtonGroup, ButtonProps, cn} from "@heroui/react";
+import { Card, Button, ButtonGroup, ButtonProps, cn } from "@heroui/react";
 // import { Button, ButtonGroup, ButtonProps } from "@heroui/button";
 import { Progress } from "@heroui/progress";
 import EvalGraph from "@/Logic/evalgraph";
@@ -8,6 +8,11 @@ import { analysisType, analyzeGame } from "@/Logic/analyze";
 import { useGameState } from "@/Logic/state/game";
 import { MoveClass } from "@/components/moveTypes";
 import { icons } from "@/components/icons";
+import { JSX } from "react";
+
+interface newButtonProps extends Partial<ButtonProps> {
+  startContent?: JSX.Element;
+}
 
 export interface playerStats {
   accuracy: number;
@@ -37,30 +42,30 @@ function Summary() {
   const analysis = useGameState((state) => state.analysis);
   const saveGameToArchive = useGameState((state) => state.saveGameToArchive);
 
-  const allButtons: Partial<ButtonProps>[] = [
+  const allButtons: Partial<newButtonProps>[] = [
     {
       children: "Start Analyzing",
       startContent: icons.others.rocket,
       onPress: () => changeState("third"),
-      disabled: loading,
+      isDisabled: loading,
     },
     {
       children: "Archive",
       startContent: icons.left_panel.archive,
       onPress: saveGameToArchive,
-      disabled: loading,
+      isDisabled: loading,
     },
     {
       children: "Back",
       startContent: icons.controls.previous,
       onPress: () => changeState("first"),
-      color: "danger",
-      variant: "flat",
+      // color: "danger",
+      // variant: "flat",
     },
   ];
   const defaultProps: ButtonProps = {
     size: "md",
-    color: "primary",
+    // color: "primary",
   };
 
   useEffect(() => {
@@ -127,11 +132,20 @@ function Summary() {
         <ButtonGroup>
           {allButtons.map((button, i) => (
             <Fragment key={i}>
-              {!button.disabled && (
+              {!button.isDisabled && (
                 <Button
                   {...defaultProps}
                   {...button}
                   className={cn(button?.className, defaultProps.className)}
+                  children={
+                    button.startContent ? (
+                      <>
+                        {button.startContent} {button.children}
+                      </>
+                    ) : (
+                      button.children
+                    )
+                  }
                 />
               )}
             </Fragment>

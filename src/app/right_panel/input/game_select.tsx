@@ -15,7 +15,7 @@ export const SelectGame: FC<SelectGameProps> = ({ input, toggle, isOpen }) => {
     month: "long",
   });
 
-  const fetchData = async (date: CalendarDate) => {
+  const fetchData = async (date: any) => {
     setLoaded(false);
     try {
       const response = await getGamesOfPlayer(input, date.month, date.year);
@@ -26,7 +26,7 @@ export const SelectGame: FC<SelectGameProps> = ({ input, toggle, isOpen }) => {
       setLoaded(true);
     }
   };
-  const resetDateAndFetch = (newDate: CalendarDate) => {
+  const resetDateAndFetch = (newDate: any) => {
     setDate(newDate);
     fetchData(newDate);
   };

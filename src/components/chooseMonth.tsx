@@ -1,9 +1,4 @@
-import {
-  Popover,
-  Button,
-  DateRangePicker,
-  RangeCalendar,
-} from "@heroui/react";
+import { Popover, Button, DateRangePicker, RangeCalendar } from "@heroui/react";
 import {
   today,
   startOfMonth,
@@ -14,7 +9,7 @@ import {
 } from "@internationalized/date";
 import { useState } from "react";
 
-export type chooseMonthProps = { onClick: (newDate: CalendarDate) => void };
+export type chooseMonthProps = { onClick: (newDate: any) => void };
 export default function ChooseMonth({ onClick }: chooseMonthProps) {
   const currentDate = today(getLocalTimeZone());
   const [start, setStart] = useState(startOfMonth(currentDate));

@@ -6,6 +6,11 @@ import { icons } from "@/components/icons";
 import { cn } from "@heroui/react";
 import { Fragment } from "react/jsx-runtime";
 import { saveType, useGameState } from "@/Logic/state/game";
+import { JSX } from "react";
+
+interface newButtonProps extends Partial<ButtonProps> {
+  startContent?: JSX.Element;
+}
 
 export default function Archive() {
   const [warningOpen, setWarningOpen] = useState(false);
@@ -64,12 +69,12 @@ export default function Archive() {
     toast.warning("Archive cleared");
   };
 
-  const allButtons: Partial<ButtonProps>[] = [
+  const allButtons: Partial<newButtonProps>[] = [
     {
       children: "Add This Game",
       startContent: icons.others.add,
       onPress: saveGameToArchive,
-      disabled: !Game || !analysis,
+      isDisabled: !Game || !analysis,
     },
     { children: "Load From archive", startContent: icons.left_panel.archive, onPress: loadGames },
     {
@@ -84,8 +89,8 @@ export default function Archive() {
     },
     {
       children: "Clear archive",
-      color: "danger",
-      variant: "flat",
+      // color: "danger",
+      // variant: "flat",
       startContent: icons.others.trash,
       onPress: () => setWarningOpen(true),
     },
@@ -94,8 +99,8 @@ export default function Archive() {
   const defaultProps: ButtonProps = {
     className: "w-full text-xl",
     size: "lg",
-    color: "primary",
-    variant: "solid",
+    // color: "primary",
+    // variant: "solid",
   };
 
   return (
@@ -103,11 +108,20 @@ export default function Archive() {
       {/* eslint-disable-next-line react-hooks/refs */}
       {allButtons.map((button, i) => (
         <Fragment key={i}>
-          {!button.disabled && (
+          {!button.isDisabled && (
             <Button
               {...defaultProps}
               {...button}
               className={cn(button?.className, defaultProps.className)}
+              children={
+                button.startContent ? (
+                  <>
+                    {button.startContent} {button.children}
+                  </>
+                ) : (
+                  button.children
+                )
+              }
             />
           )}
         </Fragment>
