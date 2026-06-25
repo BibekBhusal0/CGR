@@ -1,11 +1,11 @@
-import { Button, Chip, ListBox, Select, toast, useOverlayState, TextArea } from "@heroui/react";
+import { Button, Chip, ListBox, Select, toast, useOverlayState, TextArea, Card } from "@heroui/react";
 // import { Chip } from "@heroui/chip";
 // import { Select, SelectItem } from "@heroui/select";
 // import { Textarea } from "@heroui/input";
 import { useEffect, useRef, useState } from "react";
 import { SelectGame } from "@/app/right_panel/input/game_select";
 import { Chess } from "chess.js";
-import { CardBody } from "@heroui/card";
+// import { CardBody } from "@heroui";
 import { icons } from "@/components/icons";
 import { useSettingsState } from "@/Logic/state/settings";
 import { useGameState } from "@/Logic/state/game";
@@ -73,7 +73,7 @@ export function Input() {
   }, []);
 
   return (
-    <CardBody className="flex-center flex-col gap-7 px-3 py-5">
+    <Card.Content className="flex-center flex-col gap-7 px-3 py-5">
       <Chip
         size="lg"
         // startContent={<div className="text-4xl" children={icons.chess.rook_pawn} />}
@@ -137,6 +137,6 @@ export function Input() {
         {mode === "pgn" ? "Analyze" : "Search"}
       </Button>
       <SelectGame {...{ input: val, toggle, isOpen }} />
-    </CardBody>
+    </Card.Content>
   );
 }
