@@ -104,7 +104,7 @@ function GeneralSettings() {
       <SwitchGroup
         switches={[
           { item: "highlight", children: "Highlight Moves" },
-          { item: "animation", children: "Animation" },
+          // { item: "animation", children: "Animation" },
           { item: "devMode", children: "Dev Mode" },
         ]}
       />

@@ -155,7 +155,6 @@ export function PerMoveAnalysis() {
 function Warning() {
   const [expanded, setExpanded] = useState(false);
   const toggle = useSettingsState((state) => state.toggleValues);
-  const animation = useSettingsState((state) => state.animation);
 
   return (
     <div
@@ -165,12 +164,12 @@ function Warning() {
       className={cn(
         "relative overflow-clip rounded-b-md",
         expanded ? "h-auto max-h-80" : "max-h-9.5",
-        animation ? "transition-all" : "transition-none"
+        // animation ? "transition-all" : "transition-none"
       )}>
       <ChevronIcon
         className={cn(
           "absolute top-3 right-4",
-          animation ? "transition-all" : "transition-none",
+          // animation ? "transition-all" : "transition-none",
           expanded ? "-rotate-90" : "rotate-0"
         )}
         onClick={() => setExpanded((e) => !e)}

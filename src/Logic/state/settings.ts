@@ -7,7 +7,6 @@ export const allBoardThemes: boardThemes[] = [...b];
 export type booleanSettings =
   | "highlight"
   | "bestMove"
-  | "animation"
   | "devMode"
   | "analyzePerMove"
   | "sidebarCollapsed";
@@ -27,7 +26,6 @@ export interface settingType {
   highlight: boolean;
   bestMove: boolean;
   devMode: boolean;
-  animation: boolean;
   sidebarCollapsed: boolean;
   analyzePerMove: boolean;
   btheme: boardThemes;
@@ -55,7 +53,6 @@ const initialState: settingType = {
   highlight: true,
   devMode: false,
   bestMove: true,
-  animation: true,
   sidebarCollapsed: false,
   analyzePerMove: false,
   btheme: "default",
