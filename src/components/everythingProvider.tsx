@@ -1,11 +1,11 @@
 import { ReactNode } from "react";
 import { ToastProvider } from "@heroui/react";
-import { useTheme } from "@heroui/use-theme";
+import { autoSetTheme } from "@/utils/setTheme";
 
 type ep = { children: ReactNode };
 
 const EverythingProvider = ({ children }: ep) => {
-  useTheme();
+  autoSetTheme();
   return (
     <>
       <ToastProvider />

@@ -1,4 +1,4 @@
-import { useTheme, Switch, Select, Label, ListBox } from "@heroui/react";
+import { Select, Label, ListBox } from "@heroui/react";
 import {
   allBoardThemes,
   allNotationStyles,
@@ -14,16 +14,12 @@ function getImageSource(theme: string, board_theme: string) {
 }
 
 function GeneralSettings() {
-  const { theme, setTheme } = useTheme();
   const btheme = useSettingsState((state) => state.btheme);
   const setBoardTheme = useSettingsState((state) => state.setBoardTheme);
+  const darkMode = useSettingsState((state) => state.darkMode);
   const setNotationStyle = useSettingsState((state) => state.setNotationStyle);
   const notationStyle = useSettingsState((state) => state.notationStyle);
-
-  function changeTheme() {
-    const not_theme = theme === "dark" ? "light" : "dark";
-    setTheme(not_theme);
-  }
+  const theme = darkMode === true ? "dark" : "light";
 
   return (
     <>
@@ -84,16 +80,9 @@ function GeneralSettings() {
         </Select.Popover>
       </Select>
 
-      <Switch isSelected={theme === "dark"} onChange={changeTheme}>
-        <Switch.Content>
-        <Label>Dark Mode</Label>
-          <Switch.Control>
-            <Switch.Thumb />
-          </Switch.Control>
-        </Switch.Content>
-      </Switch>
       <SwitchGroup
         switches={[
+          { item: "darkMode", children: "Dark Mode" },
           { item: "highlight", children: "Highlight Moves" },
           // { item: "animation", children: "Animation" },
           { item: "devMode", children: "Dev Mode" },
