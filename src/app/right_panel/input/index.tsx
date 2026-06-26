@@ -94,7 +94,7 @@ export function Input() {
         onChange={(item) => {
           setInputMode(item as inputModes);
           setVal("");
-          pgnRef.current?.focus();
+          setTimeout(() => pgnRef.current?.focus(), 1);
         }}>
         <Select.Trigger className="uppercase">
           <Select.Value />
