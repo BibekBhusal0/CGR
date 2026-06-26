@@ -1,4 +1,4 @@
-import { Popover, Button, DateRangePicker, RangeCalendar } from "@heroui/react";
+import { DateRangePicker, RangeCalendar, DateField, Button } from "@heroui/react";
 import {
   today,
   startOfMonth,
@@ -31,66 +31,52 @@ export default function ChooseMonth({ onClick }: chooseMonthProps) {
   };
 
   return (
-    <Popover
-      isOpen={open}
-      // backdrop="blur"
-      onOpenChange={(open) => setOpen(open)}>
-      <Popover.Trigger>
-        <Button
-          // color="primary"
-          className="px-10 py-5 text-lg">
-          Select Another Month
-        </Button>
-      </Popover.Trigger>
-      <Popover.Content>
-        <DateRangePicker
-          // color="success"
-          aria-label="choose month"
+    <DateRangePicker
+      endName="endDate"
+      startName="startDate"
+      maxValue={today(getLocalTimeZone())}
+      value={getRange()}>
+      <DateField.Group>
+        <Button onClick={() => setOpen(true)}>Select Month</Button>
+      </DateField.Group>
+      <DateRangePicker.Popover isOpen={open} onOpenChange={setOpen}>
+        <RangeCalendar
+          aria-label="Choose trip dates"
           value={getRange()}
-          isReadOnly
-          maxValue={today(getLocalTimeZone())}
-          // focusedValue={start}
-          // nextButtonProps={{ onPress: () => changeMonth(1) }}
-          // prevButtonProps={{ onPress: () => changeMonth(-1) }}
-          // bottomContent=<div className="flex justify-center p-2">
-          //   <Button
-          //     // color="primary"
-          //     // variant="solid"
-          //     onPress={() => {
-          //       onClick(start);
-          //       setOpen(false);
-          //     }}>
-          //     Select
-          //   </Button>
-          // </div>
-        >
-          <DateRangePicker.Popover>
-            <RangeCalendar>
-              <RangeCalendar.Header>
-                <RangeCalendar.YearPickerTrigger>
-                  <RangeCalendar.YearPickerTriggerHeading />
-                  <RangeCalendar.YearPickerTriggerIndicator />
-                </RangeCalendar.YearPickerTrigger>
-                <RangeCalendar.NavButton slot="previous" />
-                <RangeCalendar.NavButton slot="next" />
-              </RangeCalendar.Header>
-              <RangeCalendar.Grid>
-                <RangeCalendar.GridHeader>
-                  {(day) => <RangeCalendar.HeaderCell>{day}</RangeCalendar.HeaderCell>}
-                </RangeCalendar.GridHeader>
-                <RangeCalendar.GridBody>
-                  {(date) => <RangeCalendar.Cell date={date} />}
-                </RangeCalendar.GridBody>
-              </RangeCalendar.Grid>
-              <RangeCalendar.YearPickerGrid>
-                <RangeCalendar.YearPickerGridBody>
-                  {({ year }) => <RangeCalendar.YearPickerCell year={year} />}
-                </RangeCalendar.YearPickerGridBody>
-              </RangeCalendar.YearPickerGrid>
-            </RangeCalendar>
-          </DateRangePicker.Popover>
-        </DateRangePicker>
-      </Popover.Content>
-    </Popover>
+          maxValue={today(getLocalTimeZone())}>
+          <RangeCalendar.Header>
+            {/* <RangeCalendar.YearPickerTrigger> */}
+            {/*   <RangeCalendar.YearPickerTriggerHeading /> */}
+            {/*   <RangeCalendar.YearPickerTriggerIndicator /> */}
+            {/* </RangeCalendar.YearPickerTrigger> */}
+            <RangeCalendar.NavButton slot="previous" onClick={() => changeMonth(-1)} />
+            <RangeCalendar.NavButton slot="next" onClick={() => changeMonth(1)} />
+          </RangeCalendar.Header>
+          <RangeCalendar.Grid>
+            <RangeCalendar.GridHeader>
+              {(day) => <RangeCalendar.HeaderCell>{day}</RangeCalendar.HeaderCell>}
+            </RangeCalendar.GridHeader>
+            <RangeCalendar.GridBody>
+              {(date) => <RangeCalendar.Cell date={date} />}
+            </RangeCalendar.GridBody>
+          </RangeCalendar.Grid>
+          {/* <RangeCalendar.YearPickerGrid> */}
+          {/*   <RangeCalendar.YearPickerGridBody> */}
+          {/*     {({ year }) => <RangeCalendar.YearPickerCell year={year} />} */}
+          {/*   </RangeCalendar.YearPickerGridBody> */}
+          {/* </RangeCalendar.YearPickerGrid> */}
+        </RangeCalendar>
+        <div className="flex-center w-full">
+          <Button
+            onClick={() => {
+              onClick(start);
+              setOpen(false);
+            }}
+            className="flex-center">
+            Select
+          </Button>
+        </div>
+      </DateRangePicker.Popover>
+    </DateRangePicker>
   );
 }
