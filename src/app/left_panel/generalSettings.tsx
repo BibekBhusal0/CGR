@@ -27,28 +27,33 @@ function GeneralSettings() {
         value={btheme}
         variant="secondary"
         onChange={(e) => {
-          if (e == "") {
+          if (e !== "") {
             const v = e as boardThemes;
             if (!allBoardThemes.includes(v)) return;
             setBoardTheme(v);
           }
         }}>
-        <Label className="pl-2 text-lg"> Board Theme</Label>
-        <Select.Trigger className="items-center gap-2 capitalize">
-          <img alt="select theme" className="h-auto w-8 pb-1" src={getImageSource(theme, btheme)} />
+        <Label> Board Theme</Label>
+        <Select.Trigger className="pt-1">
           <Select.Value />
           <Select.Indicator />
         </Select.Trigger>
         <Select.Popover>
           <ListBox>
             {allBoardThemes.map((board_theme) => (
-              <ListBox.Item className="py-1 capitalize" aria-label={board_theme} key={board_theme}>
-                <img
-                  className="h-auto w-9"
-                  src={getImageSource(theme, board_theme)}
-                  alt={`${board_theme} board_theme Pawn`}
-                />
-                {board_theme}
+              <ListBox.Item
+                aria-label={board_theme}
+                className="py-1"
+                key={board_theme}
+                id={board_theme}>
+                <div className="flex items-center gap-2 capitalize">
+                  <img
+                    className="h-auto w-9"
+                    src={getImageSource(theme, board_theme)}
+                    alt={`${board_theme} board_theme Pawn`}
+                  />
+                  <div className="text-md pt-1">{board_theme}</div>
+                </div>
               </ListBox.Item>
             ))}
           </ListBox>
@@ -64,15 +69,19 @@ function GeneralSettings() {
             setNotationStyle(v);
           }
         }}>
-        <Label className="pl-2 text-lg">Notation Style</Label>
-        <Select.Trigger className="capitalize">
+        <Label>Notation Style</Label>
+        <Select.Trigger>
           <Select.Value />
           <Select.Indicator />
         </Select.Trigger>
         <Select.Popover>
           <ListBox>
             {allNotationStyles.map((notation) => (
-              <ListBox.Item className="capitalize" aria-label={notation} key={notation}>
+              <ListBox.Item
+                className="capitalize"
+                aria-label={notation}
+                id={notation}
+                key={notation}>
                 {notation}
               </ListBox.Item>
             ))}

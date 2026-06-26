@@ -12,9 +12,9 @@ export function ToggleSwitch({ item, ...props }: ToggleSwitchProps) {
   return (
     <Switch {...props} isSelected={value} onChange={toggle}>
       <Switch.Content>
-        {props.children || item}
+        <div className="label">{props.children || item}</div>
         <Switch.Control>
-          <Switch.Thumb />
+        <Switch.Thumb />
         </Switch.Control>
       </Switch.Content>
     </Switch>

@@ -38,6 +38,7 @@ function LeftPanel() {
   return (
     <Accordion
       allowsMultipleExpanded
+      className="settings"
       aria-label="left"
       expandedKeys={new Set(openAccordions)}
       onExpandedChange={(val) => {
@@ -49,11 +50,9 @@ function LeftPanel() {
       {Object.entries(accordionItems).map(([key, value]) => (
         <Accordion.Item aria-label={key} key={key}>
           <Accordion.Heading>
-            <Accordion.Trigger>
-              <div className="flex items-center gap-3 text-xl">
-                {value.icon}
-                {key}
-              </div>
+            <Accordion.Trigger className="flex items-center gap-3 text-xl">
+              {value.icon}
+              {key}
               <Accordion.Indicator />
             </Accordion.Trigger>
           </Accordion.Heading>
@@ -68,7 +67,7 @@ function SettingsTabs() {
   const devMode = useSettingsState((state) => state.devMode);
   const modalItems = devMode ? { ...Items, ...devItems } : Items;
   return (
-    <Tabs aria-label="Settings tabs" variant="primary">
+    <Tabs aria-label="Settings tabs" variant="primary" className="settings">
       <Tabs.ListContainer>
         <Tabs.List aria-label="Settings">
           {Object.entries(modalItems).map(([key, value]) => (

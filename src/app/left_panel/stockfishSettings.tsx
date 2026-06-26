@@ -15,11 +15,8 @@ function StockfishSettings() {
   return (
     <>
       <Slider
-        // label={"Depth"}
         aria-label="depth"
-        // showTooltip
         minValue={10}
-        // classNames={{ label: "text-lg" }}
         value={depth}
         onChange={(e) => {
           if (typeof e === "number") changeDepth(e);
@@ -34,22 +31,15 @@ function StockfishSettings() {
       </Slider>
       <ToggleSwitch item="bestMove" children="Best Move" />
       <Select
-      // selectedKeys={[stockfish]}
-      // classNames={{
-      //   label: "text-lg pl-2",
-      //   trigger: "capitalize",
-      //   listbox: "px-0",
-      // }}
-      // onChange={(e) => {
-      //   if (e.target.value.trim() !== "") {
-      //     const v = e.target.value.trim() as availableStockfish;
-      //     if (!allStockfishAvailable.includes(v)) return;
-      //     setStockfish(v);
-      //   }
-      // }}
-      // labelPlacement="outside-left"
-      // label="Stockfish"
-      >
+        value={stockfish}
+        variant="secondary"
+        onChange={(e) => {
+          if (e !== "") {
+            const v = e as availableStockfish;
+            if (!allStockfishAvailable.includes(v)) return;
+            setStockfish(v);
+          }
+        }}>
         <Label>Stockfish</Label>
         <Select.Trigger>
           <Select.Value />
@@ -58,11 +48,7 @@ function StockfishSettings() {
         <Select.Popover>
           <ListBox>
             {allStockfishAvailable.map((sf) => (
-              <ListBox.Item
-                className="capitalize"
-                // classNames={{ base: "items-center", title: "text-sm" }}
-                aria-label={sf}
-                key={sf}>
+              <ListBox.Item className="capitalize" aria-label={sf} id={sf} key={sf}>
                 {sf.replace(/-/g, " ")}
               </ListBox.Item>
             ))}
