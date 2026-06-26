@@ -27,7 +27,6 @@ function Moves() {
       <Modal
         isOpen={modalOpen}
         onOpenChange={setModalOpen}
-        // hideCloseButton
       >
         <Modal.Backdrop>
           <Card

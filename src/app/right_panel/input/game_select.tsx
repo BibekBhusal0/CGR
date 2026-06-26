@@ -1,6 +1,6 @@
 import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import { CDCresponse, getGamesOfPlayer, isGameResponse } from "@/api/CDC";
-import { Modal, Calendar } from "@heroui/react";
+import { Modal } from "@heroui/react";
 import { GameTable, LoadingTable } from "@/app/right_panel/input/game_table";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import ChooseMonth from "@/components/chooseMonth";
@@ -42,13 +42,10 @@ export const SelectGame: FC<SelectGameProps> = ({ input, onOpenChange, isOpen })
 
   return (
     <>
-      <Modal
-        // size="3xl"
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <Modal.Backdrop>
-          <Modal.Container>
-            <Modal.Dialog>
+          <Modal.Container size="cover">
+            <Modal.Dialog className="max-h-90 max-w-190">
               <Modal.Header className="flex flex-col justify-center gap-3 text-center">
                 {loaded ? "Searched" : "Searching"} for game of {input} for {month} {date.year} in
                 Chess.com

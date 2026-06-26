@@ -136,8 +136,8 @@ function Left() {
       </div>
       <Modal isOpen={modalOpen} onOpenChange={setModalOpen}>
         <Modal.Backdrop>
-          <Modal.Container size="cover">
-            <Modal.Dialog>
+          <Modal.Container>
+            <Modal.Dialog className="w-150 max-w-150">
               <Modal.CloseTrigger />
               <Modal.Header>Settings</Modal.Header>
               <Modal.Body className="p-2">
