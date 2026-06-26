@@ -4,7 +4,6 @@ import {
   ListBox,
   Select,
   toast,
-  useOverlayState,
   TextArea,
   Card,
   TextField,
@@ -25,7 +24,7 @@ export function Input() {
   const setInputMode = useSettingsState((state) => state.setInputMode);
   const setBottom = useGameState((state) => state.setBottom);
 
-  const { isOpen, open, toggle } = useOverlayState();
+  const [isOpen, onOpenChange] = useState(false);
   const pgnRef = useRef<HTMLTextAreaElement>(null);
 
   function analyzePgn(pgn: string) {
@@ -42,7 +41,7 @@ export function Input() {
   function handleClick() {
     if (val.trim() !== "") {
       if (mode === "pgn") analyzePgn(val.trim());
-      else open();
+      else onOpenChange(true);
     } else {
       toast.danger(mode === "pgn" ? "Please Enter Your  PGN" : "Please Enter username");
     }
@@ -72,7 +71,7 @@ export function Input() {
       setInputMode("chess.com");
       setVal(currentUrl.searchParams.get("cdcUsername") || "");
       if (currentUrl.searchParams.get("search") === "true") {
-        open();
+        onOpenChange(true);
       }
       clear();
     }
@@ -148,7 +147,7 @@ export function Input() {
         />
         {mode === "pgn" ? "Analyze" : "Search"}
       </Button>
-      <SelectGame {...{ input: val, toggle, isOpen }} />
+      <SelectGame {...{ input: val, isOpen, onOpenChange }} />
     </Card.Content>
   );
 }

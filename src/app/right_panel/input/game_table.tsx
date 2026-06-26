@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from "react";
 import { drawResults, game, GameResponse, lostResults, player } from "@/api/CDC";
-import { Skeleton, Pagination ,Table, TableColumn } from "@heroui/react";
+import { Skeleton, Pagination, Table, TableColumn } from "@heroui/react";
 import TimeControl from "@/components/timeControls";
 import { useGameState } from "@/Logic/state/game";
 
@@ -64,30 +64,34 @@ export const GameTable: FC<TableProps> = ({ tableData: { games }, userName }) =>
       //       total={pages}></Pagination>
       //   </div>
       // }
-      >
-      <Table.Header>
-        {titles.map((t) => (
-          <Table.Column key={t}>{t}</Table.Column>
-        ))}
-      </Table.Header>
-      <Table.Body
-        // emptyContent={`${userName} has not played any games this month you can try different month`}
-        >
-        {items.map((g) => (
-          <Table.Row key={g.uuid} className={getColors(g)} onClick={() => handleClick(g)}>
-            <Table.Cell className="m-0 h-11 p-0 text-lg">
-              <TimeControl control={g.time_class} />
-            </Table.Cell>
-            <Table.Cell>
-              <Player player_info={g.white} />
-            </Table.Cell>
-            <Table.Cell className="font-mono text-lg">VS</Table.Cell>
-            <Table.Cell className="m-0 h-8 p-0">
-              <Player player_info={g.black} />
-            </Table.Cell>
-          </Table.Row>
-        ))}
-      </Table.Body>
+    >
+      <Table.ScrollContainer>
+        <Table.Content>
+          <Table.Header>
+            {titles.map((t) => (
+              <Table.Column key={t}>{t}</Table.Column>
+            ))}
+          </Table.Header>
+          <Table.Body
+          // emptyContent={`${userName} has not played any games this month you can try different month`}
+          >
+            {items.map((g) => (
+              <Table.Row key={g.uuid} className={getColors(g)} onClick={() => handleClick(g)}>
+                <Table.Cell className="m-0 h-11 p-0 text-lg">
+                  <TimeControl control={g.time_class} />
+                </Table.Cell>
+                <Table.Cell>
+                  <Player player_info={g.white} />
+                </Table.Cell>
+                <Table.Cell className="font-mono text-lg">VS</Table.Cell>
+                <Table.Cell className="m-0 h-8 p-0">
+                  <Player player_info={g.black} />
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table.Content>
+      </Table.ScrollContainer>
     </Table>
   );
 };
@@ -112,23 +116,27 @@ export const LoadingTable: FC = () => {
       //   td: ["text-xl"],
       //   th: ["text-lg"],
       // }}
-      >
-      <Table.Header>
-        {titles.map((t) => (
-          <TableColumn key={t}>{t}</TableColumn>
-        ))}
-      </Table.Header>
-      <Table.Body>
-        {[...Array(rowsPerPage)].map((_, i) => (
-          <Table.Row key={i}>
-            {[...Array(4)].map((_, j) => (
-              <Table.Cell key={`${i}_${j}`}>
-                <Skeleton className="rounded-xs p-3" />
-              </Table.Cell>
+    >
+      <Table.ScrollContainer>
+        <Table.Content>
+          <Table.Header>
+            {titles.map((t) => (
+              <TableColumn key={t}>{t}</TableColumn>
             ))}
-          </Table.Row>
-        ))}
-      </Table.Body>
+          </Table.Header>
+          <Table.Body>
+            {[...Array(rowsPerPage)].map((_, i) => (
+              <Table.Row key={i}>
+                {[...Array(4)].map((_, j) => (
+                  <Table.Cell key={`${i}_${j}`}>
+                    <Skeleton className="rounded-xs p-3" />
+                  </Table.Cell>
+                ))}
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table.Content>
+      </Table.ScrollContainer>
     </Table>
   );
 };
