@@ -7,7 +7,7 @@ import {
   useSettingsState,
 } from "@/Logic/state/settings";
 import { base_path } from "@/app/full_board/customBoard";
-import SwitchGroup from "@/components/switchGroup";
+import SwitchGroup from "@/components/switch";
 
 function getImageSource(theme: string, board_theme: string) {
   return `${base_path}${board_theme.toLowerCase()}/${theme === "dark" ? "w" : "b"}P.svg`;

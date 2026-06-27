@@ -1,6 +1,11 @@
 import { Switch } from "@heroui/react";
-import { ToggleSwitchProps } from "@/components/switch_types";
 import { useSettingsState } from "@/Logic/state/settings";
+import { SwitchProps } from "@heroui/react";
+import { booleanSettings } from "@/Logic/state/settings";
+
+export type ToggleSwitchProps = Partial<SwitchProps> & {
+  item: booleanSettings;
+};
 
 export function ToggleSwitch({ item, ...props }: ToggleSwitchProps) {
   const value = useSettingsState((state) => state[item]);
@@ -14,9 +19,19 @@ export function ToggleSwitch({ item, ...props }: ToggleSwitchProps) {
       <Switch.Content>
         <div className="label">{props.children || item}</div>
         <Switch.Control>
-        <Switch.Thumb />
+          <Switch.Thumb />
         </Switch.Control>
       </Switch.Content>
     </Switch>
+  );
+}
+
+export default function SwitchGroup({ switches }: { switches: ToggleSwitchProps[] }) {
+  return (
+    <>
+      {switches.map((s, i) => (
+        <ToggleSwitch key={i} {...s} />
+      ))}
+    </>
   );
 }

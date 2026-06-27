@@ -1,18 +1,13 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { allTypesOfMove, MT } from "@/components/moveTypes/types";
-import { Card, Button, ButtonGroup, ButtonProps, cn } from "@heroui/react";
-// import { Button, ButtonGroup, ButtonProps } from "@heroui/button";
+import { Card, ButtonGroup, ButtonProps } from "@heroui/react";
 import { Progress } from "@heroui/progress";
 import EvalGraph from "@/Logic/evalgraph";
 import { analysisType, analyzeGame } from "@/Logic/analyze";
 import { useGameState } from "@/Logic/state/game";
 import { MoveClass } from "@/components/moveTypes";
 import { icons } from "@/components/icons";
-import { JSX } from "react";
-
-interface newButtonProps extends Partial<ButtonProps> {
-  startContent?: JSX.Element;
-}
+import { Buttons, newButtonProps } from "@/components/buttons";
 
 export interface playerStats {
   accuracy: number;
@@ -42,30 +37,30 @@ function Summary() {
   const analysis = useGameState((state) => state.analysis);
   const saveGameToArchive = useGameState((state) => state.saveGameToArchive);
 
-  const allButtons: Partial<newButtonProps>[] = [
+  const allButtons: newButtonProps[] = [
     {
       children: "Start Analyzing",
-      startContent: icons.others.rocket,
-      onPress: () => changeState("third"),
-      isDisabled: loading,
+      icon: icons.others.rocket,
+      onClick: () => changeState("third"),
+      hide: loading,
     },
     {
       children: "Archive",
-      startContent: icons.left_panel.archive,
-      onPress: saveGameToArchive,
-      isDisabled: loading,
+      icon: icons.left_panel.archive,
+      onClick: saveGameToArchive,
+      hide: loading,
     },
     {
       children: "Back",
-      startContent: icons.controls.previous,
-      onPress: () => changeState("first"),
+      icon: icons.controls.previous,
+      onClick: () => changeState("first"),
       // color: "danger",
       // variant: "flat",
     },
   ];
   const defaultProps: ButtonProps = {
     size: "md",
-    // color: "primary",
+    variant: "danger-soft",
   };
 
   useEffect(() => {
@@ -129,27 +124,8 @@ function Summary() {
         </div>
       </Card.Content>
       <Card.Footer className="flex justify-center">
-        <ButtonGroup>
-          {allButtons.map((button, i) => (
-            <Fragment key={i}>
-              {!button.isDisabled && (
-                <Button
-                  {...defaultProps}
-                  {...button}
-                  className={cn(button?.className, defaultProps.className)}
-                  children={
-                    button.startContent ? (
-                      <>
-                        {button.startContent} {button.children}
-                      </>
-                    ) : (
-                      button.children
-                    )
-                  }
-                />
-              )}
-            </Fragment>
-          ))}
+        <ButtonGroup variant={defaultProps.variant}>
+          <Buttons buttons={allButtons} defaultProps={defaultProps} includeSeperators />
         </ButtonGroup>
       </Card.Footer>
     </>

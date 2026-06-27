@@ -3,14 +3,8 @@ import { saveToJson } from "@/utils/import_export";
 import { Button, ButtonGroup, ButtonProps, Modal, toast } from "@heroui/react";
 import { useState, useRef } from "react";
 import { icons } from "@/components/icons";
-import { cn } from "@heroui/react";
-import { Fragment } from "react/jsx-runtime";
 import { saveType, useGameState } from "@/Logic/state/game";
-import { JSX } from "react";
-
-interface newButtonProps extends Partial<ButtonProps> {
-  startContent?: JSX.Element;
-}
+import { Buttons, newButtonProps } from "@/components/buttons";
 
 export default function Archive() {
   const [warningOpen, setWarningOpen] = useState(false);
@@ -69,63 +63,44 @@ export default function Archive() {
     toast.warning("Archive cleared");
   };
 
-  const allButtons: Partial<newButtonProps>[] = [
+  const allButtons: newButtonProps[] = [
     {
       children: "Add This Game",
-      startContent: icons.others.add,
-      onPress: saveGameToArchive,
-      isDisabled: !Game || !analysis,
+      icon: icons.others.add,
+      onClick: saveGameToArchive,
+      hide: !Game || !analysis,
     },
-    { children: "Load From archive", startContent: icons.left_panel.archive, onPress: loadGames },
+    {
+      children: "Load From archive",
+      icon: icons.left_panel.archive,
+      onClick: loadGames,
+    },
     {
       children: "Upload to archive",
-      startContent: icons.others.upload,
-      onPress: () => fileRef.current?.click(),
+      icon: icons.others.upload,
+      onClick: () => fileRef.current?.click(),
     },
     {
       children: "Download Archive",
-      startContent: icons.others.download,
-      onPress: handleExportArchive,
+      icon: icons.others.download,
+      onClick: handleExportArchive,
     },
     {
       children: "Clear archive",
-      // color: "danger",
-      // variant: "flat",
-      startContent: icons.others.trash,
-      onPress: () => setWarningOpen(true),
+      variant: "danger",
+      icon: icons.others.trash,
+      onClick: () => setWarningOpen(true),
     },
   ];
 
   const defaultProps: ButtonProps = {
     className: "w-full text-xl",
     size: "lg",
-    // color: "primary",
-    // variant: "solid",
   };
 
   return (
     <>
-      {/* eslint-disable-next-line react-hooks/refs */}
-      {allButtons.map((button, i) => (
-        <Fragment key={i}>
-          {!button.isDisabled && (
-            <Button
-              {...defaultProps}
-              {...button}
-              className={cn(button?.className, defaultProps.className)}
-              children={
-                button.startContent ? (
-                  <>
-                    {button.startContent} {button.children}
-                  </>
-                ) : (
-                  button.children
-                )
-              }
-            />
-          )}
-        </Fragment>
-      ))}
+      <Buttons buttons={allButtons} defaultProps={defaultProps} />
       <input type="file" accept=".json" onChange={handleImportArchive} hidden ref={fileRef} />
 
       {/* Warning Modal */}
@@ -135,12 +110,13 @@ export default function Archive() {
             <Modal.Dialog>
               <Modal.Header>Are you sure you want to empty the archive?</Modal.Header>
               <Modal.Footer>
-                <Button size="sm" variant="danger" onPress={handleClear}>
-                  Yes
-                </Button>
-                <Button size="sm" onPress={() => setWarningOpen(false)}>
-                  No
-                </Button>
+                <Buttons
+                  buttons={[
+                    { onClick: handleClear, variant: "danger", children: "Yes" },
+                    { onClick: () => setWarningOpen(false), children: "No" },
+                  ]}
+                  defaultProps={{ size: "sm" }}
+                />
               </Modal.Footer>
             </Modal.Dialog>
           </Modal.Container>
@@ -163,24 +139,21 @@ export default function Archive() {
                   </div>
                 ) : (
                   games.map((game, i) => (
-                    <Fragment key={i}>
-                      <ButtonGroup key={game.id} className="mb-2 w-full">
-                        <Button
-                          className="w-full justify-start"
-                          // variant="solid"
-                          onPress={() => onLoad(game)}>
-                          {game.name || `Game ${i + 1}`}
-                        </Button>
-                        <Button
-                          // color="danger"
-                          // variant="flat"
-                          className="text-xl"
-                          onPress={() => handleDeleteGame(game.id)}
-                          isIconOnly>
-                          {icons.others.trash}
-                        </Button>
-                      </ButtonGroup>
-                    </Fragment>
+                    <ButtonGroup key={game.id} className="mb-2 w-full">
+                      <Button
+                        className="w-full max-w-[90%] justify-start truncate"
+                        variant="tertiary"
+                        onClick={() => onLoad(game)}>
+                        {game.name || `Game ${i + 1}`}
+                      </Button>
+                      <Button
+                        variant="danger-soft"
+                        className="text-xl"
+                        onClick={() => handleDeleteGame(game.id)}
+                        isIconOnly>
+                        {icons.others.trash}
+                      </Button>
+                    </ButtonGroup>
                   ))
                 )}
               </Modal.Body>
