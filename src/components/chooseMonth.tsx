@@ -34,6 +34,7 @@ export default function ChooseMonth({ onClick }: chooseMonthProps) {
       </DateField.Group>
       <DateRangePicker.Popover isOpen={open} onOpenChange={setOpen}>
         <RangeCalendar
+          isReadOnly
           aria-label="Choose trip dates"
           value={getRange()}
           onFocusChange={(date) => {
@@ -53,7 +54,7 @@ export default function ChooseMonth({ onClick }: chooseMonthProps) {
               {(day) => <RangeCalendar.HeaderCell>{day}</RangeCalendar.HeaderCell>}
             </RangeCalendar.GridHeader>
             <RangeCalendar.GridBody>
-              {(date) => <RangeCalendar.Cell className="pointer-events-none" date={date} />}
+              {(date) => <RangeCalendar.Cell date={date} />}
             </RangeCalendar.GridBody>
           </RangeCalendar.Grid>
           <RangeCalendar.YearPickerGrid>
@@ -62,7 +63,7 @@ export default function ChooseMonth({ onClick }: chooseMonthProps) {
             </RangeCalendar.YearPickerGridBody>
           </RangeCalendar.YearPickerGrid>
         </RangeCalendar>
-        <div className="flex-center w-full">
+        <div className="flex-center w-full pt-2">
           <Button
             onClick={() => {
               onClick(start);
