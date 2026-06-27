@@ -86,7 +86,7 @@ export const GameTable: FC<TableProps> = ({ tableData: { games }, userName }) =>
           </Table.Body>
         </Table.Content>
       </Table.ScrollContainer>
-      {pages !== 1 && (
+      {!(pages === 1 || pages === 0) && (
         <Table.Footer className="flex-center">
           <Pagination className="w-auto" size="sm">
             <Pagination.Content>
