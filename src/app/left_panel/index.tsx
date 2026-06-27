@@ -71,14 +71,11 @@ function SettingsTabs() {
       <Tabs.ListContainer>
         <Tabs.List aria-label="Settings">
           {Object.entries(modalItems).map(([key, value]) => (
-            <Tabs.Tab
-              // className="md:text-md p-1 text-sm md:px-2"
-              aria-label={key}
-              id={key}
-              key={key}>
+            <Tabs.Tab id={key} key={key} className="w-auto grow">
               <div className="flex-center gap-1">
                 {value.icon} <span>{key}</span>
               </div>
+              <Tabs.Indicator />
             </Tabs.Tab>
           ))}
         </Tabs.List>
