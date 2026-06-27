@@ -48,7 +48,7 @@ class StockfishManager {
     const stockfish = useSettingsState.getState().stockfish;
     const multi = isMultiThreadSupported();
     const stockfish_path = multi ? enginePath[stockfish].multi : enginePath[stockfish].single;
-    this.stockfish = new Worker("CGR/" + stockfish_path);
+    this.stockfish = new Worker("/CGR/" + stockfish_path);
 
     this.stockfish.addEventListener("message", (e) => {
       const data = e.data;
