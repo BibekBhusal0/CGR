@@ -17,29 +17,30 @@ function Moves() {
         {!modalOpen && (
           <Button
             isIconOnly
-            className="absolute right-2 bottom-2 p-2 text-4xl"
-            // radius="full"
-            onPress={() => setModalOpen(true)}>
+            className="absolute right-2 bottom-2 rounded-full p-2 text-4xl"
+            onClick={() => setModalOpen(true)}>
             {icons.others.graph}
           </Button>
         )}
       </div>
-      <Modal
-        isOpen={modalOpen}
-        onOpenChange={setModalOpen}
-      >
+      <Modal isOpen={modalOpen} onOpenChange={setModalOpen}>
         <Modal.Backdrop>
-          <Card
-            style={{ position: "unset" }}
-            // classNames={{
-            //   base: "max-h-[80vh]",
-            //   footer: "overflow-visible",
-            //   body: "overflow-auto",
-            //   header: "overflow-visible",
-            // }}
-            >
-            <Analysis modal={true} />
-          </Card>
+          <Modal.Container size="lg" className="min-w-30">
+            <Modal.Dialog>
+              <Modal.CloseTrigger />
+              <Card
+                style={{ position: "unset" }}
+                // classNames={{
+                //   base: "max-h-[80vh]",
+                //   footer: "overflow-visible",
+                //   body: "overflow-auto",
+                //   header: "overflow-visible",
+                // }}
+              >
+                <Analysis modal={true} />
+              </Card>
+            </Modal.Dialog>
+          </Modal.Container>
         </Modal.Backdrop>
       </Modal>
     </>
@@ -66,10 +67,19 @@ const Analysis: FC<{ modal?: boolean }> = ({ modal }) => {
     <>
       <Card.Header
         className={cn(
-          "bg-default-100 flex h-20 w-full flex-col justify-center px-3",
+          "bg-default flex h-20 w-full flex-col justify-center rounded-md px-3 relative",
           !modal && "hidden lg:flex"
         )}>
         <EvalGraph />
+        <Button
+          onClick={() => changeState("second")}
+          variant="danger"
+          size="sm"
+          className = "absolute -top-3 -left-3"
+          isIconOnly
+        >
+        {icons.controls.previous}
+        </Button>
       </Card.Header>
       <Card.Content className={cn(!modal && "hidden lg:flex")}>
         <div className="max-h-96 min-h-20 overflow-auto">
@@ -88,9 +98,6 @@ const Analysis: FC<{ modal?: boolean }> = ({ modal }) => {
         <div className="align-center flex w-full flex-col justify-center gap-3 align-middle">
           <MoveComment />
           <Controls />
-          <Button onPress={() => changeState("second")} variant="ghost" size="lg">
-            <div className="text-2xl">Back</div>
-          </Button>
         </div>
       </Card.Footer>
     </>
@@ -125,8 +132,8 @@ const SingleMove: FC<{ move: string; index: number }> = ({ move, index }) => {
     <div
       ref={elementRef}
       className={cn(
-        "hover:bg-default-200 flex basis-5/12 cursor-pointer items-center gap-1 p-1 pl-4 text-xl",
-        moveIndex === index ? "bg-default-300" : "bg-default-100"
+        "flex basis-5/12 cursor-pointer items-center gap-1 p-1 pl-4 text-xl",
+        moveIndex === index ? "bg-default hover:bg-default-hover" : ""
       )}
       onClick={ClickHandler}>
       {moveType && <MoveIcon type={moveType} />}

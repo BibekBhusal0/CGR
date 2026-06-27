@@ -1,5 +1,4 @@
-import { Card, cn, toast } from "@heroui/react";
-// import { Button } from "@heroui/button";
+import { Card, cn, toast , Button} from "@heroui/react";
 import { Controls } from "../moves/controls";
 import { useSettingsState } from "@/Logic/state/settings";
 import { useGameState } from "@/Logic/state/game";
@@ -8,7 +7,6 @@ import { analysisType, analyzePosition } from "@/Logic/analyze";
 import StockfishManager from "@/Logic/stockfish";
 import { MoveComment } from "../moves/moveComment";
 import { Move } from "chess.js";
-import { Button } from "@heroui/button";
 
 export type SerializableMove = Omit<
   Move,
@@ -179,7 +177,11 @@ function Warning() {
         <div>Red Arrow: Pin.</div>
         <div>Green Arrow: Best Move</div>
         <div>Green Highlight: Hanging piece.</div>
-        <Button className="self-center" color="primary" onPress={() => toggle("analyzePerMove")}>
+        <Button
+          className="self-center"
+          // color="primary"
+          onClick={() => toggle("analyzePerMove")}
+        >
           Turn off Per move analysis
         </Button>
       </div>

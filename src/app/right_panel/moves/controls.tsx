@@ -1,16 +1,9 @@
-import { Button, ButtonGroup } from "@heroui/button";
-import { Tooltip } from "@heroui/tooltip";
-import { FC, JSX, useEffect, useRef, useState } from "react";
+import { ButtonGroup, ButtonProps, } from "@heroui/react";
+import { useEffect, useRef, useState } from "react";
 import { icons as all_icons } from "@/components/icons";
 import { useGameState } from "@/Logic/state/game";
+import { Buttons, newButtonProps } from "@/components/buttons";
 const icons = all_icons.controls;
-
-interface TTButtonProps {
-  name: string;
-  clickHandler: () => void;
-  disabled: boolean;
-  icon: JSX.Element;
-}
 
 export function Controls() {
   const moveIndex = useGameState((state) => state.moveIndex);
@@ -131,73 +124,60 @@ export function Controls() {
     };
   }, [handleKeyDown]);
 
-  const controlButtons: TTButtonProps[] = [
+  const controlButtons: newButtonProps[] = [
     {
-      name: "Flip Board",
-      clickHandler: () => flipBoard(),
-      disabled: false,
-      icon: icons.flip,
+      tooltip: "Flip Board",
+      onClick: () => flipBoard(),
+      isDisabled: false,
+      children: icons.flip,
     },
     {
-      name: "Starting Position",
-      clickHandler: goToFirstMove,
-      disabled: atStart,
-      icon: icons.first,
+      tooltip: "Starting Position",
+      onClick: goToFirstMove,
+      isDisabled: atStart,
+      children: icons.first,
     },
     {
-      name: "Previous Move",
-      clickHandler: goToPreviousMove,
-      disabled: boardStage === "normal" ? atStart : linesAtStart,
-      icon: icons.previous,
+      tooltip: "Previous Move",
+      onClick: goToPreviousMove,
+      isDisabled: boardStage === "normal" ? atStart : linesAtStart,
+      children: icons.previous,
     },
     {
-      name: pause ? "Play" : "Pause",
-      clickHandler: togglePlayPause,
-      disabled: boardStage === "normal" ? atEnd : linesAtEnd,
-      icon: pause ? icons.pause : icons.play,
+      tooltip: pause ? "Play" : "Pause",
+      onClick: togglePlayPause,
+      isDisabled: boardStage === "normal" ? atEnd : linesAtEnd,
+      children: pause ? icons.pause : icons.play,
     },
     {
-      name: "Next Move",
-      clickHandler: goToNextMove,
-      disabled: boardStage === "normal" ? atEnd : linesAtEnd,
-      icon: icons.next,
+      tooltip: "Next Move",
+      onClick: goToNextMove,
+      isDisabled: boardStage === "normal" ? atEnd : linesAtEnd,
+      children: icons.next,
     },
     {
-      name: "Last Move",
-      clickHandler: goToLastMove,
-      disabled: atEnd,
-      icon: icons.last,
+      tooltip: "Last Move",
+      onClick: goToLastMove,
+      isDisabled: atEnd,
+      children: icons.last,
     },
     {
-      name: "Reset",
-      clickHandler: () => changeState("first"),
-      disabled: false,
-      icon: icons.reset,
+      tooltip: "Reset",
+      onClick: () => changeState("first"),
+      isDisabled: false,
+      children: icons.reset,
     },
   ];
+  const defaultButtonProps: ButtonProps = {
+    isIconOnly: true,
+    variant: "tertiary",
+    size: "lg",
+    className :"min-w-12 w-12"
+  };
 
   return (
-    <ButtonGroup>
-      {controlButtons.map((BP) => (
-        <TTButton key={BP.name} {...BP} />
-      ))}
+    <ButtonGroup variant={defaultButtonProps.variant}>
+      <Buttons buttons={controlButtons} defaultProps={defaultButtonProps} includeSeperators />
     </ButtonGroup>
   );
 }
-
-const TTButton: FC<TTButtonProps> = ({ name, clickHandler, icon, disabled }) => {
-  return (
-    <Tooltip color="primary" showArrow={true} content={name}>
-      <Button
-        onPress={clickHandler}
-        isDisabled={disabled}
-        style={{ minWidth: 12 }}
-        color="primary"
-        size="sm"
-        className="text-3xl"
-        variant="light">
-        {icon}
-      </Button>
-    </Tooltip>
-  );
-};

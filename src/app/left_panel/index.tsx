@@ -1,4 +1,4 @@
-import { Accordion, Tabs, Button, Modal } from "@heroui/react";
+import { Accordion, Tabs, Button, Modal, cn } from "@heroui/react";
 // import IconPreview from "@/components/icons_preview";
 import GeneralSettings from "@/app/left_panel/generalSettings";
 import StockfishSettings from "@/app/left_panel/stockfishSettings";
@@ -6,7 +6,6 @@ import Archive from "@/app/left_panel/archive";
 import { icons } from "@/components/icons";
 import { useSettingsState } from "@/Logic/state/settings";
 import { useState } from "react";
-import { cn } from "@heroui/theme";
 import SwitchGroup from "@/components/switch";
 
 const Items = {

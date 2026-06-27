@@ -1,8 +1,7 @@
 import { motion } from "framer-motion";
 import { openingType } from "@/Logic/analyze";
 import { FC, Fragment, useEffect, useState } from "react";
-import { cn } from "@heroui/theme";
-import { useSettingsState } from "@/Logic/state/settings";
+import { cn } from "@heroui/react";
 
 const OpeningCard: FC<{ opening?: openingType }> = ({ opening }) => {
   const [name, setName] = useState("");

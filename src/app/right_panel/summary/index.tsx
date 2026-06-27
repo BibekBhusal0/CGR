@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { allTypesOfMove, MT } from "@/components/moveTypes/types";
-import { Card, ButtonGroup, ButtonProps } from "@heroui/react";
-import { Progress } from "@heroui/progress";
+import { Card, ButtonGroup, ButtonProps, ProgressBar, Label } from "@heroui/react";
 import EvalGraph from "@/Logic/evalgraph";
 import { analysisType, analyzeGame } from "@/Logic/analyze";
 import { useGameState } from "@/Logic/state/game";
@@ -89,12 +88,19 @@ function Summary() {
             </div>
           )}
           {loading && (
-            <Progress
-              label={`Analyzing Game`}
+            <ProgressBar
+              aria-label={`Analyzing Game`}
               size="lg"
               value={progress * 100}
-              color="primary"
-              showValueLabel></Progress>
+              // color="primary"
+              // showValueLabel
+            >
+              <Label>Analyzing Game</Label>
+              <ProgressBar.Output />
+              <ProgressBar.Track>
+                <ProgressBar.Fill />
+              </ProgressBar.Track>
+            </ProgressBar>
           )}
           <div className="grid grid-cols-8 gap-3">
             <div className="col-span-3">{whitePlayer}</div>
