@@ -49,28 +49,30 @@ export const SelectGame: FC<SelectGameProps> = ({ input, onOpenChange, isOpen })
               <Modal.Header className="flex flex-col justify-center gap-3 text-center">
                 {loaded ? "Searched" : "Searching"} for game of {input} for {month} {date.year} in
                 Chess.com
-                <div className="flex justify-center gap-3">
+                <div className="flex-center pb-3">
                   <ChooseMonth onClick={resetDateAndFetch} />
                 </div>
               </Modal.Header>
               <Modal.CloseTrigger />
-              {loaded ? (
-                data === undefined ? (
-                  "Couldn't fetch Data"
-                ) : isGameResponse(data) ? (
-                  <GameTable tableData={data.data} userName={input} />
+              <Modal.Body>
+                {loaded ? (
+                  data === undefined ? (
+                    "Couldn't fetch Data"
+                  ) : isGameResponse(data) ? (
+                    <GameTable tableData={data.data} userName={input} />
+                  ) : (
+                    <div className="p-4 text-center">
+                      Error occurred while fetching, Make Sure Username is correct
+                      <br />
+                      {JSON.stringify(data.data)}
+                      <br />
+                      Try again
+                    </div>
+                  )
                 ) : (
-                  <div className="p-4 text-center">
-                    error occurred while fetching
-                    <br />
-                    {JSON.stringify(data.data)}
-                    <br />
-                    Try again
-                  </div>
-                )
-              ) : (
-                <LoadingTable />
-              )}
+                  <LoadingTable />
+                )}
+              </Modal.Body>
             </Modal.Dialog>
           </Modal.Container>
         </Modal.Backdrop>
