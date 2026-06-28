@@ -1,3 +1,4 @@
+import setTheme from "@/utils/setTheme";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -6,8 +7,8 @@ export type boardThemes = (typeof b)[number];
 export const allBoardThemes: boardThemes[] = [...b];
 export type booleanSettings =
   | "highlight"
+  | "darkMode"
   | "bestMove"
-  | "animation"
   | "devMode"
   | "analyzePerMove"
   | "sidebarCollapsed";
@@ -25,9 +26,9 @@ const SETTINGS_KEY = "CHESS SETTINGS";
 export interface settingType {
   depth: number;
   highlight: boolean;
+  darkMode: boolean;
   bestMove: boolean;
   devMode: boolean;
-  animation: boolean;
   sidebarCollapsed: boolean;
   analyzePerMove: boolean;
   btheme: boardThemes;
@@ -53,9 +54,9 @@ export type SettingsState = settingType & settingActions;
 const initialState: settingType = {
   depth: 12,
   highlight: true,
+  darkMode: true,
   devMode: false,
   bestMove: true,
-  animation: true,
   sidebarCollapsed: false,
   analyzePerMove: false,
   btheme: "default",
@@ -70,7 +71,12 @@ export const useSettingsState = create<SettingsState>()(
     (set) => ({
       ...initialState,
 
-      toggleValues: (item) => set((state) => ({ [item]: !state[item] })),
+      toggleValues: (item) => {
+        set((state) => {
+          if (item === "darkMode") setTheme(!state[item]);
+          return { [item]: !state[item] };
+        });
+      },
       changeDepth: (depth) => set({ depth }),
       setBoardTheme: (btheme) => set({ btheme }),
       setOpenAccordtions: (openAccordions: string[]) => set({ openAccordions }),

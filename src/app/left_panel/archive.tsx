@@ -1,13 +1,10 @@
 import { clearArchive, getAllGamesFromArchive, importGamesToArchive, getDb } from "@/utils/archive";
 import { saveToJson } from "@/utils/import_export";
-import { Button, ButtonGroup, ButtonProps } from "@heroui/button";
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/modal";
+import { Button, ButtonGroup, ButtonProps, Modal, toast } from "@heroui/react";
 import { useState, useRef } from "react";
 import { icons } from "@/components/icons";
-import { cn } from "@heroui/theme";
-import { Fragment } from "react/jsx-runtime";
-import { addToast } from "@heroui/toast";
 import { saveType, useGameState } from "@/Logic/state/game";
+import { Buttons, newButtonProps } from "@/components/buttons";
 
 export default function Archive() {
   const [warningOpen, setWarningOpen] = useState(false);
@@ -22,9 +19,9 @@ export default function Archive() {
     loadGame(game);
     try {
       setArchiveOpen(false);
-      addToast({ title: "Game Imported", color: "success" });
+      toast.success("Game Imported");
     } catch {
-      addToast({ title: "Game can not be imported", color: "danger" });
+      toast.danger("Game can not be imported");
     }
   };
 
@@ -34,11 +31,6 @@ export default function Archive() {
     setArchiveOpen(true);
   };
 
-  const handleAddGame = async () => {
-    const toast = await saveGameToArchive();
-    addToast(toast);
-  };
-
   const handleImportArchive = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || file.type !== "application/json") return;
@@ -46,131 +38,129 @@ export default function Archive() {
     const games = JSON.parse(text);
     if (Array.isArray(games)) {
       await importGamesToArchive(games);
-      addToast({ title: "Archive imported", color: "success" });
+      toast.success("Archive imported");
     } else {
-      addToast({ title: "Invalid Archive Format", color: "danger" });
+      toast.danger("Invalid Archive Format");
     }
   };
 
   const handleExportArchive = async () => {
     const all = await getAllGamesFromArchive();
     saveToJson(all, "chess_archive");
-    addToast({ title: "Archive downloaded", color: "success" });
+    toast.success("Archive downloaded");
   };
 
   const handleDeleteGame = async (id: string) => {
     const db = await getDb();
     await db.delete("games", id);
     loadGames();
-    addToast({ title: "Game deleted", color: "danger" });
+    toast.danger("Game deleted");
   };
 
   const handleClear = async () => {
     await clearArchive();
     setWarningOpen(false);
-    addToast({ title: "Archive cleared", color: "warning" });
+    toast.warning("Archive cleared");
   };
 
-  const allButtons: Partial<ButtonProps>[] = [
+  const allButtons: newButtonProps[] = [
     {
       children: "Add This Game",
-      startContent: icons.others.add,
-      onPress: handleAddGame,
-      disabled: !Game || !analysis,
+      icon: icons.others.add,
+      onClick: saveGameToArchive,
+      hide: !Game || !analysis,
     },
-    { children: "Load From archive", startContent: icons.left_panel.archive, onPress: loadGames },
+    {
+      children: "Load From archive",
+      icon: icons.left_panel.archive,
+      onClick: loadGames,
+    },
     {
       children: "Upload to archive",
-      startContent: icons.others.upload,
-      onPress: () => fileRef.current?.click(),
+      icon: icons.others.upload,
+      onClick: () => fileRef.current?.click(),
     },
     {
       children: "Download Archive",
-      startContent: icons.others.download,
-      onPress: handleExportArchive,
+      icon: icons.others.download,
+      onClick: handleExportArchive,
     },
     {
       children: "Clear archive",
-      color: "danger",
-      variant: "flat",
-      startContent: icons.others.trash,
-      onPress: () => setWarningOpen(true),
+      variant: "danger",
+      icon: icons.others.trash,
+      onClick: () => setWarningOpen(true),
     },
   ];
 
   const defaultProps: ButtonProps = {
     className: "w-full text-xl",
     size: "lg",
-    color: "primary",
-    variant: "solid",
   };
 
   return (
-    <div className="flex-center flex-col gap-3">
-      {/* eslint-disable-next-line react-hooks/refs */}
-      {allButtons.map((button, i) => (
-        <Fragment key={i}>
-          {!button.disabled && (
-            <Button
-              {...defaultProps}
-              {...button}
-              className={cn(button?.className, defaultProps.className)}
-            />
-          )}
-        </Fragment>
-      ))}
+    <>
+      <Buttons buttons={allButtons} defaultProps={defaultProps} />
       <input type="file" accept=".json" onChange={handleImportArchive} hidden ref={fileRef} />
 
       {/* Warning Modal */}
-      <Modal isOpen={warningOpen} onOpenChange={setWarningOpen} size="xs" hideCloseButton>
-        <ModalContent>
-          <ModalHeader>Are you sure you want to empty the archive?</ModalHeader>
-          <ModalFooter>
-            <Button size="sm" color="danger" onPress={handleClear}>
-              Yes
-            </Button>
-            <Button size="sm" onPress={() => setWarningOpen(false)}>
-              No
-            </Button>
-          </ModalFooter>
-        </ModalContent>
+      <Modal isOpen={warningOpen} onOpenChange={setWarningOpen}>
+        <Modal.Backdrop>
+          <Modal.Container size="xs">
+            <Modal.Dialog>
+              <Modal.Header>Are you sure you want to empty the archive?</Modal.Header>
+              <Modal.Footer>
+                <Buttons
+                  buttons={[
+                    { onClick: handleClear, variant: "danger", children: "Yes" },
+                    { onClick: () => setWarningOpen(false), children: "No" },
+                  ]}
+                  defaultProps={{ size: "sm" }}
+                />
+              </Modal.Footer>
+            </Modal.Dialog>
+          </Modal.Container>
+        </Modal.Backdrop>
       </Modal>
 
       {/* Load Archive Modal */}
-      <Modal isOpen={archiveOpen} onOpenChange={setArchiveOpen} size="md">
-        <ModalContent>
-          <ModalHeader>{games.length === 0 ? "Archive Empty" : "Select a Game"}</ModalHeader>
-          <ModalBody className="flex max-h-96 flex-col overflow-auto">
-            {games.length === 0 ? (
-              <div className="pb-5 text-center text-gray-500">
-                You can add a game to archive using the <strong>"Add This Game"</strong> button when
-                you are analyzing a game. Once archived, games will appear here for easy loading.
-              </div>
-            ) : (
-              games.map((game, i) => (
-                <Fragment key={i}>
-                  <ButtonGroup key={game.id} className="mb-2 w-full">
-                    <Button
-                      className="w-full justify-start"
-                      variant="solid"
-                      onPress={() => onLoad(game)}>
-                      {game.name || `Game ${i + 1}`}
-                    </Button>
-                    <Button
-                      color="danger"
-                      variant="flat"
-                      className="text-xl"
-                      onPress={() => handleDeleteGame(game.id)}
-                      isIconOnly>
-                      {icons.others.trash}
-                    </Button>
-                  </ButtonGroup>
-                </Fragment>
-              ))
-            )}
-          </ModalBody>
-        </ModalContent>
+      <Modal isOpen={archiveOpen} onOpenChange={setArchiveOpen}>
+        <Modal.Backdrop>
+          <Modal.Container size="sm">
+            <Modal.Dialog>
+              <Modal.CloseTrigger />
+              <Modal.Header>{games.length === 0 ? "Archive Empty" : "Select a Game"}</Modal.Header>
+              <Modal.Body className="flex max-h-96 flex-col overflow-auto">
+                {games.length === 0 ? (
+                  <div className="pb-5 text-center text-gray-500">
+                    You can add a game to archive using the <strong>"Add This Game"</strong> button
+                    when you are analyzing a game. Once archived, games will appear here for easy
+                    loading.
+                  </div>
+                ) : (
+                  games.map((game, i) => (
+                    <ButtonGroup key={game.id} className="mb-2 w-full">
+                      <Button
+                        className="w-full max-w-[90%] justify-start truncate"
+                        variant="tertiary"
+                        onClick={() => onLoad(game)}>
+                        {game.name || `Game ${i + 1}`}
+                      </Button>
+                      <Button
+                        variant="danger-soft"
+                        className="text-xl"
+                        onClick={() => handleDeleteGame(game.id)}
+                        isIconOnly>
+                        {icons.others.trash}
+                      </Button>
+                    </ButtonGroup>
+                  ))
+                )}
+              </Modal.Body>
+            </Modal.Dialog>
+          </Modal.Container>
+        </Modal.Backdrop>
       </Modal>
-    </div>
+    </>
   );
 }

@@ -1,12 +1,15 @@
-import { FC, useEffect, useState } from "react";
+import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import { CDCresponse, getGamesOfPlayer, isGameResponse } from "@/api/CDC";
-import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
-import { CalendarDate } from "@heroui/calendar";
+import { Modal } from "@heroui/react";
 import { GameTable, LoadingTable } from "@/app/right_panel/input/game_table";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import ChooseMonth from "@/components/chooseMonth";
 
-type SelectGameProps = { input: string; onOpenChange: () => void; isOpen: boolean };
+type SelectGameProps = {
+  input: string;
+  onOpenChange: Dispatch<SetStateAction<boolean>>;
+  isOpen: boolean;
+};
 
 export const SelectGame: FC<SelectGameProps> = ({ input, onOpenChange, isOpen }) => {
   const [data, setData] = useState<CDCresponse>();
@@ -16,7 +19,7 @@ export const SelectGame: FC<SelectGameProps> = ({ input, onOpenChange, isOpen })
     month: "long",
   });
 
-  const fetchData = async (date: CalendarDate) => {
+  const fetchData = async (date: any) => {
     setLoaded(false);
     try {
       const response = await getGamesOfPlayer(input, date.month, date.year);
@@ -27,7 +30,7 @@ export const SelectGame: FC<SelectGameProps> = ({ input, onOpenChange, isOpen })
       setLoaded(true);
     }
   };
-  const resetDateAndFetch = (newDate: CalendarDate) => {
+  const resetDateAndFetch = (newDate: any) => {
     setDate(newDate);
     fetchData(newDate);
   };
@@ -39,35 +42,40 @@ export const SelectGame: FC<SelectGameProps> = ({ input, onOpenChange, isOpen })
 
   return (
     <>
-      <Modal size="3xl" isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          <ModalHeader className="flex flex-col justify-center gap-3 text-center">
-            {loaded ? "Searched" : "Searching"} for game of {input} for {month} {date.year} in
-            Chess.com
-            <div className="flex justify-center gap-3">
-              <ChooseMonth onClick={resetDateAndFetch} />
-            </div>
-          </ModalHeader>
-          <ModalBody>
-            {loaded ? (
-              data === undefined ? (
-                "Couldn't fetch Data"
-              ) : isGameResponse(data) ? (
-                <GameTable tableData={data.data} userName={input}></GameTable>
-              ) : (
-                <div className="p-4 text-center">
-                  error occurred while fetching
-                  <br />
-                  {JSON.stringify(data.data)}
-                  <br />
-                  Try again
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <Modal.Backdrop>
+          <Modal.Container size="cover">
+            <Modal.Dialog className="max-h-90 max-w-190">
+              <Modal.Header className="flex flex-col justify-center gap-3 text-center">
+                {loaded ? "Searched" : "Searching"} for game of {input} for {month} {date.year} in
+                Chess.com
+                <div className="flex-center pb-3">
+                  <ChooseMonth onClick={resetDateAndFetch} />
                 </div>
-              )
-            ) : (
-              <LoadingTable />
-            )}
-          </ModalBody>
-        </ModalContent>
+              </Modal.Header>
+              <Modal.CloseTrigger />
+              <Modal.Body>
+                {loaded ? (
+                  data === undefined ? (
+                    "Couldn't fetch Data"
+                  ) : isGameResponse(data) ? (
+                    <GameTable tableData={data.data} userName={input} />
+                  ) : (
+                    <div className="p-4 text-center">
+                      Error occurred while fetching, Make Sure Username is correct
+                      <br />
+                      {JSON.stringify(data.data)}
+                      <br />
+                      Try again
+                    </div>
+                  )
+                ) : (
+                  <LoadingTable />
+                )}
+              </Modal.Body>
+            </Modal.Dialog>
+          </Modal.Container>
+        </Modal.Backdrop>
       </Modal>
     </>
   );

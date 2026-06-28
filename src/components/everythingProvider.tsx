@@ -1,19 +1,16 @@
-import { HeroUIProvider } from "@heroui/system";
 import { ReactNode } from "react";
-import { ToastProvider } from "@heroui/toast";
-import { useTheme } from "@heroui/use-theme";
-import { useSettingsState } from "@/Logic/state/settings";
+import { ToastProvider } from "@heroui/react";
+import { autoSetTheme } from "@/utils/setTheme";
 
 type ep = { children: ReactNode };
 
 const EverythingProvider = ({ children }: ep) => {
-  useTheme();
-  const animation = useSettingsState((state) => state.animation);
+  autoSetTheme();
   return (
-    <HeroUIProvider disableAnimation={!animation}>
-      <ToastProvider disableAnimation={!animation} />
+    <>
+      <ToastProvider />
       {children}
-    </HeroUIProvider>
+    </>
   );
 };
 

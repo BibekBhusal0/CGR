@@ -1,26 +1,5 @@
 @import "tailwindcss";
-
-@source "../node_modules/@heroui/theme/dist/components/**/*.js";
-@plugin "./heroui.ts";
-@custom-variant dark (&:is(.dark *));
-
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-@layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
-  }
-}
+@import "@heroui/styles";
 
 @utility flex-center {
   @apply flex items-center justify-center;
@@ -46,6 +25,26 @@
   @apply horizontal-center vertical-center;
 }
 
+.settings {
+  .select,
+  .switch__content {
+    @apply flex w-full flex-row items-center justify-between gap-2;
+  }
+  .select__trigger {
+    @apply w-[70%] grow capitalize;
+  }
+  .label {
+    @apply text-foreground shrink-0 pl-0 text-lg font-medium;
+  }
+  .accordion__panel,
+  .tabs__panel {
+    @apply space-y-4 pb-0;
+    > :last-child {
+      @apply pb-4;
+    }
+  }
+}
+
 #board-board {
-  overflow: visible !important;
+  @apply overflow-visible;
 }

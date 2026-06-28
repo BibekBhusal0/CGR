@@ -5,7 +5,7 @@ import { boardThemes, useSettingsState } from "@/Logic/state/settings";
 import { AllIcons } from "@/components/moveTypes/types";
 import { MoveIcon } from "@/components/moveTypes/MoveIcon";
 import { useGameState } from "@/Logic/state/game";
-import { cn } from "@heroui/theme";
+import { cn } from "@heroui/react";
 import { isLightSquare } from "@/Logic/pieces";
 
 interface PieceProps {
@@ -66,7 +66,6 @@ function Board({
   const allowMoves = useGameState((state) => state.allowMoves);
   const fen = useGameState((state) => state.fen);
   const bottom = useGameState((state) => state.bottom);
-  const animation = useSettingsState((state) => state.animation);
   const btheme = useSettingsState((state) => state.btheme);
   const notationStyle = useSettingsState((state) => state.notationStyle);
 
@@ -109,7 +108,7 @@ function Board({
         //
         allowDragging: allowMoves,
         boardOrientation: bottom,
-        animationDurationInMs: animation ? 300 : 0,
+        // animationDurationInMs: animation ? 300 : 0,
         showNotation: notationStyle === "in-board",
         //
         pieces: customPieces(btheme) as PieceRenderObject,

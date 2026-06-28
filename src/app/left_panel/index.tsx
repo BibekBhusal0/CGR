@@ -1,16 +1,12 @@
-import { Accordion, AccordionItem } from "@heroui/accordion";
+import { Accordion, Tabs, Button, Modal, cn } from "@heroui/react";
 // import IconPreview from "@/components/icons_preview";
 import GeneralSettings from "@/app/left_panel/generalSettings";
 import StockfishSettings from "@/app/left_panel/stockfishSettings";
 import Archive from "@/app/left_panel/archive";
 import { icons } from "@/components/icons";
 import { useSettingsState } from "@/Logic/state/settings";
-import { Tab, Tabs } from "@heroui/tabs";
 import { useState } from "react";
-import { Button } from "@heroui/button";
-import { Modal, ModalContent, ModalHeader, ModalBody } from "@heroui/modal";
-import { cn } from "@heroui/theme";
-import SwitchGroup from "@/components/switchGroup";
+import SwitchGroup from "@/components/switch";
 
 const Items = {
   "General Settings": { content: <GeneralSettings />, icon: icons.left_panel.settings },
@@ -40,26 +36,27 @@ function LeftPanel() {
 
   return (
     <Accordion
-      onSelectionChange={(e) => {
-        if (typeof e === "string") return;
+      allowsMultipleExpanded
+      className="settings"
+      aria-label="left"
+      expandedKeys={new Set(openAccordions)}
+      onExpandedChange={(val) => {
         const opened: string[] = [];
-        e.forEach((i) => opened.push(i as string));
+        val.forEach((i) => opened.push(i as string));
         setOpenAccordtions(opened);
       }}
-      itemClasses={{ title: "text-xl overflow-x-hidden", content: "mb-2" }}
-      aria-label="left"
-      selectedKeys={new Set(openAccordions)}
-      variant="light"
-      selectionMode="multiple">
+      variant="surface">
       {Object.entries(accordionItems).map(([key, value]) => (
-        <AccordionItem
-          startContent={value.icon}
-          classNames={{ content: "space-y-4", startContent: "text-2xl" }}
-          aria-label={key}
-          title={key}
-          key={key}>
-          {value.content}
-        </AccordionItem>
+        <Accordion.Item aria-label={key} id={key} key={key}>
+          <Accordion.Heading>
+            <Accordion.Trigger className="flex items-center gap-3 text-xl">
+              {value.icon}
+              {key}
+              <Accordion.Indicator />
+            </Accordion.Trigger>
+          </Accordion.Heading>
+          <Accordion.Panel className="px-4 py-1">{value.content}</Accordion.Panel>
+        </Accordion.Item>
       ))}
     </Accordion>
   );
@@ -69,19 +66,23 @@ function SettingsTabs() {
   const devMode = useSettingsState((state) => state.devMode);
   const modalItems = devMode ? { ...Items, ...devItems } : Items;
   return (
-    <Tabs aria-label="Settings tabs" variant="light" size="sm" classNames={{ tabList: "gap-0" }}>
+    <Tabs aria-label="Settings tabs" variant="primary" className="settings">
+      <Tabs.ListContainer>
+        <Tabs.List aria-label="Settings">
+          {Object.entries(modalItems).map(([key, value]) => (
+            <Tabs.Tab id={key} key={key} className="w-auto grow">
+              <div className="flex-center gap-1">
+                {value.icon} <span>{key}</span>
+              </div>
+              <Tabs.Indicator />
+            </Tabs.Tab>
+          ))}
+        </Tabs.List>
+      </Tabs.ListContainer>
       {Object.entries(modalItems).map(([key, value]) => (
-        <Tab
-          aria-label={key}
-          title={
-            <div className="flex-center gap-1">
-              {value.icon} <span>{key}</span>
-            </div>
-          }
-          className="md:text-md p-1 text-sm md:px-2"
-          key={key}>
-          <div className="h-80 w-full space-y-4 overflow-auto">{value.content}</div>
-        </Tab>
+        <Tabs.Panel id={key} key={key} className="h-80 w-full space-y-4 overflow-auto">
+          {value.content}
+        </Tabs.Panel>
       ))}
     </Tabs>
   );
@@ -102,7 +103,7 @@ function Left() {
         )}>
         <Button
           onPress={toggleSidebar}
-          variant={sidebarCollapsed ? "light" : "ghost"}
+          variant={sidebarCollapsed ? "tertiary" : "outline"}
           size="sm"
           className={cn(
             "hidden text-xl lg:flex",
@@ -117,7 +118,7 @@ function Left() {
           </div>
         )}
         <Button
-          variant={"light"}
+          variant="tertiary"
           onPress={() => setModalOpen(true)}
           size="sm"
           className={cn(
@@ -128,13 +129,18 @@ function Left() {
           {icons.left_panel.settings}
         </Button>
       </div>
-      <Modal isOpen={modalOpen} onOpenChange={setModalOpen} size="lg">
-        <ModalContent>
-          <ModalHeader>Settings</ModalHeader>
-          <ModalBody className="p-2">
-            <SettingsTabs />
-          </ModalBody>
-        </ModalContent>
+      <Modal isOpen={modalOpen} onOpenChange={setModalOpen}>
+        <Modal.Backdrop>
+          <Modal.Container>
+            <Modal.Dialog className="w-150 max-w-150">
+              <Modal.CloseTrigger />
+              <Modal.Header>Settings</Modal.Header>
+              <Modal.Body className="p-2">
+                <SettingsTabs />
+              </Modal.Body>
+            </Modal.Dialog>
+          </Modal.Container>
+        </Modal.Backdrop>
       </Modal>
     </>
   );

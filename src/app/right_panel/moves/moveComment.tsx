@@ -1,7 +1,7 @@
 import { rephraseEvaluation } from "@/Logic/rephraseEvaluation";
 import { FC, useEffect, useState } from "react";
 import { evaluationType } from "@/Logic/stockfish";
-import { Button } from "@heroui/button";
+import { Button } from "@heroui/react";
 import OpeningCard from "@/app/right_panel/moves/opening";
 import { MoveIcon } from "@/components/moveTypes/MoveIcon";
 import { MoveExplained } from "@/components/moveTypes/types";
@@ -39,7 +39,7 @@ export const MoveComment: FC = () => {
     prevPositionAnalysis = analysis[moveIndex];
   }
   return (
-    <div className="bg-success-50 flex flex-col gap-2 rounded-md px-8 py-3">
+    <div className="bg-accent-soft flex flex-col gap-2 rounded-md px-8 py-3">
       {moveIndex === -1 ? (
         <div className="text-lg">Start Analyzing Game</div>
       ) : (
@@ -59,9 +59,8 @@ export const MoveComment: FC = () => {
             <div className="flex items-center justify-between gap-2">
               <ShowMoves ClickEvent={getClickHandler(moveIndex + 1)} />
               {!bestMove && (
-                <Button variant="flat" color="danger">
+                <Button variant="danger">
                   <div className="flex items-center gap-2 font-semibold">
-                    {/* <FaArrowRotateLeft className="text-xl" /> */}
                     <div className="text-xl">{icons.others.retry}</div>
 
                     <div className="text-lg">Retry</div>
@@ -110,11 +109,9 @@ const ShowMoves: FC<{ ClickEvent: () => boolean }> = ({ ClickEvent }) => {
   };
   return (
     <Button
-      variant={showing ? "flat" : "solid"}
-      color={showing ? "danger" : "primary"}
-      onPress={handleClick}>
+      variant={showing ? "danger-soft" : "primary"}
+      onClick={handleClick}>
       <div className="flex gap-2">
-        {/* <BiSolidChess className="text-2xl" /> */}
         <div className="text-2xl">{icons.chess.small_board}</div>
         <div className="text-lg font-semibold">{showing ? "Hide Moves" : "Show Moves"}</div>
       </div>

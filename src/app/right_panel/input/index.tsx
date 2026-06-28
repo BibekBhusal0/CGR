@@ -1,14 +1,18 @@
-import { Button } from "@heroui/button";
-import { Chip } from "@heroui/chip";
-import { Select, SelectItem } from "@heroui/select";
-import { Textarea } from "@heroui/input";
+import {
+  Button,
+  Chip,
+  ListBox,
+  Select,
+  toast,
+  TextArea,
+  Card,
+  TextField,
+  Label,
+} from "@heroui/react";
 import { useEffect, useRef, useState } from "react";
 import { SelectGame } from "@/app/right_panel/input/game_select";
 import { Chess } from "chess.js";
-import { CardBody } from "@heroui/card";
 import { icons } from "@/components/icons";
-import { addToast } from "@heroui/toast";
-import { useDisclosure } from "@heroui/modal";
 import { useSettingsState } from "@/Logic/state/settings";
 import { useGameState } from "@/Logic/state/game";
 import { allInputModes, inputModes } from "@/Logic/state/settings";
@@ -20,7 +24,7 @@ export function Input() {
   const setInputMode = useSettingsState((state) => state.setInputMode);
   const setBottom = useGameState((state) => state.setBottom);
 
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [isOpen, onOpenChange] = useState(false);
   const pgnRef = useRef<HTMLTextAreaElement>(null);
 
   function analyzePgn(pgn: string) {
@@ -30,20 +34,16 @@ export function Input() {
       setGame(chess);
     } catch (error) {
       console.error(error);
-      addToast({ title: "Please Enter Valid PGN", variant: "flat", color: "danger" });
+      toast.danger("Please Enter Valid PGN");
     }
   }
 
   function handleClick() {
     if (val.trim() !== "") {
       if (mode === "pgn") analyzePgn(val.trim());
-      else onOpen();
+      else onOpenChange(true);
     } else {
-      addToast({
-        title: mode === "pgn" ? "Please Enter Your  PGN" : "Please Enter username",
-        variant: "flat",
-        color: "danger",
-      });
+      toast.danger(mode === "pgn" ? "Please Enter Your  PGN" : "Please Enter username");
     }
   }
 
@@ -71,7 +71,7 @@ export function Input() {
       setInputMode("chess.com");
       setVal(currentUrl.searchParams.get("cdcUsername") || "");
       if (currentUrl.searchParams.get("search") === "true") {
-        onOpen();
+        onOpenChange(true);
       }
       clear();
     }
@@ -79,62 +79,75 @@ export function Input() {
   }, []);
 
   return (
-    <CardBody className="flex-center flex-col gap-7 px-3 py-5">
-      <Chip
-        size="lg"
-        startContent={<div className="text-4xl" children={icons.chess.rook_pawn} />}
-        color="primary"
-        className="gap-3 p-8 text-2xl">
-        <div>Chess Game Review</div>
+    <Card.Content className="flex-center flex-col gap-7 px-3 py-5">
+      <Chip size="lg" variant="primary" color="accent" className="gap-3 rounded-full p-4 text-xl">
+        <div className="text-2xl" children={icons.chess.rook_pawn} />
+        Chess Game Review
       </Chip>
 
-      <Textarea
-        aria-label="pgn"
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && mode !== "pgn") {
-            handleClick();
-          }
-        }}
-        value={val}
-        onValueChange={(e) => {
-          setVal(e);
-        }}
-        ref={pgnRef}
-        label={mode === "pgn" ? "Paste PGN" : "Chess.com Username"}
-        minRows={mode === "pgn" ? 8 : 1}
-        maxRows={mode === "pgn" ? 10 : 1}
-      />
-
       <Select
+        fullWidth
         aria-label="type"
-        size="lg"
-        selectedKeys={[mode]}
+        placeholder="How do you want to import game"
+        variant="secondary"
         value={mode}
-        classNames={{ trigger: "uppercase" }}
         onChange={(item) => {
-          setInputMode(item.target.value as inputModes);
+          setInputMode(item as inputModes);
           setVal("");
-          pgnRef.current?.focus();
+          setTimeout(() => pgnRef.current?.focus(), 1);
         }}>
-        {allInputModes.map((item) => (
-          <SelectItem key={item} children={item} className="uppercase" />
-        ))}
+        <Select.Trigger className="uppercase">
+          <Select.Value />
+          <Select.Indicator />
+        </Select.Trigger>
+        <Select.Popover>
+          <ListBox>
+            {allInputModes.map((item) => (
+              <ListBox.Item
+                key={item}
+                id={item}
+                textValue={item}
+                children={item}
+                className="uppercase"
+              />
+            ))}
+          </ListBox>
+        </Select.Popover>
       </Select>
 
+      <TextField fullWidth>
+        <Label>{mode === "pgn" ? "Paste PGN" : "Chess.com Username"}</Label>
+        <TextArea
+          aria-label="pgn"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && mode !== "pgn") {
+              handleClick();
+            }
+          }}
+          value={val}
+          onChange={(e) => {
+            setVal(e.target.value);
+          }}
+          ref={pgnRef}
+          rows={mode === "pgn" ? 8 : 1}
+          style={{ resize: "none" }}
+          variant="secondary"
+          fullWidth
+        />
+      </TextField>
+
       <Button
-        className="w-full py-8 text-2xl font-semibold"
-        variant="shadow"
-        color="primary"
-        startContent={
-          <div
-            className="text-4xl"
-            children={mode === "pgn" ? icons.others.rocket : icons.others.search}
-          />
-        }
-        onPress={handleClick}>
+        className="w-full py-3 font-semibold"
+        variant="primary"
+        size="lg"
+        onClick={handleClick}>
+        <div
+          className="text-2xl"
+          children={mode === "pgn" ? icons.others.rocket : icons.others.search}
+        />
         {mode === "pgn" ? "Analyze" : "Search"}
       </Button>
-      <SelectGame {...{ input: val, onOpenChange, isOpen }} />
-    </CardBody>
+      <SelectGame {...{ input: val, isOpen, onOpenChange }} />
+    </Card.Content>
   );
 }

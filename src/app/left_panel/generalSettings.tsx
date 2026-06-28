@@ -1,6 +1,4 @@
-import { Select, SelectItem } from "@heroui/select";
-import { Switch } from "@heroui/switch";
-import { useTheme } from "@heroui/use-theme";
+import { Select, Label, ListBox } from "@heroui/react";
 import {
   allBoardThemes,
   allNotationStyles,
@@ -9,102 +7,93 @@ import {
   useSettingsState,
 } from "@/Logic/state/settings";
 import { base_path } from "@/app/full_board/customBoard";
-import SwitchGroup from "@/components/switchGroup";
-import { switchClassNames } from "@/components/switch_types";
+import SwitchGroup from "@/components/switch";
 
 function getImageSource(theme: string, board_theme: string) {
   return `${base_path}${board_theme.toLowerCase()}/${theme === "dark" ? "w" : "b"}P.svg`;
 }
 
 function GeneralSettings() {
-  const { theme, setTheme } = useTheme();
   const btheme = useSettingsState((state) => state.btheme);
   const setBoardTheme = useSettingsState((state) => state.setBoardTheme);
+  const darkMode = useSettingsState((state) => state.darkMode);
   const setNotationStyle = useSettingsState((state) => state.setNotationStyle);
   const notationStyle = useSettingsState((state) => state.notationStyle);
-
-  function changeTheme() {
-    const not_theme = theme === "dark" ? "light" : "dark";
-    setTheme(not_theme);
-  }
+  const theme = darkMode === true ? "dark" : "light";
 
   return (
     <>
       <Select
-        selectedKeys={[btheme]}
-        startContent={
-          <img alt="select theme" className="h-auto w-8 pb-1" src={getImageSource(theme, btheme)} />
-        }
-        size="md"
-        classNames={{
-          label: "text-lg pl-2",
-          trigger: "capitalize",
-          listbox: "px-0",
-        }}
+        value={btheme}
+        variant="secondary"
         onChange={(e) => {
-          if (e.target.value.trim() !== "") {
-            const v = e.target.value.trim() as boardThemes;
+          if (e !== "") {
+            const v = e as boardThemes;
             if (!allBoardThemes.includes(v)) return;
             setBoardTheme(v);
           }
-        }}
-        labelPlacement="outside-left"
-        label="Board Theme">
-        {allBoardThemes.map((board_theme) => (
-          <SelectItem
-            startContent={
-              <img
-                className="h-auto w-9"
-                src={getImageSource(theme, board_theme)}
-                alt={`${board_theme} board_theme Pawn`}
-              />
-            }
-            className="capitalize"
-            classNames={{ base: "items-center", title: "text-sm" }}
-            aria-label={board_theme}
-            key={board_theme}>
-            {board_theme}
-          </SelectItem>
-        ))}
+        }}>
+        <Label> Board Theme</Label>
+        <Select.Trigger className="pt-1">
+          <Select.Value />
+          <Select.Indicator />
+        </Select.Trigger>
+        <Select.Popover>
+          <ListBox>
+            {allBoardThemes.map((board_theme) => (
+              <ListBox.Item
+                aria-label={board_theme}
+                className="py-1"
+                key={board_theme}
+                id={board_theme}>
+                <div className="flex items-center gap-2 capitalize">
+                  <img
+                    className="h-auto w-9"
+                    src={getImageSource(theme, board_theme)}
+                    alt={`${board_theme} board_theme Pawn`}
+                  />
+                  <div className="text-md pt-1">{board_theme}</div>
+                </div>
+              </ListBox.Item>
+            ))}
+          </ListBox>
+        </Select.Popover>
       </Select>
       <Select
-        selectedKeys={[notationStyle]}
-        size="md"
-        classNames={{
-          label: "text-lg pl-2",
-          trigger: "capitalize",
-          listbox: "px-0",
-        }}
+        value={notationStyle}
+        variant="secondary"
         onChange={(e) => {
-          if (e.target.value.trim() !== "") {
-            const v = e.target.value.trim() as notationStyle;
+          if (e !== "") {
+            const v = e as notationStyle;
             if (!allNotationStyles.includes(v)) return;
             setNotationStyle(v);
           }
-        }}
-        labelPlacement="outside-left"
-        label="Notation">
-        {allNotationStyles.map((notation) => (
-          <SelectItem
-            className="capitalize"
-            classNames={{ base: "items-center", title: "text-sm" }}
-            aria-label={notation}
-            key={notation}>
-            {notation}
-          </SelectItem>
-        ))}
+        }}>
+        <Label>Notation Style</Label>
+        <Select.Trigger>
+          <Select.Value />
+          <Select.Indicator />
+        </Select.Trigger>
+        <Select.Popover>
+          <ListBox>
+            {allNotationStyles.map((notation) => (
+              <ListBox.Item
+                className="capitalize"
+                aria-label={notation}
+                id={notation}
+                key={notation}>
+                {notation}
+              </ListBox.Item>
+            ))}
+          </ListBox>
+        </Select.Popover>
       </Select>
 
-      <Switch
-        isSelected={theme === "dark"}
-        onValueChange={changeTheme}
-        classNames={switchClassNames}
-        children="Dark Mode"
-      />
       <SwitchGroup
         switches={[
+          { item: "darkMode", children: "Dark Mode" },
           { item: "highlight", children: "Highlight Moves" },
-          { item: "animation", children: "Animation" },
+          // { item: "animation", children: "Animation" },
           { item: "devMode", children: "Dev Mode" },
         ]}
       />

@@ -1,15 +1,12 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { allTypesOfMove, MT } from "@/components/moveTypes/types";
-import { CardBody, CardFooter } from "@heroui/card";
-import { Button, ButtonGroup, ButtonProps } from "@heroui/button";
-import { Progress } from "@heroui/progress";
+import { Card, ButtonGroup, ButtonProps, ProgressBar, Label } from "@heroui/react";
 import EvalGraph from "@/Logic/evalgraph";
 import { analysisType, analyzeGame } from "@/Logic/analyze";
 import { useGameState } from "@/Logic/state/game";
 import { MoveClass } from "@/components/moveTypes";
 import { icons } from "@/components/icons";
-import { addToast } from "@heroui/toast";
-import { cn } from "@heroui/theme";
+import { Buttons, newButtonProps } from "@/components/buttons";
 
 export interface playerStats {
   accuracy: number;
@@ -39,35 +36,30 @@ function Summary() {
   const analysis = useGameState((state) => state.analysis);
   const saveGameToArchive = useGameState((state) => state.saveGameToArchive);
 
-  const addGameToArchive = async () => {
-    const toast = await saveGameToArchive();
-    addToast(toast);
-  };
-
-  const allButtons: Partial<ButtonProps>[] = [
+  const allButtons: newButtonProps[] = [
     {
       children: "Start Analyzing",
-      startContent: icons.others.rocket,
-      onPress: () => changeState("third"),
-      disabled: loading,
+      icon: icons.others.rocket,
+      onClick: () => changeState("third"),
+      hide: loading,
     },
     {
       children: "Archive",
-      startContent: icons.left_panel.archive,
-      onPress: addGameToArchive,
-      disabled: loading,
+      icon: icons.left_panel.archive,
+      onClick: saveGameToArchive,
+      hide: loading,
     },
     {
       children: "Back",
-      startContent: icons.controls.previous,
-      onPress: () => changeState("first"),
-      color: "danger",
-      variant: "flat",
+      icon: icons.controls.previous,
+      onClick: () => changeState("first"),
+      // color: "danger",
+      // variant: "flat",
     },
   ];
   const defaultProps: ButtonProps = {
     size: "md",
-    color: "primary",
+    variant: "secondary",
   };
 
   useEffect(() => {
@@ -88,7 +80,7 @@ function Summary() {
 
   return (
     <>
-      <CardBody>
+      <Card.Content>
         <div className="flex flex-col items-center justify-center gap-3 p-3 text-center align-middle text-lg">
           {!loading && (
             <div className="h-20 w-4/5 rounded-xs">
@@ -96,12 +88,17 @@ function Summary() {
             </div>
           )}
           {loading && (
-            <Progress
-              label={`Analyzing Game`}
+            <ProgressBar
+              aria-label={`Analyzing Game`}
               size="lg"
               value={progress * 100}
-              color="primary"
-              showValueLabel></Progress>
+              className="pb-4">
+              <Label>Analyzing Game</Label>
+              <ProgressBar.Output />
+              <ProgressBar.Track>
+                <ProgressBar.Fill />
+              </ProgressBar.Track>
+            </ProgressBar>
           )}
           <div className="grid grid-cols-8 gap-3">
             <div className="col-span-3">{whitePlayer}</div>
@@ -129,22 +126,12 @@ function Summary() {
               }></MoveClass>
           ))}
         </div>
-      </CardBody>
-      <CardFooter className="flex justify-center">
-        <ButtonGroup>
-          {allButtons.map((button, i) => (
-            <Fragment key={i}>
-              {!button.disabled && (
-                <Button
-                  {...defaultProps}
-                  {...button}
-                  className={cn(button?.className, defaultProps.className)}
-                />
-              )}
-            </Fragment>
-          ))}
+      </Card.Content>
+      <Card.Footer className="flex justify-center">
+        <ButtonGroup variant={defaultProps.variant}>
+          <Buttons buttons={allButtons} defaultProps={defaultProps} includeSeperators />
         </ButtonGroup>
-      </CardFooter>
+      </Card.Footer>
     </>
   );
 }
