@@ -59,7 +59,7 @@ function Summary() {
   ];
   const defaultProps: ButtonProps = {
     size: "md",
-    variant: "danger-soft",
+    variant: "secondary",
   };
 
   useEffect(() => {
@@ -92,9 +92,7 @@ function Summary() {
               aria-label={`Analyzing Game`}
               size="lg"
               value={progress * 100}
-              // color="primary"
-              // showValueLabel
-            >
+              className="pb-4">
               <Label>Analyzing Game</Label>
               <ProgressBar.Output />
               <ProgressBar.Track>

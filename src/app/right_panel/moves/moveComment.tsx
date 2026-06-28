@@ -61,7 +61,6 @@ export const MoveComment: FC = () => {
               {!bestMove && (
                 <Button variant="danger">
                   <div className="flex items-center gap-2 font-semibold">
-                    {/* <FaArrowRotateLeft className="text-xl" /> */}
                     <div className="text-xl">{icons.others.retry}</div>
 
                     <div className="text-lg">Retry</div>
@@ -110,11 +109,9 @@ const ShowMoves: FC<{ ClickEvent: () => boolean }> = ({ ClickEvent }) => {
   };
   return (
     <Button
-      // variant={showing ? "flat" : "solid"}
-      // color={showing ? "danger" : "primary"}
+      variant={showing ? "danger-soft" : "primary"}
       onClick={handleClick}>
       <div className="flex gap-2">
-        {/* <BiSolidChess className="text-2xl" /> */}
         <div className="text-2xl">{icons.chess.small_board}</div>
         <div className="text-lg font-semibold">{showing ? "Hide Moves" : "Show Moves"}</div>
       </div>

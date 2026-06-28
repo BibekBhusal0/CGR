@@ -47,7 +47,7 @@ function LeftPanel() {
       }}
       variant="surface">
       {Object.entries(accordionItems).map(([key, value]) => (
-        <Accordion.Item aria-label={key} key={key}>
+        <Accordion.Item aria-label={key} id={key} key={key}>
           <Accordion.Heading>
             <Accordion.Trigger className="flex items-center gap-3 text-xl">
               {value.icon}
