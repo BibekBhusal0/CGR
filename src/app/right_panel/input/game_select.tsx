@@ -2,7 +2,7 @@ import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import { CDCresponse, getGamesOfPlayer, isGameResponse } from "@/api/CDC";
 import { Modal } from "@heroui/react";
 import { GameTable, LoadingTable } from "@/app/right_panel/input/game_table";
-import { today, getLocalTimeZone } from "@internationalized/date";
+import { today, getLocalTimeZone, CalendarDate } from "@internationalized/date";
 import ChooseMonth from "@/components/chooseMonth";
 
 type SelectGameProps = {
@@ -19,7 +19,7 @@ export const SelectGame: FC<SelectGameProps> = ({ input, onOpenChange, isOpen })
     month: "long",
   });
 
-  const fetchData = async (date: any) => {
+  const fetchData = async (date: CalendarDate) => {
     setLoaded(false);
     try {
       const response = await getGamesOfPlayer(input, date.month, date.year);
@@ -30,7 +30,7 @@ export const SelectGame: FC<SelectGameProps> = ({ input, onOpenChange, isOpen })
       setLoaded(true);
     }
   };
-  const resetDateAndFetch = (newDate: any) => {
+  const resetDateAndFetch = (newDate: CalendarDate) => {
     setDate(newDate);
     fetchData(newDate);
   };
