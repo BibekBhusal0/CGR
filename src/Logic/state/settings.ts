@@ -14,7 +14,7 @@ export type booleanSettings =
   | "sidebarCollapsed";
 const m = ["chess.com", "pgn"] as const;
 const n = ["none", "in-board", "in-square"] as const;
-const s = ["stockfish-17-lite", "stockfish-17"] as const;
+const s = ["stockfish-17-lite", "stockfish-17", "stockfish-18-lite"] as const;
 export type availableStockfish = (typeof s)[number];
 export const allStockfishAvailable: availableStockfish[] = [...s];
 export type notationStyle = (typeof n)[number];

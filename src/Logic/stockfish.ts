@@ -32,6 +32,10 @@ const enginePath: Record<availableStockfish, { multi: string; single: string }> 
     multi: "engines/stockfish-17/stockfish-17-light.js",
     single: "engines/stockfish-17/stockfish-17-light-single.js",
   },
+  "stockfish-18-lite": {
+    multi: "engines/stockfish-18/stockfish-18-light.js",
+    single: "engines/stockfish-18/stockfish-18-light-single.js",
+  },
 };
 
 class StockfishManager {
