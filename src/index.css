@@ -45,6 +45,8 @@
   }
 }
 
+@custom-variant motion-reduce (&:where([data-reduce-motion="true"] *));
+
 #board-board {
   @apply overflow-visible;
 }

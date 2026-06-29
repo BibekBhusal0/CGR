@@ -67,6 +67,7 @@ function Board({
   const fen = useGameState((state) => state.fen);
   const bottom = useGameState((state) => state.bottom);
   const btheme = useSettingsState((state) => state.btheme);
+  const animation = useSettingsState((state) => state.animation);
   const notationStyle = useSettingsState((state) => state.notationStyle);
 
   const baseSquareRenderer: squareRendererType = squareRenderer
@@ -108,7 +109,7 @@ function Board({
         //
         allowDragging: allowMoves,
         boardOrientation: bottom,
-        // animationDurationInMs: animation ? 300 : 0,
+        animationDurationInMs: animation ? 300 : 0,
         showNotation: notationStyle === "in-board",
         //
         pieces: customPieces(btheme) as PieceRenderObject,

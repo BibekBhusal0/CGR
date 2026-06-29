@@ -1,4 +1,4 @@
-import { Card, cn, toast , Button} from "@heroui/react";
+import { Card, cn, toast, Button } from "@heroui/react";
 import { Controls } from "../moves/controls";
 import { useSettingsState } from "@/Logic/state/settings";
 import { useGameState } from "@/Logic/state/game";
@@ -64,7 +64,7 @@ export function PerMoveAnalysis() {
   moveIndex: ${moveIndex},
 }`;
     navigator.clipboard.writeText(text);
-    toast.success("Copied analyzeProps to clipboard")
+    toast.success("Copied analyzeProps to clipboard");
   }
 
   function analyzeCurrentPos() {
@@ -151,6 +151,7 @@ export function PerMoveAnalysis() {
 function Warning() {
   const [expanded, setExpanded] = useState(false);
   const toggle = useSettingsState((state) => state.toggleValues);
+  const animation = useSettingsState((state) => state.animation);
 
   return (
     <div
@@ -160,7 +161,7 @@ function Warning() {
       className={cn(
         "relative overflow-clip rounded-b-md",
         expanded ? "h-auto max-h-80" : "max-h-9.5",
-        // animation ? "transition-all" : "transition-none"
+        animation ? "transition-all" : "transition-none"
       )}>
       {/* <ChevronIcon */}
       {/*   className={cn( */}
@@ -180,8 +181,7 @@ function Warning() {
         <Button
           className="self-center"
           // color="primary"
-          onClick={() => toggle("analyzePerMove")}
-        >
+          onClick={() => toggle("analyzePerMove")}>
           Turn off Per move analysis
         </Button>
       </div>

@@ -1,4 +1,5 @@
 import setTheme from "@/utils/setTheme";
+import setAnimation from "@/utils/setAnimation";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -8,6 +9,7 @@ export const allBoardThemes: boardThemes[] = [...b];
 export type booleanSettings =
   | "highlight"
   | "darkMode"
+  | "animation"
   | "bestMove"
   | "devMode"
   | "analyzePerMove"
@@ -27,6 +29,7 @@ export interface settingType {
   depth: number;
   highlight: boolean;
   darkMode: boolean;
+  animation: boolean;
   bestMove: boolean;
   devMode: boolean;
   sidebarCollapsed: boolean;
@@ -55,6 +58,7 @@ const initialState: settingType = {
   depth: 12,
   highlight: true,
   darkMode: true,
+  animation: true,
   devMode: false,
   bestMove: true,
   sidebarCollapsed: false,
@@ -74,6 +78,7 @@ export const useSettingsState = create<SettingsState>()(
       toggleValues: (item) => {
         set((state) => {
           if (item === "darkMode") setTheme(!state[item]);
+          if (item === "animation") setAnimation(!state[item]);
           return { [item]: !state[item] };
         });
       },
