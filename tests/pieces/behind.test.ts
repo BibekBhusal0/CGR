@@ -1,5 +1,5 @@
 import { expect, test, describe } from "bun:test";
-import { seeBehindPiece } from "../../src/Logic/pieces";
+import { seeBehindPiece } from "@/Logic/pieces";
 import { Chess } from "chess.js";
 
 describe("up", () => {

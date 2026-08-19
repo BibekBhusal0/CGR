@@ -1,5 +1,5 @@
 import { expect, test, describe } from "bun:test";
-import { isPieceHanging } from "../../src/Logic/pieces";
+import { isPieceHanging } from "@/Logic/pieces";
 
 describe("Simple captures (No defenders)", () => {
   test("1", () => {

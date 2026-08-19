@@ -1,5 +1,5 @@
 import { expect, test, describe } from "bun:test";
-import { isPinned } from "../../src/Logic/pieces";
+import { isPinned } from "@/Logic/pieces";
 
 describe("Absolute Pins", () => {
   test("Rook Pinned By Bishop", () => {

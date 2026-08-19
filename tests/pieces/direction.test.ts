@@ -1,5 +1,5 @@
 import { expect, test, describe } from "bun:test";
-import { getDirection } from "../../src/Logic/pieces";
+import { getDirection } from "@/Logic/pieces";
 
 describe("Right", () => {
   test("case 0", () => {

@@ -1,6 +1,6 @@
 import { expect, test, describe } from "bun:test";
-import { analyzeMove } from "../../src/Logic/analyze";
-import { SerializableMove } from "../../src/app/right_panel/perMoveAnalysis";
+import { analyzeMove } from "@/Logic/analyze";
+import { SerializableMove } from "@/app/right_panel/perMoveAnalysis";
 import { Move } from "chess.js";
 
 export function toMove(data: SerializableMove): Move {

@@ -1,5 +1,5 @@
 import { test, expect, describe } from "bun:test";
-import { getXrayAttackers } from "../../src/Logic/pieces";
+import { getXrayAttackers } from "@/Logic/pieces";
 import { Chess } from "chess.js";
 
 describe("X-ray Attacks Simple", () => {
