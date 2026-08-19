@@ -73,6 +73,9 @@ class StockfishManager {
           let evalValue: number = parseInt(parts[evalIndex]);
           const pvIndex = parts.indexOf("pv") + 1;
           const lines = parts.slice(pvIndex);
+          if (evalType === "mate" && evalValue === 0) {
+            evalValue = -1;
+          }
           evalValue = this.blackToMove ? evalValue * -1 : evalValue;
           const pvOutput: stockfishPvOutput = {
             lines,

@@ -19,7 +19,11 @@ function EvalBar() {
   const rot = bottom === "white" ? "" : "rotate-180";
   if (stage === "third" && moveIndex !== -1) {
     if (type === "mate") {
-      showVal = `M${Math.abs(showVal)}`;
+      if (Math.abs(showVal) <= 1) {
+        showVal = showVal > 0 ? "1-0" : "0-1";
+      } else {
+        showVal = `M${Math.abs(showVal)}`;
+      }
       winChance = white_winning ? 100 : 0;
     } else {
       winChance = 50 + 50 * (2 / (1 + Math.exp(-0.00368208 * showVal)) - 1);
