@@ -9,6 +9,7 @@ import { cn } from "@heroui/react";
 
 function FullBoard() {
   const sidebarCollapsed = useSettingsState((state) => state.sidebarCollapsed);
+  const evalBar = useSettingsState((state) => state.evalBar);
   const boardParentRef = useRef<HTMLDivElement>(null);
   const [cardSize, setCardSize] = useState<number | undefined>();
   console.warn("DEBUGPRINT[44]: index.tsx:13: cardSize=", cardSize);
@@ -39,7 +40,7 @@ function FullBoard() {
       )}>
       <Card className="flex px-1 md:px-4" style={{ width: cardSize, height: (cardSize || 0) + 30 }}>
         <div className="relative flex size-full gap-1">
-          <EvalBar />
+          {evalBar && <EvalBar />}
           <div className="flex size-full flex-col">
             <Player position="top" />
             <div className="shrink">

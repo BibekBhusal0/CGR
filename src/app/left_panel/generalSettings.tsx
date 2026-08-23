@@ -94,6 +94,7 @@ function GeneralSettings() {
           { item: "darkMode", children: "Dark Mode" },
           { item: "highlight", children: "Highlight Moves" },
           { item: "animation", children: "Animation" },
+          { item: "evalBar", children: "Eval Bar" },
           { item: "devMode", children: "Dev Mode" },
         ]}
       />

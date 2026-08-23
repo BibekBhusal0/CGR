@@ -13,7 +13,8 @@ export type booleanSettings =
   | "bestMove"
   | "devMode"
   | "analyzePerMove"
-  | "sidebarCollapsed";
+  | "sidebarCollapsed"
+  | "evalBar";
 const m = ["chess.com", "pgn"] as const;
 const n = ["none", "in-board", "in-square"] as const;
 const s = ["stockfish-17-lite", "stockfish-17", "stockfish-18-lite"] as const;
@@ -30,6 +31,7 @@ export interface settingType {
   highlight: boolean;
   darkMode: boolean;
   animation: boolean;
+  evalBar: boolean;
   bestMove: boolean;
   devMode: boolean;
   sidebarCollapsed: boolean;
@@ -59,6 +61,7 @@ const initialState: settingType = {
   highlight: true,
   darkMode: true,
   animation: true,
+  evalBar: true,
   devMode: false,
   bestMove: true,
   sidebarCollapsed: false,
