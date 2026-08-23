@@ -1,0 +1,16 @@
+workspaces:
+  - name: cgr
+    root: ~/Code/React/CGR
+    tabs:
+      - label: editor
+        panes:
+          - command: nvim :SessionLoad cgr
+      - label: 󰚩 AI
+        panes:
+          - command: opencode
+      - label: server
+        panes:
+          - command: npm run dev
+      - label: misc
+        panes:
+          - {}
