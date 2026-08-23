@@ -1,9 +1,9 @@
 import { Select, Label, ListBox } from "@heroui/react";
 import {
-  allBoardThemes,
+  allThemes,
   allNotationStyles,
-  boardThemes,
   notationStyle,
+  ThemeName,
   useSettingsState,
 } from "@/Logic/state/settings";
 import { base_path } from "@/app/full_board/customBoard";
@@ -14,33 +14,33 @@ function getImageSource(theme: string, board_theme: string) {
 }
 
 function GeneralSettings() {
-  const btheme = useSettingsState((state) => state.btheme);
-  const setBoardTheme = useSettingsState((state) => state.setBoardTheme);
+  const theme = useSettingsState((state) => state.theme);
+  const setTheme = useSettingsState((state) => state.setTheme);
   const darkMode = useSettingsState((state) => state.darkMode);
   const setNotationStyle = useSettingsState((state) => state.setNotationStyle);
   const notationStyle = useSettingsState((state) => state.notationStyle);
-  const theme = darkMode === true ? "dark" : "light";
+  const mode = darkMode === true ? "dark" : "light";
 
   return (
     <>
       <Select
-        value={btheme}
+        value={theme}
         variant="secondary"
         onChange={(e) => {
           if (e !== "") {
-            const v = e as boardThemes;
-            if (!allBoardThemes.includes(v)) return;
-            setBoardTheme(v);
+            const v = e as ThemeName;
+            if (!allThemes.includes(v)) return;
+            setTheme(v);
           }
         }}>
-        <Label> Board Theme</Label>
+        <Label>Theme</Label>
         <Select.Trigger className="pt-1">
           <Select.Value />
           <Select.Indicator />
         </Select.Trigger>
         <Select.Popover>
           <ListBox>
-            {allBoardThemes.map((board_theme) => (
+            {allThemes.map((board_theme) => (
               <ListBox.Item
                 aria-label={board_theme}
                 className="py-1"
@@ -49,8 +49,8 @@ function GeneralSettings() {
                 <div className="flex items-center gap-2 capitalize">
                   <img
                     className="h-auto w-9"
-                    src={getImageSource(theme, board_theme)}
-                    alt={`${board_theme} board_theme Pawn`}
+                    src={getImageSource(mode, board_theme)}
+                    alt={`${board_theme} Pawn`}
                   />
                   <div className="text-md pt-1">{board_theme}</div>
                 </div>

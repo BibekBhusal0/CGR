@@ -1,11 +1,11 @@
-import setTheme, { setBoardThemeColors } from "@/utils/setTheme";
+import { applyMode, applyAppTheme } from "@/utils/setTheme";
 import setAnimation from "@/utils/setAnimation";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-const b = ["default", "ocean", "wood", "geometric", "cosmos", "dash", "nature"] as const;
-export type boardThemes = (typeof b)[number];
-export const allBoardThemes: boardThemes[] = [...b];
+const t = ["default", "ocean", "wood", "geometric", "cosmos", "dash", "nature"] as const;
+export type ThemeName = (typeof t)[number];
+export const allThemes: ThemeName[] = [...t];
 export type booleanSettings =
   | "highlight"
   | "darkMode"
@@ -36,7 +36,7 @@ export interface settingType {
   devMode: boolean;
   sidebarCollapsed: boolean;
   analyzePerMove: boolean;
-  btheme: boardThemes;
+  theme: ThemeName;
   inputMode: inputModes;
   openAccordions: string[];
   notationStyle: notationStyle;
@@ -46,7 +46,7 @@ export interface settingType {
 interface settingActions {
   toggleValues: (item: booleanSettings) => void;
   changeDepth: (depth: number) => void;
-  setBoardTheme: (btheme: boardThemes) => void;
+  setTheme: (theme: ThemeName) => void;
   setOpenAccordtions: (openAccordions: string[]) => void;
   setSettings: (newSettings: settingType) => void;
   setInputMode: (newMode: inputModes) => void;
@@ -66,7 +66,7 @@ const initialState: settingType = {
   bestMove: true,
   sidebarCollapsed: false,
   analyzePerMove: false,
-  btheme: "default",
+  theme: "default",
   inputMode: "chess.com",
   openAccordions: ["General Settings", "Stockfish Settings"],
   notationStyle: "in-board",
@@ -80,15 +80,15 @@ export const useSettingsState = create<SettingsState>()(
 
       toggleValues: (item) => {
         set((state) => {
-          if (item === "darkMode") setTheme(!state[item]);
+          if (item === "darkMode") applyMode(!state[item]);
           if (item === "animation") setAnimation(!state[item]);
           return { [item]: !state[item] };
         });
       },
       changeDepth: (depth) => set({ depth }),
-      setBoardTheme: (btheme) => {
-        setBoardThemeColors(btheme);
-        set({ btheme });
+      setTheme: (theme) => {
+        applyAppTheme(theme);
+        set({ theme });
       },
       setOpenAccordtions: (openAccordions: string[]) => set({ openAccordions }),
       setSettings: (newSettings) => set((state) => ({ ...state, ...newSettings })),
@@ -101,6 +101,13 @@ export const useSettingsState = create<SettingsState>()(
           return state;
         }),
     }),
-    { name: SETTINGS_KEY }
+    {
+      name: SETTINGS_KEY,
+      merge: (persisted, current) => {
+        const p = persisted as Partial<settingType> & { btheme?: ThemeName };
+        const { btheme, ...rest } = p;
+        return { ...current, ...rest, theme: p.theme ?? btheme ?? current.theme };
+      },
+    }
   )
 );

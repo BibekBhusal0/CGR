@@ -1,7 +1,7 @@
 import { Arrow, Chessboard, PieceRenderObject, SquareHandlerArgs } from "react-chessboard";
 import { FC } from "react";
 import { Chess, Square } from "chess.js";
-import { boardThemes, useSettingsState } from "@/Logic/state/settings";
+import { useSettingsState } from "@/Logic/state/settings";
 import { AllIcons } from "@/components/moveTypes/types";
 import { MoveIcon } from "@/components/moveTypes/MoveIcon";
 import { useGameState } from "@/Logic/state/game";
@@ -14,15 +14,6 @@ interface PieceProps {
   square: Square;
 }
 type Review = Partial<Record<Square, AllIcons>>;
-
-// Board colors now come from CSS variables
-function getBoardColors() {
-  const style = getComputedStyle(document.documentElement);
-  return {
-    light: style.getPropertyValue('--board-light-square').trim(),
-    dark: style.getPropertyValue('--board-dark-square').trim(),
-  };
-}
 
 export const base_path =
   "https://raw.githubusercontent.com/BibekBhusal0/CGR/e3bc436ef9d23fc37ad0d9364b3d7fd697963ee3/public/images/pieces/";
@@ -66,7 +57,7 @@ function Board({
   const allowMoves = useGameState((state) => state.allowMoves);
   const fen = useGameState((state) => state.fen);
   const bottom = useGameState((state) => state.bottom);
-  const btheme = useSettingsState((state) => state.btheme);
+  const theme = useSettingsState((state) => state.theme);
   const animation = useSettingsState((state) => state.animation);
   const notationStyle = useSettingsState((state) => state.notationStyle);
 
@@ -89,7 +80,9 @@ function Board({
             <div
               className="absolute-center md:text-md text-xs select-none md:font-bold"
               style={{
-                color: isLightSquare(square as Square) ? dark : light,
+                color: isLightSquare(square as Square)
+                  ? "var(--board-dark-square)"
+                  : "var(--board-light-square)",
               }}>
               {square}
             </div>
@@ -98,8 +91,6 @@ function Board({
       );
     };
   }
-
-  const { light, dark } = getBoardColors();
 
   return (
     <Chessboard
@@ -112,14 +103,14 @@ function Board({
         animationDurationInMs: animation ? 300 : 0,
         showNotation: notationStyle === "in-board",
         //
-        pieces: customPieces(btheme) as PieceRenderObject,
+        pieces: customPieces(theme) as PieceRenderObject,
         arrows: arrows,
         squareRenderer: newSquareRenderer,
         //
-        lightSquareStyle: { backgroundColor: light },
-        darkSquareStyle: { backgroundColor: dark },
-        darkSquareNotationStyle: { color: light },
-        lightSquareNotationStyle: { color: dark },
+        lightSquareStyle: { backgroundColor: "var(--board-light-square)" },
+        darkSquareStyle: { backgroundColor: "var(--board-dark-square)" },
+        darkSquareNotationStyle: { color: "var(--board-light-square)" },
+        lightSquareNotationStyle: { color: "var(--board-dark-square)" },
       }}
     />
   );

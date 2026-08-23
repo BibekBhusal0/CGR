@@ -1,15 +1,15 @@
 @import "tailwindcss";
 @import "@heroui/styles";
 
-/* Board Theme Color Schemes - Light Mode */
-[data-board-theme="default"]:not(.dark) {
+/* App Theme Color Schemes - Light Mode */
+[data-app-theme="default"]:not(.dark) {
   --board-light-square: #f0d2ad;
   --board-dark-square: #654e2f;
   --accent: oklch(0.6204 0.195 253.83);
   --accent-foreground: var(--snow);
 }
 
-[data-board-theme="ocean"]:not(.dark) {
+[data-app-theme="ocean"]:not(.dark) {
   --board-light-square: #D5E0E6;
   --board-dark-square: #6aa4c8;
   --accent: oklch(0.55 0.14 220);
@@ -21,7 +21,7 @@
   --default: oklch(0.94 0.010 215);
 }
 
-[data-board-theme="wood"]:not(.dark) {
+[data-app-theme="wood"]:not(.dark) {
   --board-light-square: #c8ac89;
   --board-dark-square: #6e543f;
   --accent: oklch(0.48 0.09 45);
@@ -33,7 +33,7 @@
   --default: oklch(0.93 0.018 45);
 }
 
-[data-board-theme="geometric"]:not(.dark) {
+[data-app-theme="geometric"]:not(.dark) {
   --board-light-square: #C7C3AB;
   --board-dark-square: #77534c;
   --accent: oklch(0.50 0.10 30);
@@ -45,7 +45,7 @@
   --default: oklch(0.92 0.016 35);
 }
 
-[data-board-theme="cosmos"]:not(.dark) {
+[data-app-theme="cosmos"]:not(.dark) {
   --board-light-square: #94a1ad;
   --board-dark-square: #464c53;
   --accent: oklch(0.54 0.11 250);
@@ -57,7 +57,7 @@
   --default: oklch(0.94 0.012 250);
 }
 
-[data-board-theme="dash"]:not(.dark) {
+[data-app-theme="dash"]:not(.dark) {
   --board-light-square: #EDF3F4;
   --board-dark-square: #7e8a99;
   --accent: oklch(0.52 0.13 210);
@@ -69,7 +69,7 @@
   --default: oklch(0.95 0.008 210);
 }
 
-[data-board-theme="nature"]:not(.dark) {
+[data-app-theme="nature"]:not(.dark) {
   --board-light-square: #c4d49b;
   --board-dark-square: #68926f;
   --accent: oklch(0.52 0.15 145);
@@ -81,15 +81,15 @@
   --default: oklch(0.94 0.024 135);
 }
 
-/* Board Theme Color Schemes - Dark Mode */
-[data-board-theme="default"].dark {
+/* App Theme Color Schemes - Dark Mode */
+[data-app-theme="default"].dark {
   --board-light-square: #f0d2ad;
   --board-dark-square: #654e2f;
   --accent: oklch(0.6204 0.195 253.83);
   --accent-foreground: var(--snow);
 }
 
-[data-board-theme="ocean"].dark {
+[data-app-theme="ocean"].dark {
   --board-light-square: #D5E0E6;
   --board-dark-square: #6aa4c8;
   --accent: oklch(0.62 0.14 215);
@@ -102,7 +102,7 @@
   --overlay: oklch(0.31 0.020 220);
 }
 
-[data-board-theme="wood"].dark {
+[data-app-theme="wood"].dark {
   --board-light-square: #c8ac89;
   --board-dark-square: #6e543f;
   --accent: oklch(0.60 0.10 50);
@@ -115,7 +115,7 @@
   --overlay: oklch(0.32 0.025 45);
 }
 
-[data-board-theme="geometric"].dark {
+[data-app-theme="geometric"].dark {
   --board-light-square: #C7C3AB;
   --board-dark-square: #77534c;
   --accent: oklch(0.62 0.12 35);
@@ -128,7 +128,7 @@
   --overlay: oklch(0.31 0.020 35);
 }
 
-[data-board-theme="cosmos"].dark {
+[data-app-theme="cosmos"].dark {
   --board-light-square: #94a1ad;
   --board-dark-square: #464c53;
   --accent: oklch(0.64 0.12 255);
@@ -141,7 +141,7 @@
   --overlay: oklch(0.29 0.024 255);
 }
 
-[data-board-theme="dash"].dark {
+[data-app-theme="dash"].dark {
   --board-light-square: #EDF3F4;
   --board-dark-square: #7e8a99;
   --accent: oklch(0.60 0.12 210);
@@ -154,7 +154,7 @@
   --overlay: oklch(0.30 0.017 210);
 }
 
-[data-board-theme="nature"].dark {
+[data-app-theme="nature"].dark {
   --board-light-square: #c4d49b;
   --board-dark-square: #68926f;
   --accent: oklch(0.62 0.15 145);
