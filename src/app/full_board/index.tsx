@@ -11,7 +11,7 @@ function FullBoard() {
   const sidebarCollapsed = useSettingsState((state) => state.sidebarCollapsed);
   const boardParentRef = useRef<HTMLDivElement>(null);
   const [cardSize, setCardSize] = useState<number | undefined>();
-  console.warn("DEBUGPRINT[44]: index.tsx:13: cardSize=", cardSize)
+  console.warn("DEBUGPRINT[44]: index.tsx:13: cardSize=", cardSize);
 
   useEffect(() => {
     const element = boardParentRef.current;

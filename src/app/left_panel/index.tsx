@@ -113,7 +113,7 @@ function Left() {
           {icons.others.sidebar}
         </Button>
         {!sidebarCollapsed && (
-          <div className="bg-content1 grow-0 rounded-large shadow-medium hidden max-h-[calc(100vh-120px)] w-full overflow-y-auto lg:block">
+          <div className="bg-content1 rounded-large shadow-medium hidden max-h-[calc(100vh-120px)] w-full grow-0 overflow-y-auto lg:block">
             <LeftPanel />
           </div>
         )}

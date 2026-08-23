@@ -19,7 +19,7 @@ function RightPanel() {
       //   body: "overflow-auto",
       //   header: "overflow-visible",
       // }}
-      >
+    >
       {stage === "first" ? (
         <Input />
       ) : analyzePerMove ? (

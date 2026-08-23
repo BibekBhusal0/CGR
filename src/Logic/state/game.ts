@@ -206,13 +206,13 @@ export const useGameState = create<GameState>((set, get) => ({
     const g = getGameToSave();
     if (!g) {
       toast.danger("No Game to save");
-      return
+      return;
     }
     const all = await getAllGamesFromArchive();
     const alreadySaved = all.some((game) => game.pgn === g?.pgn);
     if (alreadySaved) {
-      toast.warning("Game already archived")
-      return
+      toast.warning("Game already archived");
+      return;
     }
     await addGameToArchive(g as saveType);
     toast.success("Game Archived");

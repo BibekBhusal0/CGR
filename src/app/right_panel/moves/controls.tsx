@@ -1,4 +1,4 @@
-import { ButtonGroup, ButtonProps, } from "@heroui/react";
+import { ButtonGroup, ButtonProps } from "@heroui/react";
 import { useEffect, useRef, useState } from "react";
 import { icons as all_icons } from "@/components/icons";
 import { useGameState } from "@/Logic/state/game";
@@ -172,7 +172,7 @@ export function Controls() {
     isIconOnly: true,
     variant: "tertiary",
     size: "lg",
-    className :"min-w-12 w-12"
+    className: "min-w-12 w-12",
   };
 
   return (

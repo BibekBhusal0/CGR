@@ -67,7 +67,7 @@ const Analysis: FC<{ modal?: boolean }> = ({ modal }) => {
     <>
       <Card.Header
         className={cn(
-          "bg-default flex h-20 w-full flex-col justify-center rounded-md px-3 relative",
+          "bg-default relative flex h-20 w-full flex-col justify-center rounded-md px-3",
           !modal && "hidden lg:flex"
         )}>
         <EvalGraph />
@@ -75,10 +75,9 @@ const Analysis: FC<{ modal?: boolean }> = ({ modal }) => {
           onClick={() => changeState("second")}
           variant="danger"
           size="sm"
-          className = "absolute -top-3 -left-3"
-          isIconOnly
-        >
-        {icons.controls.previous}
+          className="absolute -top-3 -left-3"
+          isIconOnly>
+          {icons.controls.previous}
         </Button>
       </Card.Header>
       <Card.Content className={cn(!modal && "hidden lg:flex")}>
