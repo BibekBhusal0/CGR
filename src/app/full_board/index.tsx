@@ -3,42 +3,51 @@ import { FC } from "react";
 import EvalBar from "@/app/full_board/evalbar";
 import JustBoard from "@/app/full_board/customBoard";
 import { useGameState } from "@/Logic/state/game";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSettingsState } from "@/Logic/state/settings";
 import { cn } from "@heroui/react";
 
 function FullBoard() {
   const sidebarCollapsed = useSettingsState((state) => state.sidebarCollapsed);
   const evalBar = useSettingsState((state) => state.evalBar);
-  const boardParentRef = useRef<HTMLDivElement>(null);
-  const [cardSize, setCardSize] = useState<number | undefined>();
-  console.warn("DEBUGPRINT[44]: index.tsx:13: cardSize=", cardSize);
+  const [cardSize, setCardSize] = useState<number>(0);
+
+  const updateSize = () => {
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    // Calculate available width based on flex basis
+    // basis-7/12 when collapsed, basis-6/12 or basis-5/12 when expanded (responsive)
+    let containerWidth;
+    if (sidebarCollapsed) {
+      containerWidth = (viewportWidth * 7) / 12;
+    } else {
+      // basis-6/12 on mobile, basis-5/12 on large screens
+      containerWidth = viewportWidth >= 1024 ? (viewportWidth * 5) / 12 : (viewportWidth * 6) / 12;
+    }
+
+    const size = Math.min(containerWidth - 30, viewportHeight - 100);
+    setCardSize(size);
+  };
 
   useEffect(() => {
-    const element = boardParentRef.current;
-    if (!element) return;
+    updateSize();
+  }, [sidebarCollapsed]);
 
-    const observer = new ResizeObserver(() => {
-      if (!boardParentRef.current) return;
-      let { width } = boardParentRef.current.getBoundingClientRect();
-      width -= 10;
-      const height = window.innerHeight - 60;
-      const size = Math.min(width, height);
-      setCardSize(size);
-    });
-
-    observer.observe(element);
-    return () => observer.unobserve(element);
+  useEffect(() => {
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
   }, []);
 
   return (
     <div
-      ref={boardParentRef}
       className={cn(
         "flex size-full justify-center px-2 lg:justify-end lg:px-0",
         sidebarCollapsed ? "basis-7/12" : "basis-6/12 lg:basis-5/12"
       )}>
-      <Card className="flex px-1 md:px-4" style={{ width: cardSize, height: (cardSize || 0) + 30 }}>
+      <Card
+        className="flex px-1 md:px-4"
+        style={{ width: cardSize + (evalBar ? 30 : 0), height: cardSize + 92 }}>
         <div className="relative flex size-full gap-1">
           {evalBar && <EvalBar />}
           <div className="flex size-full flex-col">
