@@ -15,15 +15,15 @@ interface PieceProps {
 }
 type Review = Partial<Record<Square, AllIcons>>;
 
-const colors: Record<boardThemes, { light: string; dark: string }> = {
-  default: { light: "#f0d2ad", dark: "#654e2f" },
-  ocean: { light: "#D5E0E6", dark: "#6aa4c8" },
-  wood: { light: "#c8ac89", dark: "#6e543f" },
-  geometric: { light: "#C7C3AB", dark: "#77534c" },
-  cosmos: { light: "#94a1ad", dark: "#464c53" },
-  dash: { light: "#EDF3F4", dark: "#7e8a99" },
-  nature: { light: "#c4d49b", dark: "#68926f" },
-};
+// Board colors now come from CSS variables
+function getBoardColors() {
+  const style = getComputedStyle(document.documentElement);
+  return {
+    light: style.getPropertyValue('--board-light-square').trim(),
+    dark: style.getPropertyValue('--board-dark-square').trim(),
+  };
+}
+
 export const base_path =
   "https://raw.githubusercontent.com/BibekBhusal0/CGR/e3bc436ef9d23fc37ad0d9364b3d7fd697963ee3/public/images/pieces/";
 
@@ -99,7 +99,7 @@ function Board({
     };
   }
 
-  const { light, dark } = colors[btheme];
+  const { light, dark } = getBoardColors();
 
   return (
     <Chessboard

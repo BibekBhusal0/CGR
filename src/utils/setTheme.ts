@@ -1,4 +1,4 @@
-import { useSettingsState } from "@/Logic/state/settings";
+import { useSettingsState, boardThemes } from "@/Logic/state/settings";
 
 export function setTheme(darkMode: boolean) {
   const crrClass = darkMode ? "dark" : "light";
@@ -8,9 +8,16 @@ export function setTheme(darkMode: boolean) {
   document.documentElement.setAttribute("data-theme", crrClass);
 }
 
+export function setBoardThemeColors(theme: boardThemes) {
+  document.documentElement.setAttribute("data-board-theme", theme);
+}
+
 export function autoSetTheme() {
-  const darkMode = useSettingsState.getState().darkMode;
+  const state = useSettingsState.getState();
+  const darkMode = state.darkMode;
+  const btheme = state.btheme;
   setTheme(darkMode);
+  setBoardThemeColors(btheme);
 }
 
 export default setTheme;

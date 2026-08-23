@@ -1,4 +1,4 @@
-import setTheme from "@/utils/setTheme";
+import setTheme, { setBoardThemeColors } from "@/utils/setTheme";
 import setAnimation from "@/utils/setAnimation";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -86,7 +86,10 @@ export const useSettingsState = create<SettingsState>()(
         });
       },
       changeDepth: (depth) => set({ depth }),
-      setBoardTheme: (btheme) => set({ btheme }),
+      setBoardTheme: (btheme) => {
+        setBoardThemeColors(btheme);
+        set({ btheme });
+      },
       setOpenAccordtions: (openAccordions: string[]) => set({ openAccordions }),
       setSettings: (newSettings) => set((state) => ({ ...state, ...newSettings })),
       setNotationStyle: (notationStyle) => set({ notationStyle }),
