@@ -1,11 +1,13 @@
 import { cn } from "@heroui/react";
 import { useGameState } from "@/Logic/state/game";
+import { useSettingsState } from "@/Logic/state/settings";
 
 function EvalBar() {
   const evaluation = useGameState((state) => state.evaluation);
   const moveIndex = useGameState((state) => state.moveIndex);
   const bottom = useGameState((state) => state.bottom);
   const stage = useGameState((state) => state.stage);
+  const animation = useSettingsState((state) => state.animation);
 
   const { type, value } = evaluation;
   let showVal: number | string = value;
@@ -40,7 +42,7 @@ function EvalBar() {
       className={cn("my-auto h-[450px] w-8 drop-shadow-2xl", rot)}>
       <div
         id="eval-black"
-        className="transition-height absolute top-0 w-full"
+        className={cn("absolute top-0 w-full", animation && "transition-height")}
         style={{
           height: `${100 - winChance}%`,
           backgroundColor: "#454545",
