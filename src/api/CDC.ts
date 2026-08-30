@@ -13,12 +13,7 @@ export type chessResults =
   | "50move";
 
 export type gameRules =
-  | "chess"
-  | "chess960"
-  | "bughouse"
-  | "kingofthehill"
-  | "threecheck"
-  | "crazyhouse";
+  "chess" | "chess960" | "bughouse" | "kingofthehill" | "threecheck" | "crazyhouse";
 
 export type timeControls = "daily" | "rapid" | "blitz" | "bullet" | "classical";
 export interface player {
