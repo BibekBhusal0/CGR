@@ -55,7 +55,7 @@ function LeftPanel() {
               <Accordion.Indicator />
             </Accordion.Trigger>
           </Accordion.Heading>
-          <Accordion.Panel className="px-4 py-1">{value.content}</Accordion.Panel>
+          <Accordion.Panel className="px-4">{value.content}</Accordion.Panel>
         </Accordion.Item>
       ))}
     </Accordion>
