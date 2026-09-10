@@ -1,7 +1,7 @@
 import { rephraseEvaluation } from "@/Logic/rephraseEvaluation";
 import { FC, useEffect, useState } from "react";
 import { evaluationType } from "@/Logic/stockfish";
-import { Button } from "@heroui/react";
+import { Button, toast } from "@heroui/react";
 import OpeningCard from "@/app/right_panel/moves/opening";
 import { MoveIcon } from "@/components/moveTypes/MoveIcon";
 import { MoveExplained } from "@/components/moveTypes/types";
@@ -59,10 +59,15 @@ export const MoveComment: FC = () => {
             <div className="flex items-center justify-between gap-2">
               <ShowMoves ClickEvent={getClickHandler(moveIndex + 1)} />
               {!bestMove && (
-                <Button variant="danger">
+                <Button
+                  variant="danger"
+                  onPress={() =>
+                    toast.info("Retry is not available yet", {
+                      description: "Retry functionality is coming soon.",
+                    })
+                  }>
                   <div className="flex items-center gap-2 font-semibold">
                     <div className="text-xl">{icons.others.retry}</div>
-
                     <div className="text-lg">Retry</div>
                   </div>
                 </Button>
