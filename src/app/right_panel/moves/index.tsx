@@ -28,9 +28,7 @@ function Moves() {
           <Modal.Container size="lg" className="min-w-30">
             <Modal.Dialog>
               <Modal.CloseTrigger />
-              <Card
-                style={{ position: "unset" }}
-              >
+              <Card style={{ position: "unset" }}>
                 <Analysis modal={true} />
               </Card>
             </Modal.Dialog>

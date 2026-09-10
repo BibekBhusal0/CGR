@@ -79,49 +79,45 @@ function Summary() {
   return (
     <>
       <Card.Content className="flex flex-col items-center justify-center gap-3 p-3 text-center align-middle text-lg">
-          {!loading && (
-            <div className="h-20 w-4/5 rounded-xs">
-              <EvalGraph />
-            </div>
-          )}
-          {loading && (
-            <ProgressBar
-              aria-label={`Analyzing Game`}
-              size="lg"
-              value={progress * 100}
-              className="pb-4">
-              <Label>Analyzing Game</Label>
-              <ProgressBar.Output />
-              <ProgressBar.Track>
-                <ProgressBar.Fill />
-              </ProgressBar.Track>
-            </ProgressBar>
-          )}
-          <div className="grid grid-cols-8 gap-3">
-            <div className="col-span-3">{whitePlayer}</div>
-            <div className="col-span-2 text-xl font-bold">VS</div>
-            <div className="col-span-3">{blackPlayer}</div>
-            <div className="col-span-2 text-center">
-              {playerSummary.white.accuracy.toFixed(2)} %
-            </div>
-            <div className="col-span-4">Accuracy</div>
-            <div className="col-span-2 text-center">
-              {playerSummary.black.accuracy.toFixed(2)} %
-            </div>
+        {!loading && (
+          <div className="h-20 w-4/5 rounded-xs">
+            <EvalGraph />
           </div>
-          {allTypesOfMove.slice(0, allTypesOfMove.length - 1).map((m) => (
-            <MoveClass
-              key={m}
-              type={m}
-              counts={
-                loading
-                  ? undefined
-                  : {
-                      white: playerSummary.white.movesCount[m],
-                      black: playerSummary.black.movesCount[m],
-                    }
-              }></MoveClass>
-          ))}
+        )}
+        {loading && (
+          <ProgressBar
+            aria-label={`Analyzing Game`}
+            size="lg"
+            value={progress * 100}
+            className="pb-4">
+            <Label>Analyzing Game</Label>
+            <ProgressBar.Output />
+            <ProgressBar.Track>
+              <ProgressBar.Fill />
+            </ProgressBar.Track>
+          </ProgressBar>
+        )}
+        <div className="grid grid-cols-8 gap-3">
+          <div className="col-span-3">{whitePlayer}</div>
+          <div className="col-span-2 text-xl font-bold">VS</div>
+          <div className="col-span-3">{blackPlayer}</div>
+          <div className="col-span-2 text-center">{playerSummary.white.accuracy.toFixed(2)} %</div>
+          <div className="col-span-4">Accuracy</div>
+          <div className="col-span-2 text-center">{playerSummary.black.accuracy.toFixed(2)} %</div>
+        </div>
+        {allTypesOfMove.slice(0, allTypesOfMove.length - 1).map((m) => (
+          <MoveClass
+            key={m}
+            type={m}
+            counts={
+              loading
+                ? undefined
+                : {
+                    white: playerSummary.white.movesCount[m],
+                    black: playerSummary.black.movesCount[m],
+                  }
+            }></MoveClass>
+        ))}
       </Card.Content>
       <Card.Footer className="flex justify-center">
         <ButtonGroup variant={defaultProps.variant}>

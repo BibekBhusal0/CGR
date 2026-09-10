@@ -42,39 +42,39 @@ export const SelectGame: FC<SelectGameProps> = ({ input, onOpenChange, isOpen })
 
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <Modal.Backdrop>
-          <Modal.Container size="cover">
-            <Modal.Dialog className="max-h-90 max-w-190">
-              <Modal.Header className="flex flex-col justify-center gap-3 text-center">
-                {loaded ? "Searched" : "Searching"} for game of {input} for {month} {date.year} in
-                Chess.com
-                <div className="flex-center pb-3">
-                  <ChooseMonth onClick={resetDateAndFetch} />
-                </div>
-              </Modal.Header>
-              <Modal.CloseTrigger />
-              <Modal.Body>
-                {loaded ? (
-                  data === undefined ? (
-                    "Couldn't fetch Data"
-                  ) : isGameResponse(data) ? (
-                    <GameTable tableData={data.data} userName={input} />
-                  ) : (
-                    <div className="p-4 text-center">
-                      Error occurred while fetching, Make Sure Username is correct
-                      <br />
-                      {JSON.stringify(data.data)}
-                      <br />
-                      Try again
-                    </div>
-                  )
+      <Modal.Backdrop>
+        <Modal.Container size="cover">
+          <Modal.Dialog className="max-h-90 max-w-190">
+            <Modal.Header className="flex flex-col justify-center gap-3 text-center">
+              {loaded ? "Searched" : "Searching"} for game of {input} for {month} {date.year} in
+              Chess.com
+              <div className="flex-center pb-3">
+                <ChooseMonth onClick={resetDateAndFetch} />
+              </div>
+            </Modal.Header>
+            <Modal.CloseTrigger />
+            <Modal.Body>
+              {loaded ? (
+                data === undefined ? (
+                  "Couldn't fetch Data"
+                ) : isGameResponse(data) ? (
+                  <GameTable tableData={data.data} userName={input} />
                 ) : (
-                  <LoadingTable />
-                )}
-              </Modal.Body>
-            </Modal.Dialog>
-          </Modal.Container>
-        </Modal.Backdrop>
-      </Modal>
+                  <div className="p-4 text-center">
+                    Error occurred while fetching, Make Sure Username is correct
+                    <br />
+                    {JSON.stringify(data.data)}
+                    <br />
+                    Try again
+                  </div>
+                )
+              ) : (
+                <LoadingTable />
+              )}
+            </Modal.Body>
+          </Modal.Dialog>
+        </Modal.Container>
+      </Modal.Backdrop>
+    </Modal>
   );
 };

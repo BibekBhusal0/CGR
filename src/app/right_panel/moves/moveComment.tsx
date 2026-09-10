@@ -85,9 +85,7 @@ export const MoveComment: FC = () => {
                 <ShowMoves ClickEvent={getClickHandler(moveIndex)} />
               </>
             )}
-            {crrPositionAnalysis.opening && (
-              <OpeningCard opening={crrPositionAnalysis.opening} />
-            )}
+            {crrPositionAnalysis.opening && <OpeningCard opening={crrPositionAnalysis.opening} />}
           </>
         )
       )}
