@@ -107,9 +107,24 @@ export function Controls() {
     ArrowUp: goToFirstMove,
     ArrowDown: goToLastMove,
     " ": togglePlayPause,
+    h: goToPreviousMove,
+    l: goToNextMove,
+    k: goToFirstMove,
+    j: goToLastMove,
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
+    const target = event.target as HTMLElement | null;
+    if (
+      target &&
+      (target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.tagName === "SELECT" ||
+        target.isContentEditable)
+    ) {
+      return;
+    }
     const key = event.key;
     if (key in keyFunctionMapping) {
       event.preventDefault();
