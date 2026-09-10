@@ -109,6 +109,7 @@ function Board({
         //
         lightSquareStyle: { backgroundColor: "var(--board-light-square)" },
         darkSquareStyle: { backgroundColor: "var(--board-dark-square)" },
+        boardStyle: { overflow: "visible" },
         darkSquareNotationStyle: { color: "var(--board-light-square)" },
         lightSquareNotationStyle: { color: "var(--board-dark-square)" },
       }}
