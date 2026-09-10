@@ -24,7 +24,7 @@ function EvalGraph() {
   const analysis = useGameState((state) => state.analysis);
   const showGraph = analysis !== undefined;
   return (
-    <div className="size-full">
+    <div className="size-full overflow-hidden rounded-md">
       {showGraph ? <Graph /> : <div className="bg-default-300 size-full animate-pulse"></div>}
     </div>
   );
@@ -76,7 +76,7 @@ const Graph = () => {
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={data}
-          margin={{ top: 8, right: 4, bottom: 0, left: 4 }}
+          margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
           onClick={(a) => {
             if (!a) return;
             if (typeof a.activeLabel !== "number") return;
@@ -105,7 +105,7 @@ const Graph = () => {
           {/* One area fills curve-to-bottom, the other curve-to-top, so the curve
               splits the whole square instead of filling down to zero. */}
           <Area
-            type="monotone"
+            type="natural"
             dataKey="value"
             baseValue={-threshold}
             stroke="none"
@@ -116,7 +116,7 @@ const Graph = () => {
             isAnimationActive={false}
           />
           <Area
-            type="monotone"
+            type="natural"
             dataKey="value"
             baseValue={threshold}
             stroke="none"
@@ -127,7 +127,7 @@ const Graph = () => {
             isAnimationActive={false}
           />
           <Area
-            type="monotone"
+            type="natural"
             dataKey="value"
             stroke={NEUTRAL_STROKE}
             strokeWidth={2}

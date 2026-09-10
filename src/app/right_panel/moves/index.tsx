@@ -67,7 +67,7 @@ const Analysis: FC<{ modal?: boolean }> = ({ modal }) => {
     <>
       <Card.Header
         className={cn(
-          "bg-default relative flex h-20 w-full flex-col justify-center rounded-md px-3",
+          "bg-default relative flex h-20 w-full flex-col justify-center p-0",
           !modal && "hidden lg:flex"
         )}>
         <EvalGraph />
