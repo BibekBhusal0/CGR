@@ -81,7 +81,7 @@ const Graph = () => {
             if (!a) return;
             if (typeof a.activeLabel !== "number") return;
             changeState("third");
-            setIndex(a.activeLabel);
+            setIndex(a.activeLabel - 1);
           }}>
           <XAxis dataKey="index" type="number" domain={["dataMin", "dataMax"]} hide />
           <YAxis domain={[-threshold, threshold]} type="number" hide />
