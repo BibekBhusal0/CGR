@@ -11,15 +11,7 @@ function RightPanel() {
   const analyzePerMove = useSettingsState((state) => state.analyzePerMove);
 
   return (
-    <Card
-      style={{ position: "unset" }}
-      // classNames={{
-      //   base: "max-h-[650px]",
-      //   footer: "overflow-visible",
-      //   body: "overflow-auto",
-      //   header: "overflow-visible",
-      // }}
-    >
+    <Card style={{ position: "unset" }}>
       {stage === "first" ? (
         <Input />
       ) : analyzePerMove ? (

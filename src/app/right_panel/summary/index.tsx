@@ -53,8 +53,6 @@ function Summary() {
       children: "Back",
       icon: icons.controls.previous,
       onClick: () => changeState("first"),
-      // color: "danger",
-      // variant: "flat",
     },
   ];
   const defaultProps: ButtonProps = {
@@ -80,8 +78,7 @@ function Summary() {
 
   return (
     <>
-      <Card.Content>
-        <div className="flex flex-col items-center justify-center gap-3 p-3 text-center align-middle text-lg">
+      <Card.Content className="flex flex-col items-center justify-center gap-3 p-3 text-center align-middle text-lg">
           {!loading && (
             <div className="h-20 w-4/5 rounded-xs">
               <EvalGraph />
@@ -125,7 +122,6 @@ function Summary() {
                     }
               }></MoveClass>
           ))}
-        </div>
       </Card.Content>
       <Card.Footer className="flex justify-center">
         <ButtonGroup variant={defaultProps.variant}>

@@ -30,12 +30,6 @@ function Moves() {
               <Modal.CloseTrigger />
               <Card
                 style={{ position: "unset" }}
-                // classNames={{
-                //   base: "max-h-[80vh]",
-                //   footer: "overflow-visible",
-                //   body: "overflow-auto",
-                //   header: "overflow-visible",
-                // }}
               >
                 <Analysis modal={true} />
               </Card>
@@ -80,18 +74,16 @@ const Analysis: FC<{ modal?: boolean }> = ({ modal }) => {
           {icons.controls.previous}
         </Button>
       </Card.Header>
-      <Card.Content className={cn(!modal && "hidden lg:flex")}>
-        <div className="max-h-96 min-h-20 overflow-auto">
-          {Pears.map((p, rowIndex) => (
-            <div className="flex" key={rowIndex}>
-              <div className="basis-2/12 text-center text-lg">{rowIndex + 1}.</div>
-              {p.map((move, colIndex) => {
-                const i = rowIndex * 2 + colIndex;
-                return <SingleMove key={colIndex} move={move} index={i} />;
-              })}
-            </div>
-          ))}
-        </div>
+      <Card.Content className={cn(!modal && "hidden lg:flex", "max-h-96 min-h-20 overflow-auto")}>
+        {Pears.map((p, rowIndex) => (
+          <div className="flex" key={rowIndex}>
+            <div className="basis-2/12 text-center text-lg">{rowIndex + 1}.</div>
+            {p.map((move, colIndex) => {
+              const i = rowIndex * 2 + colIndex;
+              return <SingleMove key={colIndex} move={move} index={i} />;
+            })}
+          </div>
+        ))}
       </Card.Content>
       <Card.Footer
         className={cn("flex h-65 w-full flex-col items-center gap-3", !modal && "hidden lg:flex")}>

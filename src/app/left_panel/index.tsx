@@ -20,11 +20,7 @@ const devItems = {
 };
 
 function DevSettings() {
-  return (
-    <>
-      <SwitchGroup switches={[{ item: "analyzePerMove", children: "Per Move Analysis" }]} />
-    </>
-  );
+  return <SwitchGroup switches={[{ item: "analyzePerMove", children: "Per Move Analysis" }]} />;
 }
 
 function LeftPanel() {

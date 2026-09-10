@@ -41,8 +41,7 @@ export const SelectGame: FC<SelectGameProps> = ({ input, onOpenChange, isOpen })
   }, [isOpen]);
 
   return (
-    <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <Modal.Backdrop>
           <Modal.Container size="cover">
             <Modal.Dialog className="max-h-90 max-w-190">
@@ -77,6 +76,5 @@ export const SelectGame: FC<SelectGameProps> = ({ input, onOpenChange, isOpen })
           </Modal.Container>
         </Modal.Backdrop>
       </Modal>
-    </>
   );
 };

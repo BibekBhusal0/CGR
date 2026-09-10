@@ -19,9 +19,7 @@ interface onlyButtonProp {
 }
 
 export function Buttons({ defaultProps, buttons, includeSeperators }: buttonsProps) {
-  return (
-    <>
-      {buttons.map((button, i) => {
+  return buttons.map((button, i) => {
         const OnlyButton = function ({ ref }: onlyButtonProp) {
           return (
             <Button
@@ -42,24 +40,19 @@ export function Buttons({ defaultProps, buttons, includeSeperators }: buttonsPro
         };
         return (
           <Fragment key={i}>
-            {!button.hide && (
-              <>
-                {!!button.tooltip ? (
-                  <Tooltip>
-                    <OnlyButton />
-                    <Tooltip.Content>
-                      <Tooltip.Arrow />
-                      {button.tooltip}
-                    </Tooltip.Content>
-                  </Tooltip>
-                ) : (
+            {!button.hide &&
+              (!!button.tooltip ? (
+                <Tooltip>
                   <OnlyButton />
-                )}
-              </>
-            )}
+                  <Tooltip.Content>
+                    <Tooltip.Arrow />
+                    {button.tooltip}
+                  </Tooltip.Content>
+                </Tooltip>
+              ) : (
+                <OnlyButton />
+              ))}
           </Fragment>
         );
-      })}
-    </>
-  );
+      });
 }

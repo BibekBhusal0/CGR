@@ -133,14 +133,7 @@ const Player: FC<PlayerProps> = ({ player_info: { username, rating } }) => {
 
 export const LoadingTable: FC = () => {
   return (
-    <Table
-      aria-label="loading table"
-      // selectionMode="none"
-      // classNames={{
-      //   td: ["text-xl"],
-      //   th: ["text-lg"],
-      // }}
-    >
+    <Table aria-label="loading table">
       <Table.ScrollContainer>
         <Table.Content>
           <Table.Header>

@@ -27,11 +27,5 @@ export function ToggleSwitch({ item, ...props }: ToggleSwitchProps) {
 }
 
 export default function SwitchGroup({ switches }: { switches: ToggleSwitchProps[] }) {
-  return (
-    <>
-      {switches.map((s, i) => (
-        <ToggleSwitch key={i} {...s} />
-      ))}
-    </>
-  );
+  return switches.map((s, i) => <ToggleSwitch key={i} {...s} />);
 }
