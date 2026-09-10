@@ -93,9 +93,12 @@ const Analysis: FC<{ modal?: boolean }> = ({ modal }) => {
           ))}
         </div>
       </Card.Content>
-      <Card.Footer className={cn(!modal && "hidden lg:flex")}>
-        <div className="align-center flex w-full flex-col justify-center gap-3 align-middle">
+      <Card.Footer
+        className={cn("flex h-65 w-full flex-col items-center gap-3", !modal && "hidden lg:flex")}>
+        <div className="min-h-0 w-full flex-1 overflow-y-auto">
           <MoveComment />
+        </div>
+        <div className="shrink-0">
           <Controls />
         </div>
       </Card.Footer>
