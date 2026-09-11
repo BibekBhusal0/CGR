@@ -95,7 +95,9 @@ function Left() {
       <div
         className={cn(
           "pl-2 lg:mr-0",
-          sidebarCollapsed ? "flex flex-col gap-2" : "relative w-full basis-3/12 overflow-visible"
+          sidebarCollapsed
+            ? "flex flex-col gap-2 max-lg:w-full max-lg:items-end max-lg:px-2"
+            : "relative w-full overflow-visible max-lg:flex max-lg:justify-end lg:basis-3/12"
         )}>
         <Button
           onPress={toggleSidebar}

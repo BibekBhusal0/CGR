@@ -12,8 +12,13 @@ function Moves() {
   return (
     <>
       <Analysis />
-      <div className="mx-auto py-3 lg:hidden">
-        <Controls />
+      <div className="relative mx-auto flex h-50 w-full flex-col items-center gap-3 lg:hidden">
+        <div className="min-h-0 w-full flex-1 overflow-y-auto">
+          <MoveComment />
+        </div>
+        <div className="shrink-0">
+          <Controls />
+        </div>
         {!modalOpen && (
           <Button
             isIconOnly

@@ -8,11 +8,11 @@ function App() {
   const sidebarCollapsed = useSettingsState((state) => state.sidebarCollapsed);
 
   return (
-    <div className="flex h-full flex-col items-start gap-1 pt-1 lg:flex-row lg:gap-3 lg:pt-4">
+    <div className="flex h-full flex-col items-start gap-2 pt-1 lg:flex-row lg:gap-3 lg:pt-4">
       <Left />
       <FullBoard />
       <div
-        className={cn("w-full px-2", sidebarCollapsed ? "basis-5/12" : "basis-3/12 lg:basis-4/12")}>
+        className={cn("w-full px-2", sidebarCollapsed ? "lg:basis-5/12" : "lg:basis-4/12")}>
         <RightPanel />
       </div>
     </div>
