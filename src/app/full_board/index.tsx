@@ -7,37 +7,41 @@ import { useEffect, useState } from "react";
 import { useSettingsState } from "@/Logic/state/settings";
 import { cn } from "@heroui/react";
 
+export const LG_BREAKPOINT = 1024;
+
+export function computeBoardSize(
+  viewportWidth: number,
+  viewportHeight: number,
+  sidebarCollapsed: boolean
+): number {
+  let containerWidth: number;
+  if (viewportWidth < LG_BREAKPOINT) {
+    containerWidth = viewportWidth;
+  } else if (sidebarCollapsed) {
+    containerWidth = (viewportWidth * 7) / 12;
+  } else {
+    containerWidth = (viewportWidth * 5) / 12;
+  }
+
+  const size = Math.min(containerWidth - 30, viewportHeight - 100);
+  return Math.max(0, size);
+}
+
 function FullBoard() {
   const sidebarCollapsed = useSettingsState((state) => state.sidebarCollapsed);
   const evalBar = useSettingsState((state) => state.evalBar);
-  const [cardSize, setCardSize] = useState<number>(0);
-
-  const updateSize = () => {
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-
-    // Calculate available width based on flex basis
-    // basis-7/12 when collapsed, basis-6/12 or basis-5/12 when expanded (responsive)
-    let containerWidth;
-    if (sidebarCollapsed) {
-      containerWidth = (viewportWidth * 7) / 12;
-    } else {
-      // basis-6/12 on mobile, basis-5/12 on large screens
-      containerWidth = viewportWidth >= 1024 ? (viewportWidth * 5) / 12 : (viewportWidth * 6) / 12;
-    }
-
-    const size = Math.min(containerWidth - 30, viewportHeight - 100);
-    setCardSize(size);
-  };
+  const [cardSize, setCardSize] = useState<number>(() =>
+    computeBoardSize(typeof window === "undefined" ? 1024 : window.innerWidth, typeof window === "undefined" ? 800 : window.innerHeight, sidebarCollapsed)
+  );
 
   useEffect(() => {
+    const updateSize = () => {
+      setCardSize(computeBoardSize(window.innerWidth, window.innerHeight, sidebarCollapsed));
+    };
     updateSize();
-  }, [sidebarCollapsed]);
-
-  useEffect(() => {
     window.addEventListener("resize", updateSize);
     return () => window.removeEventListener("resize", updateSize);
-  }, []);
+  }, [sidebarCollapsed]);
 
   return (
     <div
