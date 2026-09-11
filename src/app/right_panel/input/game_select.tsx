@@ -1,10 +1,6 @@
 import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import { CDCresponse, getGamesOfPlayer, isGameResponse } from "@/api/CDC";
-import {
-  LichessResponse,
-  getLichessGamesOfPlayer,
-  isLichessGamesResponse,
-} from "@/api/lichess";
+import { LichessResponse, getLichessGamesOfPlayer, isLichessGamesResponse } from "@/api/lichess";
 import { Modal } from "@heroui/react";
 import { GameTable, LoadingTable } from "@/app/right_panel/input/game_table";
 import { LichessGameTable } from "@/app/right_panel/input/lichess_game_table";

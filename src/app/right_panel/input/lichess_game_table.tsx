@@ -29,8 +29,7 @@ export const LichessGameTable: FC<LichessTableProps> = ({ games, userName }) => 
 
   const lowerUser = userName.trim().toLowerCase();
   const getColors = (game: LichessGame): string => {
-    const userColor =
-      game.players.black.user?.name.toLowerCase() === lowerUser ? "black" : "white";
+    const userColor = game.players.black.user?.name.toLowerCase() === lowerUser ? "black" : "white";
     if (!game.winner) return "text-warning";
     return game.winner === userColor ? "text-success" : "text-danger";
   };
@@ -42,7 +41,10 @@ export const LichessGameTable: FC<LichessTableProps> = ({ games, userName }) => 
     const end = start + rowsPerPage;
     return games.slice().reverse().slice(start, end);
   }, [games, page]);
-  const notSupported = items.filter(({ variant }) => !(variant === "standard" || variant === "chess960" || variant === "fromPosition"));
+  const notSupported = items.filter(
+    ({ variant }) =>
+      !(variant === "standard" || variant === "chess960" || variant === "fromPosition")
+  );
   const disabledKeys = new Set(notSupported.map(({ id }) => id));
 
   return (

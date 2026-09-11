@@ -13,12 +13,7 @@ export interface LichessPlayer {
 }
 
 export type LichessSpeed =
-  | "ultraBullet"
-  | "bullet"
-  | "blitz"
-  | "rapid"
-  | "classical"
-  | "correspondence";
+  "ultraBullet" | "bullet" | "blitz" | "rapid" | "classical" | "correspondence";
 
 export type LichessStatus =
   | "created"
@@ -127,8 +122,7 @@ export async function getLichessGamesOfPlayer(
     if (!trimmed) continue;
     try {
       games.push(JSON.parse(trimmed) as LichessGame);
-    } catch {
-    }
+    } catch {}
   }
   return { data: games, status: response.status };
 }

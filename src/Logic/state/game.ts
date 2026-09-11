@@ -17,9 +17,7 @@ function reformatLostResult(result: chessResults): GOT {
   return "checkmated";
 }
 
-function lichessStatusToGot(
-  status: import("@/api/lichess").LichessStatus
-): GOT {
+function lichessStatusToGot(status: import("@/api/lichess").LichessStatus): GOT {
   switch (status) {
     case "mate":
       return "checkmated";

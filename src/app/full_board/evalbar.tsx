@@ -32,10 +32,10 @@ function EvalBar() {
   const labelAtTop = white_winning;
   const labelOnDark = labelAtTop ? winChance < 92 : winChance < 8;
   return (
-    <div id="eval-white" className={cn("w-8 self-stretch bg-board-light drop-shadow-2xl", rot)}>
+    <div id="eval-white" className={cn("bg-board-light w-8 self-stretch drop-shadow-2xl", rot)}>
       <div
         id="eval-black"
-        className="absolute top-0 w-full bg-board-dark"
+        className="bg-board-dark absolute top-0 w-full"
         style={{
           height: `${100 - winChance}%`,
           transition: animation ? "height 300ms ease" : "none",

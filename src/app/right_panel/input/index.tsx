@@ -124,7 +124,11 @@ export function Input() {
 
       <TextField fullWidth>
         <Label>
-          {mode === "pgn" ? "Paste PGN" : mode === "lichess" ? "Lichess Username" : "Chess.com Username"}
+          {mode === "pgn"
+            ? "Paste PGN"
+            : mode === "lichess"
+              ? "Lichess Username"
+              : "Chess.com Username"}
         </Label>
         <TextArea
           aria-label="pgn"
