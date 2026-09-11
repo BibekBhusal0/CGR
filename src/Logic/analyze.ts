@@ -276,7 +276,19 @@ export const analyzePosition = async (
   prevAnalysis?: analysisType
 ) => {
   const { depth } = useSettingsState.getState();
+  const cacheKey = `${fen}|${depth}`;
+  const cached = stockfishCache.get(cacheKey);
+  if (cached) {
+    const analysis = await analyzeMove({
+      stockfishAnalysis: cloneStockfishOutput(cached),
+      prevAnalysis,
+      positionDetails: move,
+      moveIndex,
+    });
+    return analysis;
+  }
   const SFresult = await stockfish.analyzePosition(fen, depth);
+  stockfishCache.set(cacheKey, cloneStockfishOutput(SFresult));
   const analysis = await analyzeMove({
     stockfishAnalysis: SFresult,
     prevAnalysis,
@@ -285,6 +297,23 @@ export const analyzePosition = async (
   });
   return analysis;
 };
+
+const stockfishCache = new Map<string, StockfishOutput>();
+
+export function clearAnalysisCache() {
+  stockfishCache.clear();
+}
+
+function cloneStockfishOutput(output: StockfishOutput): StockfishOutput {
+  return {
+    ...output,
+    lines: [...output.lines],
+    eval: { ...output.eval },
+    secondBest: output.secondBest
+      ? { lines: [...output.secondBest.lines], eval: { ...output.secondBest.eval } }
+      : undefined,
+  };
+}
 
 export async function analyzeGame(Game: Chess, setProgress?: (progress: number) => void) {
   const stockfish = new StockfishManager();
