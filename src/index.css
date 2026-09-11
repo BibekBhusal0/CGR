@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "@heroui/styles";
 
+@theme inline {
+  --color-board-light: var(--board-light-square);
+  --color-board-dark: var(--board-dark-square);
+}
+
 /* App Theme Color Schemes - Light Mode */
 [data-app-theme="default"]:not(.dark) {
   --board-light-square: #f0d2ad;

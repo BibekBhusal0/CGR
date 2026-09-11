@@ -10,11 +10,7 @@ function EvalBar() {
   const animation = useSettingsState((state) => state.animation);
 
   const { type, value } = evaluation;
-  let showVal: number | string = value;
-
-  if (typeof showVal === "string") {
-    showVal = parseInt(showVal);
-  }
+  let showVal: number | string = typeof value === "string" ? parseInt(value) : value;
 
   const white_winning = showVal > 0;
   let winChance = 50;
@@ -33,25 +29,23 @@ function EvalBar() {
       showVal = Math.abs(showVal).toFixed(2);
     }
   }
+  const labelAtTop = white_winning;
+  const labelOnDark = labelAtTop ? winChance < 92 : winChance < 8;
   return (
-    <div
-      style={{
-        backgroundColor: "#F1E4D2",
-      }}
-      id="eval-white"
-      className={cn("my-auto h-[450px] w-8 drop-shadow-2xl", rot)}>
+    <div id="eval-white" className={cn("w-8 self-stretch bg-board-light drop-shadow-2xl", rot)}>
       <div
         id="eval-black"
-        className={cn("absolute top-0 w-full", animation && "transition-height")}
+        className="absolute top-0 w-full bg-board-dark"
         style={{
           height: `${100 - winChance}%`,
-          backgroundColor: "#454545",
+          transition: animation ? "height 300ms ease" : "none",
         }}></div>
       <div
         id="evalNum"
         className={cn(
           "absolute w-full text-center text-xs font-bold",
-          white_winning ? "top-0 text-white" : "bottom-0 text-black",
+          labelAtTop ? "top-0" : "bottom-0",
+          labelOnDark ? "text-board-light" : "text-board-dark",
           rot
         )}>
         {showVal}
