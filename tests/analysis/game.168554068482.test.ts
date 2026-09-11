@@ -9,7 +9,7 @@ import type { GameMove } from "./helpers";
 // Re-running with --force preserves those two fields (matched on moveIndex).
 const move_1_w: GameMove = {
   analyzerMoveType: "good",
-  expectedMoveType: "good",
+  expectedMoveType: "book",
   expectedComment: null,
   moveIndex: 0,
   position: {
@@ -226,7 +226,7 @@ const move_1_b: GameMove = {
 
 const move_2_w: GameMove = {
   analyzerMoveType: "good",
-  expectedMoveType: "good",
+  expectedMoveType: "book",
   expectedComment: null,
   moveIndex: 2,
   position: {
@@ -336,7 +336,7 @@ const move_2_w: GameMove = {
 
 const move_2_b: GameMove = {
   analyzerMoveType: "inaccuracy",
-  expectedMoveType: "inaccuracy",
+  expectedMoveType: "book",
   expectedComment: null,
   moveIndex: 3,
   position: {
@@ -450,7 +450,7 @@ const move_2_b: GameMove = {
 
 const move_3_w: GameMove = {
   analyzerMoveType: "best",
-  expectedMoveType: "best",
+  expectedMoveType: "book",
   expectedComment: null,
   moveIndex: 4,
   position: {
@@ -2045,7 +2045,7 @@ const move_9_b: GameMove = {
 
 const move_10_w: GameMove = {
   analyzerMoveType: "mistake",
-  expectedMoveType: "mistake",
+  expectedMoveType: "blunder", // Loosing a pawn(e4) in center
   expectedComment: null,
   moveIndex: 18,
   position: {
@@ -2152,7 +2152,7 @@ const move_10_w: GameMove = {
 
 const move_10_b: GameMove = {
   analyzerMoveType: "mistake",
-  expectedMoveType: "mistake",
+  expectedMoveType: "miss", // Did not took free pawn(e4)
   expectedComment: null,
   moveIndex: 19,
   position: {
@@ -4691,7 +4691,7 @@ const move_21_b: GameMove = {
 
 const move_22_w: GameMove = {
   analyzerMoveType: "good",
-  expectedMoveType: "good",
+  expectedMoveType: "excellent",
   expectedComment: null,
   moveIndex: 42,
   position: {
@@ -5272,7 +5272,7 @@ const move_24_w: GameMove = {
 
 const move_24_b: GameMove = {
   analyzerMoveType: "inaccuracy",
-  expectedMoveType: "inaccuracy",
+  expectedMoveType: "miss", // Did not take free knight at h4 with queen
   expectedComment: null,
   moveIndex: 47,
   position: {
@@ -6065,7 +6065,7 @@ const move_27_b: GameMove = {
 
 const move_28_w: GameMove = {
   analyzerMoveType: "mistake",
-  expectedMoveType: "mistake",
+  expectedMoveType: "blunder", // Queen hanging
   expectedComment: null,
   moveIndex: 54,
   position: {
@@ -7918,7 +7918,7 @@ const move_35_b: GameMove = {
 
 const move_36_w: GameMove = {
   analyzerMoveType: "mistake",
-  expectedMoveType: "mistake",
+  expectedMoveType: "blunder", // Hung a fork
   expectedComment: null,
   moveIndex: 70,
   position: {
@@ -9169,7 +9169,7 @@ const move_41_b: GameMove = {
 
 const move_42_w: GameMove = {
   analyzerMoveType: "inaccuracy",
-  expectedMoveType: "inaccuracy",
+  expectedMoveType: "blunder", // Knight(e3) is hanging not defended by pawn(f3) because pinned by rook(a2)
   expectedComment: null,
   moveIndex: 82,
   position: {

@@ -9,7 +9,7 @@ import type { GameMove } from "./helpers";
 // Re-running with --force preserves those two fields (matched on moveIndex).
 const move_1_w: GameMove = {
   analyzerMoveType: "best",
-  expectedMoveType: "best",
+  expectedMoveType: "book",
   expectedComment: null,
   moveIndex: 0,
   position: {
@@ -576,7 +576,7 @@ const move_3_w: GameMove = {
 
 const move_3_b: GameMove = {
   analyzerMoveType: "good",
-  expectedMoveType: "good",
+  expectedMoveType: "book",
   expectedComment: null,
   moveIndex: 5,
   position: {
@@ -693,7 +693,7 @@ const move_3_b: GameMove = {
 
 const move_4_w: GameMove = {
   analyzerMoveType: "best",
-  expectedMoveType: "best",
+  expectedMoveType: "book",
   expectedComment: null,
   moveIndex: 6,
   position: {
@@ -806,7 +806,7 @@ const move_4_w: GameMove = {
 
 const move_4_b: GameMove = {
   analyzerMoveType: "good",
-  expectedMoveType: "good",
+  expectedMoveType: "excellent",
   expectedComment: null,
   moveIndex: 7,
   position: {
@@ -1693,7 +1693,7 @@ const move_7_b: GameMove = {
 
 const move_8_w: GameMove = {
   analyzerMoveType: "mistake",
-  expectedMoveType: "mistake",
+  expectedMoveType: "blunder", // Hung fork queen can come to d4 and fork knight (e5) with king (g1)
   expectedComment: null,
   moveIndex: 14,
   position: {
@@ -4862,8 +4862,8 @@ const move_21_b: GameMove = {
 
 const move_22_w: GameMove = {
   analyzerMoveType: "brilliant",
-  expectedMoveType: "brilliant",
-  expectedComment: "White sacrificed pawn",
+  expectedMoveType: "best", // Not ba sacrifice
+  expectedComment: "",
   moveIndex: 42,
   position: {
   "color": "w",
@@ -6818,7 +6818,7 @@ const move_30_w: GameMove = {
 
 const move_30_b: GameMove = {
   analyzerMoveType: "mistake",
-  expectedMoveType: "mistake",
+  expectedMoveType: "blunder",
   expectedComment: null,
   moveIndex: 59,
   position: {
@@ -6932,7 +6932,7 @@ const move_30_b: GameMove = {
 
 const move_31_w: GameMove = {
   analyzerMoveType: "mistake",
-  expectedMoveType: "mistake",
+  expectedMoveType: "blunder",
   expectedComment: null,
   moveIndex: 60,
   position: {
@@ -9865,7 +9865,7 @@ const move_44_b: GameMove = {
 
 const move_45_w: GameMove = {
   analyzerMoveType: "blunder",
-  expectedMoveType: "blunder",
+  expectedMoveType: "excellent", // Not blunder was already in big disadvantage so having mate should not be blunder here
   expectedComment: null,
   moveIndex: 88,
   position: {
@@ -10318,7 +10318,7 @@ const move_46_b: GameMove = {
 
 const move_47_w: GameMove = {
   analyzerMoveType: "great",
-  expectedMoveType: "great",
+  expectedMoveType: "good", // Not best (any other move would work)
   expectedComment: null,
   moveIndex: 92,
   position: {
@@ -10430,7 +10430,7 @@ const move_47_w: GameMove = {
 
 const move_47_b: GameMove = {
   analyzerMoveType: "miss",
-  expectedMoveType: "miss",
+  expectedMoveType: "good", // Not miss because still has huge advantage
   expectedComment: "Black missed mate in 24",
   moveIndex: 93,
   position: {
@@ -11098,7 +11098,7 @@ const move_50_w: GameMove = {
 const move_50_b: GameMove = {
   analyzerMoveType: "miss",
   expectedMoveType: "miss",
-  expectedComment: "Black missed mate in 9",
+  expectedComment: "Black fell for trap of stalement.",
   moveIndex: 99,
   position: {
   "color": "b",
