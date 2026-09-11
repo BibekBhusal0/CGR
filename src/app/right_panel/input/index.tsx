@@ -74,6 +74,13 @@ export function Input() {
         onOpenChange(true);
       }
       clear();
+    } else if (currentUrl.searchParams.get("lichessUsername")) {
+      setInputMode("lichess");
+      setVal(currentUrl.searchParams.get("lichessUsername") || "");
+      if (currentUrl.searchParams.get("search") === "true") {
+        onOpenChange(true);
+      }
+      clear();
     }
     return clear;
   }, []);
@@ -116,7 +123,9 @@ export function Input() {
       </Select>
 
       <TextField fullWidth>
-        <Label>{mode === "pgn" ? "Paste PGN" : "Chess.com Username"}</Label>
+        <Label>
+          {mode === "pgn" ? "Paste PGN" : mode === "lichess" ? "Lichess Username" : "Chess.com Username"}
+        </Label>
         <TextArea
           aria-label="pgn"
           onKeyDown={(e) => {

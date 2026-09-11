@@ -4,6 +4,7 @@ import { Chess, DEFAULT_POSITION } from "chess.js";
 import { evaluationType } from "@/Logic/stockfish";
 import { GOT } from "@/components/moveTypes/types";
 import { chessResults, drawResults, game } from "@/api/CDC";
+import type { LichessGame } from "@/api/lichess";
 import { addGameToArchive, getAllGamesFromArchive } from "@/utils/archive";
 import { toast } from "@heroui/react";
 
@@ -13,6 +14,27 @@ function reformatLostResult(result: chessResults): GOT {
   }
   if (result === "abandoned") return "resigned";
   return "checkmated";
+}
+
+function lichessStatusToGot(
+  status: import("@/api/lichess").LichessStatus
+): GOT {
+  switch (status) {
+    case "mate":
+      return "checkmated";
+    case "resign":
+    case "aborted":
+    case "noStart":
+      return "resigned";
+    case "outoftime":
+    case "timeout":
+      return "timeout";
+    case "stalemate":
+    case "draw":
+      return "draw";
+    default:
+      return "checkmated";
+  }
 }
 
 type stage = "first" | "second" | "third";
@@ -59,6 +81,8 @@ interface GameActions {
   setGame: (Game: Chess) => void;
   loadGame: (load: saveType) => void;
   loadFromCdc: (game: game, userName?: string) => void;
+  loadFromLichess: (game: LichessGame, userName?: string) => void;
+  loadFromLichessPgn: (pgn: string, whiteName?: string, blackName?: string) => void;
   getGameToSave: () => saveType | undefined;
   saveGameToArchive: () => void;
 }
@@ -173,6 +197,48 @@ export const useGameState = create<GameState>((set, get) => ({
       setTermination({ winner: "b", overBy: reformatLostResult(white.result) });
     } else if (white.result === "win") {
       setTermination({ winner: "w", overBy: reformatLostResult(black.result) });
+    }
+    setGame(chess);
+  },
+
+  loadFromLichessPgn: (pgn, whiteName, blackName) => {
+    const { setTermination, setGame } = get();
+    const chess = new Chess();
+    chess.loadPgn(pgn);
+    const header = chess.getHeaders();
+    const result = header.Result;
+    if (result === "1-0") setTermination({ winner: "w", overBy: "checkmated" });
+    else if (result === "0-1") setTermination({ winner: "b", overBy: "checkmated" });
+    else if (result === "1/2-1/2" || result === "*") {
+      if (result !== "*") setTermination({ overBy: "draw", winner: undefined });
+    }
+    void whiteName;
+    void blackName;
+    setGame(chess);
+  },
+
+  loadFromLichess: (game, userName) => {
+    const { setTermination, setGame } = get();
+    const chess = new Chess();
+    try {
+      chess.loadPgn(game.pgn);
+    } catch {
+      return;
+    }
+    const lowerUser = userName?.trim().toLowerCase();
+    if (
+      lowerUser &&
+      game.players.black.user &&
+      game.players.black.user.name.toLowerCase() === lowerUser
+    ) {
+      set({ bottom: "black" });
+    }
+    if (!game.winner) {
+      setTermination({ overBy: "draw", winner: undefined });
+    } else if (game.winner === "white") {
+      setTermination({ winner: "w", overBy: lichessStatusToGot(game.status) });
+    } else {
+      setTermination({ winner: "b", overBy: lichessStatusToGot(game.status) });
     }
     setGame(chess);
   },

@@ -15,7 +15,7 @@ export type booleanSettings =
   | "analyzePerMove"
   | "sidebarCollapsed"
   | "evalBar";
-const m = ["chess.com", "pgn"] as const;
+const m = ["chess.com", "lichess", "pgn"] as const;
 const n = ["none", "in-board", "in-square"] as const;
 const s = ["stockfish-17-lite", "stockfish-17", "stockfish-18-lite"] as const;
 export type availableStockfish = (typeof s)[number];
