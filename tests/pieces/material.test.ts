@@ -1,11 +1,6 @@
 import { expect, test, describe } from "bun:test";
 import { DEFAULT_POSITION } from "chess.js";
-import {
-  getMaterial,
-  getMaterialDiff,
-  getMaterialSurplus,
-  pieceValues,
-} from "@/Logic/pieces";
+import { getMaterial, getMaterialDiff, getMaterialSurplus, pieceValues } from "@/Logic/pieces";
 
 describe("getMaterial", () => {
   test("starting position 39 each (kings excluded)", () => {
@@ -45,9 +40,7 @@ describe("getMaterial", () => {
   });
 
   test("promoted extra queen counts", () => {
-    expect(getMaterial("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQQBNR w KQkq - 0 1", "w")).toBe(
-      48
-    );
+    expect(getMaterial("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQQBNR w KQkq - 0 1", "w")).toBe(48);
   });
 
   test("empty and malformed placement", () => {
@@ -62,32 +55,28 @@ describe("getMaterialDiff", () => {
   });
 
   test("lone queen is 9 either way", () => {
-    expect(
-      getMaterialDiff("rnb1kbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-    ).toEqual({ white: 39, black: 30, diff: 9 });
-    expect(
-      getMaterialDiff("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNB1KBNR w KQkq - 0 1").diff
-    ).toBe(-9);
+    expect(getMaterialDiff("rnb1kbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")).toEqual({
+      white: 39,
+      black: 30,
+      diff: 9,
+    });
+    expect(getMaterialDiff("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNB1KBNR w KQkq - 0 1").diff).toBe(
+      -9
+    );
   });
 
   test("middlegame diffs", () => {
     expect(
-      getMaterialDiff("r2qkb1r/pp2nppp/2n1p3/2PpP3/6b1/2PQBN2/PP3PPP/RN2KB1R b KQkq - 0 8")
-        .diff
+      getMaterialDiff("r2qkb1r/pp2nppp/2n1p3/2PpP3/6b1/2PQBN2/PP3PPP/RN2KB1R b KQkq - 0 8").diff
     ).toBe(1);
+    expect(getMaterialDiff("2r4k/5pp1/p3p3/3p4/2rP2b1/4K3/PP3PPP/R6R w - - 2 26").diff).toBe(-2);
     expect(
-      getMaterialDiff("2r4k/5pp1/p3p3/3p4/2rP2b1/4K3/PP3PPP/R6R w - - 2 26").diff
-    ).toBe(-2);
-    expect(
-      getMaterialDiff("rn1q1r1k/ppp2Bpp/1bn5/8/3P4/1QP2RB1/PP2N1PP/R5K1 w - - 1 17")
-        .diff
+      getMaterialDiff("rn1q1r1k/ppp2Bpp/1bn5/8/3P4/1QP2RB1/PP2N1PP/R5K1 w - - 1 17").diff
     ).toBe(1);
   });
 
   test("diff always equals white minus black", () => {
-    const d = getMaterialDiff(
-      "r4rk1/pp1b1pbp/4q1p1/2B5/2Q5/P3PB1P/1PP2PP1/R4RK1 w - - 0 1"
-    );
+    const d = getMaterialDiff("r4rk1/pp1b1pbp/4q1p1/2B5/2Q5/P3PB1P/1PP2PP1/R4RK1 w - - 0 1");
     expect(d.diff).toBe(d.white - d.black);
   });
 });
@@ -129,9 +118,7 @@ describe("getMaterialSurplus", () => {
   });
 
   test("bishop and pawn against knight", () => {
-    const s = getMaterialSurplus(
-      "rn1q1r1k/ppp2Bpp/1bn5/8/3P4/1QP2RB1/PP2N1PP/R5K1 w - - 1 17"
-    );
+    const s = getMaterialSurplus("rn1q1r1k/ppp2Bpp/1bn5/8/3P4/1QP2RB1/PP2N1PP/R5K1 w - - 1 17");
     expect(s.w).toEqual(["b", "p"]);
     expect(s.b).toEqual(["n"]);
     expect(s.diff).toBe(1);

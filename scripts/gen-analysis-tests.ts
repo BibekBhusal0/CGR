@@ -193,7 +193,7 @@ async function main() {
       moves.push(
         [
           `const ${constName}: GameMove = {`,
-                    `  analyzerMoveType: ${JSON.stringify(a.moveType)},`,
+          `  analyzerMoveType: ${JSON.stringify(a.moveType)},`,
           `  expectedMoveType: ${JSON.stringify(expectedMoveType)},`,
           `  expectedComment: ${expectedComment === null ? "null" : JSON.stringify(expectedComment)},`,
           `  moveIndex: ${j - 1},`,
@@ -203,13 +203,14 @@ async function main() {
           `};`,
         ].join("\n")
       );
-      tests.push(`  test(${JSON.stringify(label)}, async () => {\n    await check(${constName});\n  });`);
+      tests.push(
+        `  test(${JSON.stringify(label)}, async () => {\n    await check(${constName});\n  });`
+      );
       kept++;
     }
 
     if (kept === 0) continue;
-    const out =
-      `${IMPORTS}\n${fileHeader(gi, g.name, link, kept, reviewed)}${moves.join("\n\n")}\n\ndescribe(${JSON.stringify(`Game ${gi}`)}, () => {\n${tests.join("\n\n")}\n});\n`;
+    const out = `${IMPORTS}\n${fileHeader(gi, g.name, link, kept, reviewed)}${moves.join("\n\n")}\n\ndescribe(${JSON.stringify(`Game ${gi}`)}, () => {\n${tests.join("\n\n")}\n});\n`;
     await Bun.write(outPath, out);
     console.log(`${outPath}: ${kept} moves`);
     totalKept += kept;

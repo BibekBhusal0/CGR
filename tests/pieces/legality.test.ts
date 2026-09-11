@@ -64,9 +64,7 @@ describe("isMoveLegal", () => {
   });
 
   test("kingside castle with rights", () => {
-    expect(isMoveLegal("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1", "e1g1")).toBe(
-      true
-    );
+    expect(isMoveLegal("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1", "e1g1")).toBe(true);
   });
 
   test("castle without rights rejected", () => {
