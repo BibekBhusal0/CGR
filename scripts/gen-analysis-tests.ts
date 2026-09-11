@@ -117,7 +117,7 @@ async function main() {
 
   for (const [gi, g] of archive.entries()) {
     if (args.games && !args.games.includes(gi)) continue;
-    const fileId = safeId(g.gameId ?? idFromLink(g.pgn) ?? g.id ?? `game${gi}`);
+    const fileId = safeId(g.id ?? idFromLink(g.pgn) ?? `game${gi}`);
     const outPath = `${args.outDir}/game.${fileId}.test.ts`;
 
     if (!args.force) {
