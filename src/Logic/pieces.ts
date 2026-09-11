@@ -339,20 +339,52 @@ export function isPieceHanging(fen: string, square: Square): boolean {
 }
 
 export function getMaterial(fen: string, color: Color) {
-  const pieces = fen.split(" ")[1];
-  if (!pieces) return 0;
+  const placement = fen.split(" ")[0];
+  if (!placement) return 0;
 
   let material = 0;
-  pieces.split("").forEach((p) => {
-    if (p.toLowerCase() !== "k") {
-      const isPieceWhite = p.toUpperCase() === p;
-      if ((isPieceWhite && color === "w") || (!isPieceWhite && color !== "w")) {
-        const value = pieceValues[p as PieceSymbol];
-        if (value) material += value;
-      }
+  placement.split("").forEach((p) => {
+    if (p === "/" || /\d/.test(p)) return;
+    if (p.toLowerCase() === "k") return;
+    const isPieceWhite = p.toUpperCase() === p;
+    if ((isPieceWhite && color === "w") || (!isPieceWhite && color !== "w")) {
+      const value = pieceValues[p.toLowerCase() as PieceSymbol];
+      if (value) material += value;
     }
   });
   return material;
+}
+
+export function getMaterialDiff(fen: string): { white: number; black: number; diff: number } {
+  const white = getMaterial(fen, WHITE);
+  const black = getMaterial(fen, BLACK);
+  return { white, black, diff: white - black };
+}
+
+export interface MaterialSurplus {
+  w: PieceSymbol[];
+  b: PieceSymbol[];
+  diff: number;
+}
+
+export function getMaterialSurplus(fen: string): MaterialSurplus {
+  const placement = fen.split(" ")[0] ?? "";
+  const counts: Record<Color, Partial<Record<PieceSymbol, number>>> = { w: {}, b: {} };
+  for (const p of placement) {
+    if (p === "/" || /\d/.test(p) || p.toLowerCase() === "k") continue;
+    const color: Color = p.toUpperCase() === p ? WHITE : BLACK;
+    const type = p.toLowerCase() as PieceSymbol;
+    counts[color][type] = (counts[color][type] ?? 0) + 1;
+  }
+  const order: PieceSymbol[] = [QUEEN, ROOK, BISHOP, KNIGHT, PAWN];
+  const surplus: Record<Color, PieceSymbol[]> = { w: [], b: [] };
+  for (const type of order) {
+    const diff = (counts.w[type] ?? 0) - (counts.b[type] ?? 0);
+    if (diff === 0) continue;
+    const side: Color = diff > 0 ? WHITE : BLACK;
+    for (let i = 0; i < Math.abs(diff); i++) surplus[side].push(type);
+  }
+  return { ...surplus, diff: getMaterialDiff(fen).diff };
 }
 
 export type allPinnedPiecesType = Partial<Record<Square, isPinnedReturn>>;

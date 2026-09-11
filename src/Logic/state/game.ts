@@ -5,6 +5,7 @@ import { evaluationType } from "@/Logic/stockfish";
 import { GOT } from "@/components/moveTypes/types";
 import { chessResults, drawResults, game } from "@/api/CDC";
 import type { LichessGame } from "@/api/lichess";
+import { extractClocks } from "@/Logic/clocks";
 import { addGameToArchive, getAllGamesFromArchive } from "@/utils/archive";
 import { toast } from "@heroui/react";
 
@@ -59,6 +60,7 @@ export interface GameType {
   Game?: Chess;
   analysis?: analysisType[];
   termination?: terminationType;
+  clocks: (string | undefined)[];
 }
 
 export interface loadType {
@@ -108,6 +110,7 @@ const initialState: GameType = {
   termination: undefined,
   Game: undefined,
   analysis: undefined,
+  clocks: [],
 };
 
 export const useGameState = create<GameState>((set, get) => ({
@@ -139,12 +142,13 @@ export const useGameState = create<GameState>((set, get) => ({
       let evaluation: evaluationType = { value: 0, type: "cp" };
       if (moveIndex === -1) {
         fen = full_history[0].before;
+        if (state.analysis && state.analysis[0]) evaluation = state.analysis[0].eval;
       } else if (moveIndex < -1 || moveIndex >= full_history.length) {
         return {};
       } else {
         try {
-          if (state.analysis && state.analysis[moveIndex])
-            evaluation = state.analysis[moveIndex].eval;
+          if (state.analysis && state.analysis[moveIndex + 1])
+            evaluation = state.analysis[moveIndex + 1].eval;
         } catch (error) {
           console.log(`can't get evaluation of position `);
           console.error(error);
@@ -182,7 +186,13 @@ export const useGameState = create<GameState>((set, get) => ({
       header.BlackElo || "",
       state.blackPlayer
     );
-    set({ whitePlayer, blackPlayer, Game, moveIndex: -1, stage: "second" });
+    let clocks: (string | undefined)[] = [];
+    try {
+      clocks = extractClocks(Game);
+    } catch {
+      clocks = [];
+    }
+    set({ whitePlayer, blackPlayer, Game, moveIndex: -1, stage: "second", clocks });
   },
 
   loadFromCdc: (game, userName) => {

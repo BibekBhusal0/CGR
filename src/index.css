@@ -182,6 +182,14 @@
   --overlay: oklch(0.31 0.028 140);
 }
 
+@utility silhouette {
+  filter: brightness(0);
+}
+
+.dark .silhouette {
+  filter: brightness(0) invert(1);
+}
+
 @utility flex-center {
   @apply flex items-center justify-center;
 }
