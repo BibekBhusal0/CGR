@@ -12,6 +12,8 @@
     "lint": "eslint .",
     "predeploy": "npm run build",
     "preview": "vite preview",
+    "gen:analysis-tests": "bun scripts/gen-analysis-tests.ts",
+    "test:analysis": "bun test tests/analysis",
     "typecheck": "tsc -b"
   },
   "dependencies": {
