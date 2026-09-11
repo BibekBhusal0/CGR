@@ -120,7 +120,7 @@ function Left() {
           onPress={() => setModalOpen(true)}
           size="sm"
           className={cn(
-            "absolute top-3.5 right-5 z-10 text-2xl lg:relative lg:top-[unset] lg:right-[unset] lg:text-xl",
+            "relative z-10 text-2xl lg:top-[unset] lg:right-[unset] lg:text-xl",
             !sidebarCollapsed && "lg:hidden"
           )}
           isIconOnly>
