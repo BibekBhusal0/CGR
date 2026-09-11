@@ -12,8 +12,9 @@ export function rephraseEvaluation(evaluation: evaluationType) {
     }
     out = `M${Math.abs(out)}`;
   } else {
-    out /= 100;
-    out = Math.abs(out).toFixed(2);
+    const sign = out >= 0 ? "+" : "-";
+    out = Math.abs(out / 100).toFixed(2);
+    return sign + out;
   }
   out = white_winning ? "+" + out : "-" + out;
   return out;
