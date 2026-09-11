@@ -103,8 +103,8 @@ async function main() {
 
   for (const [gi, g] of archive.entries()) {
     if (args.games && !args.games.includes(gi)) continue;
-    const gameId = safeId(g.gameId ?? idFromLink(g.pgn) ?? `game${gi}`);
-    const outPath = `${args.outDir}/game.${gameId}.test.ts`;
+    const fileId = safeId(g.id ?? idFromLink(g.pgn) ?? `game${gi}`);
+    const outPath = `${args.outDir}/game.${fileId}.test.ts`;
 
     if (!args.force) {
       if (await Bun.file(outPath).exists()) {

@@ -1,6 +1,5 @@
 import { openDB } from "idb";
-import { v4 as uuidv4 } from "uuid";
-import { saveType } from "@/Logic/state/game";
+import { idFromPgn, saveType } from "@/Logic/state/game";
 
 const DB_NAME = "chess_archive";
 const STORE_NAME = "games";
@@ -17,8 +16,7 @@ export const getDb = async () => {
 
 export const addGameToArchive = async (game: saveType) => {
   const db = await getDb();
-  const id = uuidv4();
-  await db.put(STORE_NAME, { ...game, id, date: new Date().toISOString() });
+  await db.put(STORE_NAME, { ...game, id: game.id ?? idFromPgn(game.pgn) });
 };
 
 export const getAllGamesFromArchive = async (): Promise<saveType[]> => {
@@ -34,6 +32,6 @@ export const clearArchive = async () => {
 export const importGamesToArchive = async (games: saveType[]) => {
   const db = await getDb();
   for (const game of games) {
-    await db.put(STORE_NAME, { ...game, id: uuidv4(), date: new Date().toISOString() });
+    await db.put(STORE_NAME, { ...game, id: game.id ?? idFromPgn(game.pgn) });
   }
 };

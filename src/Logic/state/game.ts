@@ -8,6 +8,7 @@ import type { LichessGame } from "@/api/lichess";
 import { extractClocks } from "@/Logic/clocks";
 import { addGameToArchive, getAllGamesFromArchive } from "@/utils/archive";
 import { toast } from "@heroui/react";
+import { v4 as uuidv4 } from "uuid";
 
 function reformatLostResult(result: chessResults): GOT {
   if (result === "checkmated" || result === "timeout" || result === "resigned") {
@@ -15,6 +16,18 @@ function reformatLostResult(result: chessResults): GOT {
   }
   if (result === "abandoned") return "resigned";
   return "checkmated";
+}
+
+export function platformFromLink(link: string): { id: string; source: gameSource } {
+  const id = link.match(/([A-Za-z0-9]+)\/?(?:\?.*)?$/)?.[1] ?? uuidv4();
+  if (link.includes("lichess.org")) return { id, source: "lichess" };
+  if (link.includes("chess.com")) return { id, source: "chess.com" };
+  return { id, source: "pgn" };
+}
+
+export function idFromPgn(pgn: string): string {
+  const link = /\[Link "([^"]+)"\]/.exec(pgn)?.[1] ?? "";
+  return platformFromLink(link).id;
 }
 
 function lichessStatusToGot(status: import("@/api/lichess").LichessStatus): GOT {
@@ -44,6 +57,8 @@ export interface terminationType {
   overBy: GOT;
 }
 
+export type gameSource = "chess.com" | "lichess" | "pgn";
+
 export interface GameType {
   bottom: "white" | "black";
   allowMoves: boolean;
@@ -59,6 +74,8 @@ export interface GameType {
   analysis?: analysisType[];
   termination?: terminationType;
   clocks: (string | undefined)[];
+  id?: string;
+  source?: gameSource;
 }
 
 export interface loadType {
@@ -67,6 +84,8 @@ export interface loadType {
   blackPlayer: string;
   analysis: analysisType[];
   termination?: terminationType;
+  id?: string;
+  source?: gameSource;
 }
 interface GameActions {
   flipBoard: () => void;
@@ -89,7 +108,15 @@ interface GameActions {
 
 export type saveType = loadType & { pgn: string; name: string; id: string };
 
-const s = ["bottom", "whitePlayer", "blackPlayer", "analysis", "termination"] as const;
+const s = [
+  "bottom",
+  "whitePlayer",
+  "blackPlayer",
+  "analysis",
+  "termination",
+  "id",
+  "source",
+] as const;
 export type saveKeys = (typeof s)[number];
 export const allSaveKeys: saveKeys[] = [...s];
 export type GameState = GameType & GameActions;
@@ -123,7 +150,7 @@ export const useGameState = create<GameState>((set, get) => ({
   changeState: (stage) => {
     const state = get();
     if (stage === state.stage) return;
-    if (stage === "first") set({ ...initialState });
+    if (stage === "first") set({ ...initialState, id: undefined, source: undefined });
     else if (stage === "second") set({ moveIndex: -1 });
     set({ stage });
   },
@@ -198,6 +225,7 @@ export const useGameState = create<GameState>((set, get) => ({
     const { black, pgn, initial_setup, white } = game;
     const chess = new Chess(initial_setup || DEFAULT_POSITION);
     chess.loadPgn(pgn);
+    set({ id: game.uuid, source: "chess.com" });
     if (black.username === userName) set({ bottom: "black" });
     if (drawResults.includes(black.result)) {
       setTermination({ overBy: "draw", winner: undefined });
@@ -214,6 +242,7 @@ export const useGameState = create<GameState>((set, get) => ({
     const chess = new Chess();
     chess.loadPgn(pgn);
     const header = chess.getHeaders();
+    set({ ...platformFromLink(header.Link ?? "") });
     const result = header.Result;
     if (result === "1-0") setTermination({ winner: "w", overBy: "checkmated" });
     else if (result === "0-1") setTermination({ winner: "b", overBy: "checkmated" });
@@ -233,6 +262,7 @@ export const useGameState = create<GameState>((set, get) => ({
     } catch {
       return;
     }
+    set({ id: game.id, source: "lichess" });
     const lowerUser = userName?.trim().toLowerCase();
     if (
       lowerUser &&
