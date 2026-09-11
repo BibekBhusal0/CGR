@@ -95,6 +95,7 @@ export interface analyzePropsType {
   positionDetails: Move;
   prevAnalysis?: analysisType;
   moveIndex?: number;
+  fetchOpening?: boolean;
 }
 
 export async function analyzeMove({
@@ -102,6 +103,7 @@ export async function analyzeMove({
   prevAnalysis,
   positionDetails,
   moveIndex,
+  fetchOpening = true,
 }: analyzePropsType): Promise<analysisType> {
   let lichessResponse: openingType | undefined;
   const fen = positionDetails[moveIndex === -1 ? "before" : "after"];
@@ -112,17 +114,19 @@ export async function analyzeMove({
   if (moveIndex && moveIndex < 20) {
     opName = getOpeningName(fen);
     inBook = opName !== undefined;
-    try {
-      const openingData = await openingDatabase(fen, "lichess");
-      const {
-        opening: { name },
-        black,
-        white,
-        draws,
-      } = openingData;
-      lichessResponse = { name, winRate: { black, draws, white } };
-    } catch (error) {
-      console.log(`Can't get opening data from lichess ${error}`);
+    if (fetchOpening) {
+      try {
+        const openingData = await openingDatabase(fen, "lichess");
+        const {
+          opening: { name },
+          black,
+          white,
+          draws,
+        } = openingData;
+        lichessResponse = { name, winRate: { black, draws, white } };
+      } catch (error) {
+        console.log(`Can't get opening data from lichess ${error}`);
+      }
     }
     if (!lichessResponse && opName) {
       lichessResponse = { name: opName.name };
