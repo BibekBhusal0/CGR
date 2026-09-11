@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
+neotest-bun-debug-xml.txt
+chess_archive.json
 
 # Editor directories and files
 .vscode/*
