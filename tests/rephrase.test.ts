@@ -2,25 +2,30 @@ import { expect, test, describe } from "bun:test";
 import { rephraseEvaluation } from "@/Logic/rephraseEvaluation";
 
 describe("rephraseEvaluation", () => {
-  test("positive centipawns show plus and two decimals", () => {
-    expect(rephraseEvaluation({ type: "cp", value: 2345 })).toBe("+23.45");
-    expect(rephraseEvaluation({ type: "cp", value: 150 })).toBe("+1.50");
-    expect(rephraseEvaluation({ type: "cp", value: 100 })).toBe("+1.00");
-    expect(rephraseEvaluation({ type: "cp", value: 1 })).toBe("+0.01");
+  test("positive centipawns show plus and one decimal", () => {
+    expect(rephraseEvaluation({ type: "cp", value: 2346 })).toBe("+23.5");
+    expect(rephraseEvaluation({ type: "cp", value: 150 })).toBe("+1.5");
+    expect(rephraseEvaluation({ type: "cp", value: 100 })).toBe("+1.0");
+    expect(rephraseEvaluation({ type: "cp", value: 34 })).toBe("+0.3");
   });
 
-  test("zero centipawns show plus zero", () => {
-    expect(rephraseEvaluation({ type: "cp", value: 0 })).toBe("+0.00");
+  test("zero centipawns show plain zero", () => {
+    expect(rephraseEvaluation({ type: "cp", value: 0 })).toBe("0");
   });
 
-  test("negative centipawns show minus and two decimals", () => {
-    expect(rephraseEvaluation({ type: "cp", value: -1 })).toBe("-0.01");
-    expect(rephraseEvaluation({ type: "cp", value: -45 })).toBe("-0.45");
-    expect(rephraseEvaluation({ type: "cp", value: -1250 })).toBe("-12.50");
+  test("near-zero centipawns round to zero", () => {
+    expect(rephraseEvaluation({ type: "cp", value: 1 })).toBe("0");
+    expect(rephraseEvaluation({ type: "cp", value: -1 })).toBe("0");
+    expect(rephraseEvaluation({ type: "cp", value: 4 })).toBe("0");
   });
 
-  test("centipawns always show two decimals with explicit sign", () => {
-    expect(rephraseEvaluation({ type: "cp", value: 5 })).toMatch(/^[+-]\d+\.\d{2}$/);
+  test("negative centipawns show minus and one decimal", () => {
+    expect(rephraseEvaluation({ type: "cp", value: -50 })).toBe("-0.5");
+    expect(rephraseEvaluation({ type: "cp", value: -1250 })).toBe("-12.5");
+  });
+
+  test("non-zero evals show sign and one decimal", () => {
+    expect(rephraseEvaluation({ type: "cp", value: 2346 })).toMatch(/^[+-]\d+\.\d$/);
   });
 
   test("mate distance shows side sign and magnitude", () => {
@@ -37,7 +42,7 @@ describe("rephraseEvaluation", () => {
   });
 
   test("numeric-string values are coerced", () => {
-    expect(rephraseEvaluation({ type: "cp", value: "100" as unknown as number })).toBe("+1.00");
+    expect(rephraseEvaluation({ type: "cp", value: "100" as unknown as number })).toBe("+1.0");
     expect(rephraseEvaluation({ type: "mate", value: "4" as unknown as number })).toBe("+M4");
   });
 });
