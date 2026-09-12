@@ -1,3 +1,5 @@
+const className: string = "font-sans text-xl font-extrabold leading-none tracking-tighter select-none";
+
 export const icons = {
   chess: {
     rook_pawn: (
@@ -134,9 +136,9 @@ export const icons = {
   },
 
   move: {
-    brilliant: "!!",
+    brilliant: <span className={className}>!!</span>,
 
-    great: "!",
+    great: <span className={className}>!</span>,
 
     best: (
       <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
@@ -170,9 +172,9 @@ export const icons = {
       </svg>
     ),
 
-    inaccuracy: "?!",
+    inaccuracy: <span className={className}>?!</span>,
 
-    mistake: "?",
+    mistake: <span className={className}>?</span>,
 
     miss: (
       <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
@@ -182,7 +184,7 @@ export const icons = {
       </svg>
     ),
 
-    blunder: "??",
+    blunder: <span className={className}>??</span>,
 
     forcing: (
       <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
