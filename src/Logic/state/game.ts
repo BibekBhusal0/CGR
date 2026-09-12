@@ -97,6 +97,7 @@ interface GameActions {
   changeState: (stage: stage) => void;
   setIndex: (index: number) => void;
   setBoardStage: (boardStage: Boardstage) => void;
+  resetBoard: () => void;
   setGame: (Game: Chess) => void;
   loadGame: (load: saveType) => void;
   loadFromCdc: (game: game, userName?: string) => void;
@@ -151,7 +152,7 @@ export const useGameState = create<GameState>((set, get) => ({
     const state = get();
     if (stage === state.stage) return;
     if (stage === "first") set({ ...initialState, id: undefined, source: undefined });
-    else if (stage === "second") set({ moveIndex: -1 });
+    else get().resetBoard();
     set({ stage });
   },
 
@@ -193,6 +194,21 @@ export const useGameState = create<GameState>((set, get) => ({
     set({ boardStage });
   },
 
+  resetBoard: () => {
+    const state = get();
+    if (!state.Game || state.Game.history().length === 0) {
+      set({
+        moveIndex: -1,
+        fen: state.Game?.fen() ?? DEFAULT_POSITION,
+        evaluation: { value: 0, type: "cp" },
+        index2: 0,
+        boardStage: "normal",
+      });
+      return;
+    }
+    state.setIndex(-1);
+  },
+
   setGame: (Game) => {
     const state = get();
     const header = Game.getHeaders();
@@ -217,7 +233,8 @@ export const useGameState = create<GameState>((set, get) => ({
     } catch {
       clocks = [];
     }
-    set({ whitePlayer, blackPlayer, Game, moveIndex: -1, stage: "second", clocks });
+    set({ whitePlayer, blackPlayer, Game, stage: "second", clocks });
+    get().resetBoard();
   },
 
   loadFromCdc: (game, userName) => {
