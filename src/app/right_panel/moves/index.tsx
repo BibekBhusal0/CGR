@@ -22,6 +22,7 @@ function Moves() {
         {!modalOpen && (
           <Button
             isIconOnly
+            aria-label="Show evaluation graph"
             className="absolute right-2 bottom-2 rounded-full p-2 text-4xl"
             onPress={() => setModalOpen(true)}>
             {icons.others.graph}
@@ -70,6 +71,7 @@ const Analysis: FC<{ modal?: boolean }> = ({ modal }) => {
         <EvalGraph />
         <Button
           onPress={() => changeState("second")}
+          aria-label="Back to summary"
           variant="danger"
           size="sm"
           className="absolute -top-3 -left-3"

@@ -101,6 +101,7 @@ function Left() {
         )}>
         <Button
           onPress={toggleSidebar}
+          aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           variant={sidebarCollapsed ? "tertiary" : "outline"}
           size="sm"
           className={cn(
@@ -118,6 +119,7 @@ function Left() {
         <Button
           variant="tertiary"
           onPress={() => setModalOpen(true)}
+          aria-label="Open settings"
           size="sm"
           className={cn(
             "relative z-10 text-2xl lg:top-[unset] lg:right-[unset] lg:text-xl",

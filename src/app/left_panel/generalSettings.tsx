@@ -43,6 +43,7 @@ function GeneralSettings() {
             {allThemes.map((board_theme) => (
               <ListBox.Item
                 aria-label={board_theme}
+                textValue={board_theme}
                 className="py-1"
                 key={board_theme}
                 id={board_theme}>
@@ -54,6 +55,7 @@ function GeneralSettings() {
                   />
                   <div className="text-md pt-1">{board_theme}</div>
                 </div>
+                <ListBox.ItemIndicator />
               </ListBox.Item>
             ))}
           </ListBox>
@@ -80,9 +82,11 @@ function GeneralSettings() {
               <ListBox.Item
                 className="capitalize"
                 aria-label={notation}
+                textValue={notation}
                 id={notation}
                 key={notation}>
                 {notation}
+                <ListBox.ItemIndicator />
               </ListBox.Item>
             ))}
           </ListBox>

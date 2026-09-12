@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from "react";
 import { drawResults, game, GameResponse, lostResults, player } from "@/api/CDC";
-import { Skeleton, Pagination, Table, EmptyState, TableColumn, cn } from "@heroui/react";
+import { Skeleton, Pagination, Table, EmptyState, cn } from "@heroui/react";
 import TimeControl from "@/components/timeControls";
 import { useGameState } from "@/Logic/state/game";
 
@@ -138,7 +138,7 @@ export const LoadingTable: FC = () => {
         <Table.Content>
           <Table.Header>
             {titles.map((t) => (
-              <TableColumn key={t}>{t}</TableColumn>
+              <Table.Column key={t}>{t}</Table.Column>
             ))}
           </Table.Header>
           <Table.Body>

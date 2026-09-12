@@ -149,6 +149,7 @@ export default function Archive() {
                       <Button
                         variant="danger-soft"
                         className="text-xl"
+                        aria-label={`Delete ${game.name || `Game ${i + 1}`}`}
                         onPress={() => handleDeleteGame(game.id)}
                         isIconOnly>
                         {icons.others.trash}

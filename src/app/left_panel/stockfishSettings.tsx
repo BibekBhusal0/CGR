@@ -48,8 +48,14 @@ function StockfishSettings() {
         <Select.Popover>
           <ListBox>
             {allStockfishAvailable.map((sf) => (
-              <ListBox.Item className="capitalize" aria-label={sf} id={sf} key={sf}>
+              <ListBox.Item
+                className="capitalize"
+                aria-label={sf}
+                textValue={sf.replace(/-/g, " ")}
+                id={sf}
+                key={sf}>
                 {sf.replace(/-/g, " ")}
+                <ListBox.ItemIndicator />
               </ListBox.Item>
             ))}
           </ListBox>

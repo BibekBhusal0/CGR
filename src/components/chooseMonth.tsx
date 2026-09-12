@@ -26,6 +26,7 @@ export default function ChooseMonth({ onPress }: chooseMonthProps) {
 
   return (
     <DateRangePicker
+      aria-label="Choose month"
       endName="endDate"
       startName="startDate"
       maxValue={today(getLocalTimeZone())}
@@ -36,7 +37,7 @@ export default function ChooseMonth({ onPress }: chooseMonthProps) {
       <DateRangePicker.Popover isOpen={open} onOpenChange={setOpen}>
         <RangeCalendar
           isReadOnly
-          aria-label="Choose trip dates"
+          aria-label="Choose month"
           value={getRange()}
           onFocusChange={(date) => {
             setStart(startOfMonth(date));

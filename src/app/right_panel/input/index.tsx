@@ -166,9 +166,10 @@ export function Input() {
                 key={item}
                 id={item}
                 textValue={item}
-                children={item}
-                className="uppercase"
-              />
+                className="uppercase">
+                {item}
+                <ListBox.ItemIndicator />
+              </ListBox.Item>
             ))}
           </ListBox>
         </Select.Popover>
