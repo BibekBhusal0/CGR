@@ -40,19 +40,19 @@ function Summary() {
     {
       children: "Start Analyzing",
       icon: icons.others.rocket,
-      onClick: () => changeState("third"),
+      onPress: () => changeState("third"),
       hide: loading,
     },
     {
       children: "Archive",
       icon: icons.left_panel.archive,
-      onClick: saveGameToArchive,
+      onPress: saveGameToArchive,
       hide: loading,
     },
     {
       children: "Back",
       icon: icons.controls.previous,
-      onClick: () => changeState("first"),
+      onPress: () => changeState("first"),
     },
   ];
   const defaultProps: ButtonProps = {

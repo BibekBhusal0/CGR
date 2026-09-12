@@ -23,7 +23,7 @@ function Moves() {
           <Button
             isIconOnly
             className="absolute right-2 bottom-2 rounded-full p-2 text-4xl"
-            onClick={() => setModalOpen(true)}>
+            onPress={() => setModalOpen(true)}>
             {icons.others.graph}
           </Button>
         )}
@@ -69,7 +69,7 @@ const Analysis: FC<{ modal?: boolean }> = ({ modal }) => {
         )}>
         <EvalGraph />
         <Button
-          onClick={() => changeState("second")}
+          onPress={() => changeState("second")}
           variant="danger"
           size="sm"
           className="absolute -top-3 -left-3"

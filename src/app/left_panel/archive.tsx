@@ -67,29 +67,29 @@ export default function Archive() {
     {
       children: "Add This Game",
       icon: icons.others.add,
-      onClick: saveGameToArchive,
+      onPress: saveGameToArchive,
       hide: !Game || !analysis,
     },
     {
       children: "Load From archive",
       icon: icons.left_panel.archive,
-      onClick: loadGames,
+      onPress: loadGames,
     },
     {
       children: "Upload to archive",
       icon: icons.others.upload,
-      onClick: () => fileRef.current?.click(),
+      onPress: () => fileRef.current?.click(),
     },
     {
       children: "Download Archive",
       icon: icons.others.download,
-      onClick: handleExportArchive,
+      onPress: handleExportArchive,
     },
     {
       children: "Clear archive",
       variant: "danger",
       icon: icons.others.trash,
-      onClick: () => setWarningOpen(true),
+      onPress: () => setWarningOpen(true),
     },
   ];
 
@@ -112,8 +112,8 @@ export default function Archive() {
               <Modal.Footer>
                 <Buttons
                   buttons={[
-                    { onClick: handleClear, variant: "danger", children: "Yes" },
-                    { onClick: () => setWarningOpen(false), children: "No" },
+                    { onPress: handleClear, variant: "danger", children: "Yes" },
+                    { onPress: () => setWarningOpen(false), children: "No" },
                   ]}
                   defaultProps={{ size: "sm" }}
                 />
@@ -143,13 +143,13 @@ export default function Archive() {
                       <Button
                         className="w-full max-w-[90%] justify-start truncate"
                         variant="tertiary"
-                        onClick={() => onLoad(game)}>
+                        onPress={() => onLoad(game)}>
                         {game.name || `Game ${i + 1}`}
                       </Button>
                       <Button
                         variant="danger-soft"
                         className="text-xl"
-                        onClick={() => handleDeleteGame(game.id)}
+                        onPress={() => handleDeleteGame(game.id)}
                         isIconOnly>
                         {icons.others.trash}
                       </Button>

@@ -109,7 +109,7 @@ const ShowMoves: FC<{ ClickEvent: () => boolean }> = ({ ClickEvent }) => {
     }
   };
   return (
-    <Button variant={showing ? "danger-soft" : "primary"} onClick={handleClick}>
+    <Button variant={showing ? "danger-soft" : "primary"} onPress={handleClick}>
       <div className="flex gap-2">
         <div className="text-2xl">{icons.chess.small_board}</div>
         <div className="text-lg font-semibold">{showing ? "Hide Moves" : "Show Moves"}</div>

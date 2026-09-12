@@ -10,8 +10,8 @@ import {
 } from "@internationalized/date";
 import { useState } from "react";
 
-export type chooseMonthProps = { onClick: (newDate: CalendarDate) => void };
-export default function ChooseMonth({ onClick }: chooseMonthProps) {
+export type chooseMonthProps = { onPress: (newDate: CalendarDate) => void };
+export default function ChooseMonth({ onPress }: chooseMonthProps) {
   const currentDate = today(getLocalTimeZone());
   const [start, setStart] = useState(startOfMonth(currentDate));
   const [open, setOpen] = useState(false);
@@ -31,7 +31,7 @@ export default function ChooseMonth({ onClick }: chooseMonthProps) {
       maxValue={today(getLocalTimeZone())}
       value={getRange()}>
       <DateField.Group>
-        <Button onClick={() => setOpen(true)}>Select Month</Button>
+        <Button onPress={() => setOpen(true)}>Select Month</Button>
       </DateField.Group>
       <DateRangePicker.Popover isOpen={open} onOpenChange={setOpen}>
         <RangeCalendar
@@ -66,8 +66,8 @@ export default function ChooseMonth({ onClick }: chooseMonthProps) {
         </RangeCalendar>
         <div className="flex-center w-full pt-2">
           <Button
-            onClick={() => {
-              onClick(start);
+            onPress={() => {
+              onPress(start);
               setOpen(false);
             }}
             className="flex-center">

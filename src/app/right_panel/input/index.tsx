@@ -206,7 +206,7 @@ export function Input() {
         variant="primary"
         size="lg"
         isDisabled={fetching}
-        onClick={handleClick}>
+        onPress={handleClick}>
         <div
           className="text-2xl"
           children={mode === "pgn" ? icons.others.rocket : icons.others.search}

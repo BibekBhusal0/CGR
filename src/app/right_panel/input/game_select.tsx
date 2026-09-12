@@ -61,7 +61,7 @@ export const SelectGame: FC<SelectGameProps> = ({ input, onOpenChange, isOpen })
               {loaded ? "Searched" : "Searching"} for game of {input} for {month} {date.year} in{" "}
               {sourceLabel}
               <div className="flex-center pb-3">
-                <ChooseMonth onClick={resetDateAndFetch} />
+                <ChooseMonth onPress={resetDateAndFetch} />
               </div>
             </Modal.Header>
             <Modal.CloseTrigger />

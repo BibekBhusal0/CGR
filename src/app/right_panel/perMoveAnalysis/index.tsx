@@ -170,7 +170,7 @@ function Warning() {
         <div>Red Arrow: Pin.</div>
         <div>Green Arrow: Best Move</div>
         <div>Green Highlight: Hanging piece.</div>
-        <Button className="self-center" onClick={() => toggle("analyzePerMove")}>
+        <Button className="self-center" onPress={() => toggle("analyzePerMove")}>
           Turn off Per move analysis
         </Button>
       </div>
