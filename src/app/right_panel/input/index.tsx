@@ -16,11 +16,15 @@ import { icons } from "@/components/icons";
 import { useSettingsState } from "@/Logic/state/settings";
 import { useGameState } from "@/Logic/state/game";
 import { allInputModes, inputModes } from "@/Logic/state/settings";
+import { getLichessGameById, isSingleLichessGameResponse } from "@/api/lichess";
+import { parseGameLink } from "@/api/gameLink";
 
 export function Input() {
   const mode = useSettingsState((state) => state.inputMode);
   const setGame = useGameState((state) => state.setGame);
+  const loadFromLichess = useGameState((state) => state.loadFromLichess);
   const [val, setVal] = useState("");
+  const [fetching, setFetching] = useState(false);
   const setInputMode = useSettingsState((state) => state.setInputMode);
   const setBottom = useGameState((state) => state.setBottom);
 
@@ -38,13 +42,47 @@ export function Input() {
     }
   }
 
-  function handleClick() {
-    if (val.trim() !== "") {
-      if (mode === "pgn") analyzePgn(val.trim());
-      else onOpenChange(true);
-    } else {
-      toast.danger(mode === "pgn" ? "Please Enter Your  PGN" : "Please Enter username");
+  async function fetchLichessGame(id: string, fallbackAsUsername: boolean) {
+    setFetching(true);
+    try {
+      const response = await getLichessGameById(id);
+      if (isSingleLichessGameResponse(response)) {
+        loadFromLichess(response.data);
+        toast.success("Game loaded");
+      } else if (response.status === 404 && fallbackAsUsername) {
+        toast.warning("Not a valid game ID, searching as username instead");
+        onOpenChange(true);
+      } else {
+        toast.danger("Couldn't fetch game, check the link or ID and try again");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.danger("Couldn't fetch game, check your connection and try again");
+    } finally {
+      setFetching(false);
     }
+  }
+
+  function handleClick() {
+    if (val.trim() === "") {
+      toast.danger(mode === "pgn" ? "Please Enter Your  PGN" : "Please Enter username");
+      return;
+    }
+    if (mode === "pgn") {
+      analyzePgn(val.trim());
+      return;
+    }
+    const parsed = parseGameLink(val);
+    if (parsed?.platform === "lichess") {
+      if (mode !== "lichess") setInputMode("lichess");
+      void fetchLichessGame(parsed.id, true);
+      return;
+    }
+    if (parsed?.platform === "chess.com") {
+      toast.warning("Chess.com has no single-game API, search by username instead");
+      return;
+    }
+    onOpenChange(true);
   }
 
   useEffect(() => {
@@ -81,6 +119,20 @@ export function Input() {
         onOpenChange(true);
       }
       clear();
+    } else if (currentUrl.searchParams.get("lichessId") || currentUrl.searchParams.get("gameUrl")) {
+      const raw =
+        currentUrl.searchParams.get("lichessId") || currentUrl.searchParams.get("gameUrl") || "";
+      const parsed = parseGameLink(raw);
+      clear();
+      if (parsed?.platform === "lichess") {
+        setInputMode("lichess");
+        setVal(raw);
+        void fetchLichessGame(parsed.id, false);
+      } else if (parsed?.platform === "chess.com") {
+        toast.warning("Chess.com has no single-game API, search by username instead");
+      } else {
+        toast.danger("Couldn't find a game ID in the link");
+      }
     }
     return clear;
   }, []);
@@ -127,7 +179,7 @@ export function Input() {
           {mode === "pgn"
             ? "Paste PGN"
             : mode === "lichess"
-              ? "Lichess Username"
+              ? "Lichess Username, Game URL or ID"
               : "Chess.com Username"}
         </Label>
         <TextArea
@@ -153,12 +205,13 @@ export function Input() {
         className="w-full py-3 font-semibold"
         variant="primary"
         size="lg"
+        isDisabled={fetching}
         onClick={handleClick}>
         <div
           className="text-2xl"
           children={mode === "pgn" ? icons.others.rocket : icons.others.search}
         />
-        {mode === "pgn" ? "Analyze" : "Search"}
+        {fetching ? "Loading..." : mode === "pgn" ? "Analyze" : "Search"}
       </Button>
       <SelectGame {...{ input: val, isOpen, onOpenChange }} />
     </Card.Content>

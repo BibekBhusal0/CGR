@@ -76,6 +76,31 @@ export function isLichessGamesResponse(
   return Array.isArray(response.data);
 }
 
+export type SingleLichessResponse =
+  | { data: LichessGame; status: number }
+  | { data: { error?: string; message?: string }; status: number };
+
+export function isSingleLichessGameResponse(
+  response: SingleLichessResponse
+): response is { data: LichessGame; status: number } {
+  return (response.data as LichessGame).pgn !== undefined;
+}
+
+export async function getLichessGameById(gameId: string): Promise<SingleLichessResponse> {
+  const params = new URLSearchParams({
+    pgnInJson: "true",
+    clocks: "true",
+    opening: "true",
+  });
+  const url = `https://lichess.org/game/export/${encodeURIComponent(gameId.trim())}?${params.toString()}`;
+
+  const response = await fetch(url, {
+    headers: { Accept: "application/json" },
+  });
+  const data = await response.json();
+  return { data, status: response.status };
+}
+
 export async function getLichessGamesOfPlayer(
   userName: string,
   month: number,
