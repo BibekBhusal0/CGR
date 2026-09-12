@@ -17,7 +17,7 @@ export function Controls() {
   const analysis = useGameState((state) => state.analysis);
   const setFen = useGameState((state) => state.setFen);
 
-  const [pause, setPause] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [showingIndex, setShowingIndex] = useState(0);
   if (!Game) throw new Error();
   const n_moves = Game.history().length;
@@ -49,18 +49,18 @@ export function Controls() {
   useEffect(() => {
     if (boardStage === "bestMove") {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setPause(true);
+      setIsPlaying(true);
       setShowingIndex(0);
-    } else if (boardStage === "normal") setPause(false);
+    } else if (boardStage === "normal") setIsPlaying(false);
   }, [boardStage]);
 
   useEffect(() => {
     if ((linesToShow && linesAtEnd) || atEnd) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setPause(false);
+      setIsPlaying(false);
     }
 
-    if (pause) {
+    if (isPlaying) {
       const crrMove = setInterval(() => {
         if (boardStage === "bestMove" && linesToShow && !linesAtEnd) {
           setShowingIndex((prevIndex) => prevIndex + 1);
@@ -71,20 +71,23 @@ export function Controls() {
 
       return () => clearInterval(crrMove);
     }
-  }, [pause, linesToShow, linesAtEnd, showingIndex, boardStage, atEnd, moveIndex, n_moves]);
+  }, [isPlaying, linesToShow, linesAtEnd, showingIndex, boardStage, atEnd, moveIndex, n_moves]);
 
-  const togglePlayPause = () => setPause((prevPause) => !prevPause);
+  const togglePlayPause = () => {
+    if (!isPlaying && (boardStage === "normal" ? atEnd : linesAtEnd)) return;
+    setIsPlaying((prev) => !prev);
+  };
   const goToFirstMove = () => {
-    setPause(false);
+    setIsPlaying(false);
     setIndex(-1);
   };
   const goToLastMove = () => {
-    setPause(false);
+    setIsPlaying(false);
     setIndex(n_moves - 1);
   };
 
   const goToPreviousMove = () => {
-    setPause(false);
+    setIsPlaying(false);
     if (boardStage === "normal") {
       setIndex(moveIndex - 1);
     } else if (boardStage === "bestMove") {
@@ -93,7 +96,7 @@ export function Controls() {
   };
 
   const goToNextMove = () => {
-    setPause(false);
+    setIsPlaying(false);
     if (boardStage === "normal") {
       setIndex(moveIndex + 1);
     } else if (boardStage === "bestMove") {
@@ -114,6 +117,7 @@ export function Controls() {
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.repeat) return;
     if (event.ctrlKey || event.metaKey || event.altKey) return;
     const target = event.target as HTMLElement | null;
     if (
@@ -127,6 +131,7 @@ export function Controls() {
     }
     const key = event.key;
     if (key in keyFunctionMapping) {
+      if (key === " " && target?.closest?.("button")) return;
       event.preventDefault();
       keyFunctionMapping[key]();
     }
@@ -159,10 +164,10 @@ export function Controls() {
       children: icons.previous,
     },
     {
-      tooltip: pause ? "Play" : "Pause",
+      tooltip: isPlaying ? "Pause" : "Play",
       onClick: togglePlayPause,
       isDisabled: boardStage === "normal" ? atEnd : linesAtEnd,
-      children: pause ? icons.pause : icons.play,
+      children: isPlaying ? icons.pause : icons.play,
     },
     {
       tooltip: "Next Move",
