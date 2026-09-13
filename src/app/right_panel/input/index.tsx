@@ -162,11 +162,7 @@ export function Input() {
         <Select.Popover>
           <ListBox>
             {allInputModes.map((item) => (
-              <ListBox.Item
-                key={item}
-                id={item}
-                textValue={item}
-                className="uppercase">
+              <ListBox.Item key={item} id={item} textValue={item} className="uppercase">
                 {item}
                 <ListBox.ItemIndicator />
               </ListBox.Item>

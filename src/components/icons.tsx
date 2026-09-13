@@ -1,4 +1,5 @@
-const className: string = "font-sans text-xl font-extrabold leading-none tracking-tighter select-none";
+const className: string =
+  "font-sans text-xl font-extrabold leading-none tracking-tighter select-none";
 
 export const icons = {
   chess: {
